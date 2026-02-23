@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og';
+import { z } from 'zod';
 import { GRADE_COLORS } from '@/app/constants';
 import type { Grade } from '@/app/types';
 
@@ -10,16 +11,22 @@ const GRADE_LABELS: Record<Grade, string> = {
   D: 'Needs Work',
 };
 
-function clampScore(score: number) {
-  return Math.min(Math.max(score || 0, 0), 100);
-}
+const BadgeParamsSchema = z.object({
+  score: z.coerce.number().int().min(0).max(100).catch(0),
+  grade: z.string().transform((v) => v.toUpperCase()).catch('A'),
+});
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const score = clampScore(parseInt(searchParams.get('score') || '0'));
-    const grade = (searchParams.get('grade') || 'A').toUpperCase();
+    const params = BadgeParamsSchema.parse({
+      score: searchParams.get('score') ?? 0,
+      grade: searchParams.get('grade') ?? 'A',
+    });
+
+    const score = params.score;
+    const grade = params.grade;
     const gradeColor = GRADE_COLORS[grade as Grade] || '#3b82f6';
     const gradeLabel = GRADE_LABELS[grade as Grade] || 'Skilled';
 

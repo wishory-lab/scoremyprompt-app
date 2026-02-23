@@ -6,8 +6,9 @@ interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
 }
 
-export default function SharePage() {
-  return <ShareClient />;
+export default async function SharePage({ params }: PageProps) {
+  const { id } = await params;
+  return <ShareClient shareId={id} />;
 }
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {

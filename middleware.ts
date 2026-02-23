@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Routes that require authentication
-const PROTECTED_PAGES = ['/dashboard', '/history', '/compare'];
+const PROTECTED_PAGES = ['/dashboard', '/history', '/compare', '/pro'];
 
 // API routes that require Authorization header
 const PROTECTED_API_ROUTES = ['/api/analyze-bulk', '/api/export'];

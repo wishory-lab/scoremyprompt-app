@@ -13,7 +13,25 @@
     {
       "source": "/api/og",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=86400" }
+        { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=86400" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET" }
+      ]
+    },
+    {
+      "source": "/api/badge",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=3600" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET" }
+      ]
+    },
+    {
+      "source": "/api/embed",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=3600" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET" }
       ]
     }
   ],

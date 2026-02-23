@@ -19,11 +19,14 @@ const SIZES: Record<ButtonSize, string> = {
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  /** Accessible label — required for icon-only buttons */
+  'aria-label'?: string;
 }
 
 export default function Button({ variant = 'primary', size = 'md', children, className = '', ...props }: ButtonProps) {
   return (
     <button
+      aria-disabled={props.disabled || undefined}
       className={`font-medium transition-all inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0f1a] ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
       {...props}
     >

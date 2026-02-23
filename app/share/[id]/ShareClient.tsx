@@ -3,15 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-export default function ShareClient() {
+interface ShareClientProps {
+  shareId?: string;
+}
+
+export default function ShareClient({ shareId }: ShareClientProps) {
   const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/');
+      router.push(shareId ? `/?share=${shareId}` : '/');
     }, 2000);
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [router, shareId]);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark flex items-center justify-center">

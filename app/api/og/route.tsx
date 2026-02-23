@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og';
+import { z } from 'zod';
 import { GRADE_COLORS } from '@/app/constants';
 import type { Grade } from '@/app/types';
 
@@ -11,16 +12,26 @@ const GRADE_LABELS: Record<Grade, string> = {
 };
 
 const GRADE_TAGLINES: Record<string, string> = {
-  S: 'Prompt Master 🏆 Can anyone beat this?',
-  A: 'Top tier! 🌟 Think you can do better?',
-  B: 'Solid score! 💪 Challenge accepted?',
-  C: 'Room to grow! 🎯 Beat this score!',
-  D: 'Just getting started! 📝 Show me how it\'s done!',
+  S: 'Prompt Master \u{1F3C6} Can anyone beat this?',
+  A: 'Top tier! \u{1F31F} Think you can do better?',
+  B: 'Solid score! \u{1F4AA} Challenge accepted?',
+  C: 'Room to grow! \u{1F3AF} Beat this score!',
+  D: 'Just getting started! \u{1F4DD} Show me how it\'s done!',
 };
 
-function clampScore(score: number) {
-  return Math.min(Math.max(score || 0, 0), 100);
-}
+const OGParamsSchema = z.object({
+  score: z.coerce.number().int().min(0).max(100).catch(0),
+  grade: z.string().transform((v) => v.toUpperCase()).catch('A'),
+  gradeLabel: z.string().optional(),
+  jobRole: z.string().catch('Marketing'),
+  percentile: z.coerce.number().int().min(0).max(100).catch(50),
+  p: z.coerce.number().int().min(0).max(100).catch(0),
+  r: z.coerce.number().int().min(0).max(100).catch(0),
+  o: z.coerce.number().int().min(0).max(100).catch(0),
+  m: z.coerce.number().int().min(0).max(100).catch(0),
+  s: z.coerce.number().int().min(0).max(100).catch(0),
+  t: z.coerce.number().int().min(0).max(100).catch(0),
+});
 
 function getBarColor(pct: number) {
   if (pct >= 85) return '#10b981';
@@ -33,19 +44,22 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const score = clampScore(parseInt(searchParams.get('score') || '0'));
-    const grade = (searchParams.get('grade') || 'A').toUpperCase();
-    const gradeLabel = searchParams.get('gradeLabel') || GRADE_LABELS[grade as Grade] || 'Skilled Prompter';
-    const jobRole = searchParams.get('jobRole') || 'Marketing';
-    const percentile = parseInt(searchParams.get('percentile') || '50');
+    const params = OGParamsSchema.parse({
+      score: searchParams.get('score') ?? 0,
+      grade: searchParams.get('grade') ?? 'A',
+      gradeLabel: searchParams.get('gradeLabel') || undefined,
+      jobRole: searchParams.get('jobRole') ?? 'Marketing',
+      percentile: searchParams.get('percentile') ?? 50,
+      p: searchParams.get('p') ?? 0,
+      r: searchParams.get('r') ?? 0,
+      o: searchParams.get('o') ?? 0,
+      m: searchParams.get('m') ?? 0,
+      s: searchParams.get('s') ?? 0,
+      t: searchParams.get('t') ?? 0,
+    });
 
-    const p = clampScore(parseInt(searchParams.get('p') || '0'));
-    const r = clampScore(parseInt(searchParams.get('r') || '0'));
-    const o = clampScore(parseInt(searchParams.get('o') || '0'));
-    const m = clampScore(parseInt(searchParams.get('m') || '0'));
-    const s = clampScore(parseInt(searchParams.get('s') || '0'));
-    const t = clampScore(parseInt(searchParams.get('t') || '0'));
-
+    const { score, grade, jobRole, percentile, p, r, o, m, s, t } = params;
+    const gradeLabel = params.gradeLabel || GRADE_LABELS[grade as Grade] || 'Skilled Prompter';
     const gradeColor = GRADE_COLORS[grade as Grade] || '#3b82f6';
 
     const dimensions = [
