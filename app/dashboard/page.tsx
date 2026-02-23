@@ -330,12 +330,18 @@ export default function DashboardPage() {
           <div className="card bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 mb-12">
             <h3 className="text-xl font-bold text-white mb-4">Pro Subscription</h3>
             <p className="text-gray-400 mb-6 text-sm">Manage your subscription and billing settings.</p>
-            <button
-              onClick={handlePortal}
-              className="btn-primary font-semibold"
-            >
-              Manage Subscription
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handlePortal}
+                className="btn-primary font-semibold"
+              >
+                Manage Subscription
+              </button>
+              <a href="/bulk" className="btn-secondary font-semibold flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Bulk Analysis
+              </a>
+            </div>
 
             <div className="mt-8 pt-8 border-t border-primary/30">
               <h4 className="text-lg font-bold text-white mb-4">API Key</h4>

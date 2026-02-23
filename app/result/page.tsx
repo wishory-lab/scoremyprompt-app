@@ -52,7 +52,7 @@ const DIMENSION_KEYS = ['precision', 'role', 'outputFormat', 'missionContext', '
 
 export default function ResultPage() {
   const router = useRouter();
-  const { user, tier, setShowAuth, setAuthMessage } = useAuth();
+  const { user, tier, supabase, setShowAuth, setAuthMessage } = useAuth();
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -61,7 +61,9 @@ export default function ResultPage() {
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState<'html' | 'md' | null>(null);
   const [challenger, setChallenger] = useState<{ name: string; score: number; grade: string } | null>(null);
+  const [exporting, setExporting] = useState(false);
   const isGuest = !user;
+  const isPro = tier === 'pro';
 
   type SharePlatform = 'twitter' | 'linkedin' | 'copy';
 
@@ -136,6 +138,45 @@ export default function ResultPage() {
   const handleNewAnalysis = () => {
     sessionStorage.removeItem('promptResult');
     router.push('/');
+  };
+
+  const handleExport = async () => {
+    if (!result?.analysisId || !supabase) return;
+
+    try {
+      setExporting(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+
+      const response = await fetch('/api/export', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ analysisId: result.analysisId }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        console.error('Export failed:', err);
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `prompt-analysis-${result.analysisId}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export error:', err);
+    } finally {
+      setExporting(false);
+    }
   };
 
   if (loading || !result) {
@@ -355,35 +396,63 @@ export default function ResultPage() {
         {result.rewriteSuggestion && (
           <div className="card mb-12">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-bold text-white">AI Rewrite Suggestion</h4>
-              <button
-                onClick={() => setShowRewrite(!showRewrite)}
-                className="text-sm text-primary hover:text-accent transition-colors"
-                aria-expanded={showRewrite}
-                aria-label="Toggle AI rewrite suggestion"
-              >
-                {showRewrite ? 'Hide' : 'Show Rewrite'}
-              </button>
-            </div>
-            {showRewrite && (
-              <div className="p-4 bg-slate-800/50 border border-primary/20 rounded-lg animate-fade-in">
-                <p className="text-gray-300 text-sm leading-relaxed italic">
-                  &ldquo;{result.rewriteSuggestion}&rdquo;
-                </p>
-                <button
-                  onClick={async () => {
-                    await navigator.clipboard.writeText(result.rewriteSuggestion || '');
-                  }}
-                  className="mt-3 text-xs text-primary hover:text-accent transition-colors"
-                >
-                  Copy to clipboard
-                </button>
+              <div className="flex items-center gap-2">
+                <h4 className="text-lg font-bold text-white">AI Rewrite Suggestion</h4>
+                {!isPro && (
+                  <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded font-medium">PRO</span>
+                )}
               </div>
-            )}
-            {!showRewrite && (
-              <p className="text-sm text-gray-400">
-                See how your prompt could be improved with AI-powered suggestions.
-              </p>
+              {isPro && (
+                <button
+                  onClick={() => setShowRewrite(!showRewrite)}
+                  className="text-sm text-primary hover:text-accent transition-colors"
+                  aria-expanded={showRewrite}
+                  aria-label="Toggle AI rewrite suggestion"
+                >
+                  {showRewrite ? 'Hide' : 'Show Rewrite'}
+                </button>
+              )}
+            </div>
+            {isPro ? (
+              <>
+                {showRewrite && (
+                  <div className="p-4 bg-slate-800/50 border border-primary/20 rounded-lg animate-fade-in">
+                    <p className="text-gray-300 text-sm leading-relaxed italic">
+                      &ldquo;{result.rewriteSuggestion}&rdquo;
+                    </p>
+                    <button
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(result.rewriteSuggestion || '');
+                      }}
+                      className="mt-3 text-xs text-primary hover:text-accent transition-colors"
+                    >
+                      Copy to clipboard
+                    </button>
+                  </div>
+                )}
+                {!showRewrite && (
+                  <p className="text-sm text-gray-400">
+                    See how your prompt could be improved with AI-powered suggestions.
+                  </p>
+                )}
+              </>
+            ) : (
+              <div className="relative">
+                <div className="p-4 bg-slate-800/50 border border-border rounded-lg">
+                  <p className="text-gray-500 text-sm leading-relaxed italic blur-sm select-none" aria-hidden="true">
+                    &ldquo;{result.rewriteSuggestion.substring(0, 80)}...&rdquo;
+                  </p>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-surface/60 rounded-lg">
+                  <Link
+                    href="/pricing"
+                    className="btn-primary text-sm font-semibold flex items-center gap-2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Unlock with Pro
+                  </Link>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -620,6 +689,31 @@ export default function ResultPage() {
           <button onClick={handleNewAnalysis} className="btn-primary font-semibold">
             Analyze Another Prompt
           </button>
+          {isPro && result.analysisId ? (
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              className="btn-secondary font-semibold flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              {exporting ? 'Exporting...' : 'Export Report'}
+            </button>
+          ) : !isGuest && !isPro ? (
+            <Link
+              href="/pricing"
+              className="btn-secondary font-semibold flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Report
+              <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">PRO</span>
+            </Link>
+          ) : null}
+          {isPro && (
+            <Link href="/bulk" className="btn-secondary font-semibold flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Bulk Analysis
+            </Link>
+          )}
         </div>
       </section>
 

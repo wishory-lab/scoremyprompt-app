@@ -39,7 +39,7 @@ const JOB_ROLES: JobRole[] = ['Marketing', 'Design', 'Product', 'Finance', 'Free
 export default function HomeClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, supabase, setShowAuth, setAuthMessage, signOut } = useAuth();
+  const { user, tier, supabase, setShowAuth, setAuthMessage, signOut } = useAuth();
   const [prompt, setPrompt] = useState('');
   const [jobRole, setJobRole] = useState<JobRole>('Marketing');
   const [loading, setLoading] = useState(false);
@@ -142,6 +142,14 @@ export default function HomeClient() {
             </a>
             {user ? (
               <div className="flex items-center gap-3">
+                <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
+                  Dashboard
+                </Link>
+                {tier === 'pro' && (
+                  <Link href="/bulk" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
+                    Bulk
+                  </Link>
+                )}
                 <span className="text-sm text-gray-300 hidden sm:block">
                   {user.email?.split('@')[0]}
                 </span>

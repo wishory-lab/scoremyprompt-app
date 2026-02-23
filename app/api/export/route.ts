@@ -7,24 +7,39 @@
  */
 
 import { getSupabaseAdmin } from '@/app/lib/supabase';
-import { AppError, errorResponse } from '@/app/lib/errors';
+import { logger } from '@/app/lib/logger';
+
+interface DimensionData {
+  score: number;
+  maxScore: number;
+  feedback: string;
+}
+
+interface ResultJson {
+  dimensions?: {
+    precision?: DimensionData;
+    role?: DimensionData;
+    outputFormat?: DimensionData;
+    missionContext?: DimensionData;
+    promptStructure?: DimensionData;
+    tailoring?: DimensionData;
+  };
+  strengths?: string[];
+  improvements?: string[];
+  rewriteSuggestion?: string;
+}
 
 interface AnalysisRow {
   overall_score: number;
   grade: string;
   job_role: string;
   prompt_text: string;
-  precision: { score: number; maxScore: number; feedback: string };
-  role: { score: number; maxScore: number; feedback: string };
-  output_format: { score: number; maxScore: number; feedback: string };
-  mission_context: { score: number; maxScore: number; feedback: string };
-  prompt_structure: { score: number; maxScore: number; feedback: string };
-  tailoring: { score: number; maxScore: number; feedback: string };
-  strengths: string[];
-  improvements: string[];
-  rewrite_suggestion: string;
+  result_json: ResultJson | null;
+  rewrite_suggestion: string | null;
   created_at: string;
 }
+
+const DEFAULT_DIM: DimensionData = { score: 0, maxScore: 0, feedback: 'N/A' };
 
 export async function POST(request: Request) {
   try {
@@ -38,7 +53,6 @@ export async function POST(request: Request) {
 
     const token = authHeader.substring(7);
 
-    // Verify user is authenticated via Supabase
     const supabase = getSupabaseAdmin();
     if (!supabase) {
       return Response.json(
@@ -93,7 +107,7 @@ export async function POST(request: Request) {
     // Query analysis from Supabase
     const { data: analysis, error: analysisError } = await supabase
       .from('analyses')
-      .select('*')
+      .select('overall_score, grade, job_role, prompt_text, result_json, rewrite_suggestion, created_at')
       .eq('id', analysisId)
       .eq('user_id', user.id)
       .single();
@@ -106,7 +120,7 @@ export async function POST(request: Request) {
     }
 
     // Generate HTML
-    const html = generateAnalysisHTML(analysis);
+    const html = generateAnalysisHTML(analysis as AnalysisRow);
 
     // Return HTML file
     return new Response(html, {
@@ -117,7 +131,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error('Export error:', error);
+    logger.error('Export error', { error: String(error) });
     return Response.json(
       { error: 'Failed to generate export. Please try again.' },
       { status: 500 }
@@ -131,20 +145,25 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
     grade,
     job_role,
     prompt_text,
-    precision,
-    role,
-    output_format,
-    mission_context,
-    prompt_structure,
-    tailoring,
-    strengths,
-    improvements,
+    result_json,
     rewrite_suggestion,
     created_at,
   } = analysis;
 
+  // Extract dimensions from result_json
+  const dims = result_json?.dimensions;
+  const precision = dims?.precision || DEFAULT_DIM;
+  const role = dims?.role || DEFAULT_DIM;
+  const outputFormat = dims?.outputFormat || DEFAULT_DIM;
+  const missionContext = dims?.missionContext || DEFAULT_DIM;
+  const promptStructure = dims?.promptStructure || DEFAULT_DIM;
+  const tailoring = dims?.tailoring || DEFAULT_DIM;
+
+  const strengths = result_json?.strengths || [];
+  const improvements = result_json?.improvements || [];
+  const rewrite = rewrite_suggestion || result_json?.rewriteSuggestion || '';
+
   const gradeColor = getGradeColor(grade);
-  const scoreColor = getScoreColor(overall_score);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -191,24 +210,16 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
         }
 
         .score-circle {
-            display: inline-block;
+            display: inline-flex;
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            background: conic-gradient(
-                ${gradeColor} 0deg 0deg,
-                rgba(226, 232, 240, 0.1) 0deg 360deg
-            );
-            display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             margin: 20px 0;
-            border: 2px solid ${gradeColor};
-        }
-
-        .score-circle-inner {
-            text-align: center;
+            border: 3px solid ${gradeColor};
+            background: rgba(226, 232, 240, 0.03);
         }
 
         .score-circle-score {
@@ -263,13 +274,6 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid rgba(100, 116, 255, 0.3);
-        }
-
-        .section h3 {
-            font-size: 16px;
-            color: #cbd5e1;
-            margin-top: 15px;
-            margin-bottom: 10px;
         }
 
         .prompt-text {
@@ -339,7 +343,7 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
         }
 
         .list-items li:before {
-            content: "✓";
+            content: "\\2713";
             position: absolute;
             left: 0;
             color: #6474ff;
@@ -347,7 +351,7 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
         }
 
         .improvements li:before {
-            content: "→";
+            content: "\\2192";
             color: #f59e0b;
         }
 
@@ -376,6 +380,15 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
             color: #6474ff;
             margin-bottom: 10px;
         }
+
+        @media print {
+            body { background-color: white; color: #1e293b; }
+            .score-circle { border-color: #334155; }
+            .score-circle-score, .score-circle-grade { color: #334155; }
+            .dimension-score { color: #3b82f6; }
+            .metadata { background: #f1f5f9; }
+            .prompt-text { background: #f8fafc; }
+        }
     </style>
 </head>
 <body>
@@ -385,17 +398,15 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
             <p>ScoreMyPrompt Evaluation</p>
 
             <div class="score-circle">
-                <div class="score-circle-inner">
-                    <div class="score-circle-score">${overall_score}</div>
-                    <div class="score-circle-grade">${grade}</div>
-                </div>
+                <div class="score-circle-score">${overall_score}</div>
+                <div class="score-circle-grade">${grade}</div>
             </div>
         </div>
 
         <div class="metadata">
             <div class="metadata-item">
                 <div class="metadata-label">Job Role</div>
-                <div class="metadata-value">${job_role || 'General'}</div>
+                <div class="metadata-value">${escapeHtml(job_role || 'General')}</div>
             </div>
             <div class="metadata-item">
                 <div class="metadata-label">Grade</div>
@@ -426,32 +437,32 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
                     <tr>
                         <td class="dimension-name">Precision</td>
                         <td class="dimension-score">${precision.score}/${precision.maxScore}</td>
-                        <td><div class="dimension-feedback">${precision.feedback}</div></td>
+                        <td><div class="dimension-feedback">${escapeHtml(precision.feedback)}</div></td>
                     </tr>
                     <tr>
                         <td class="dimension-name">Role</td>
                         <td class="dimension-score">${role.score}/${role.maxScore}</td>
-                        <td><div class="dimension-feedback">${role.feedback}</div></td>
+                        <td><div class="dimension-feedback">${escapeHtml(role.feedback)}</div></td>
                     </tr>
                     <tr>
                         <td class="dimension-name">Output Format</td>
-                        <td class="dimension-score">${output_format.score}/${output_format.maxScore}</td>
-                        <td><div class="dimension-feedback">${output_format.feedback}</div></td>
+                        <td class="dimension-score">${outputFormat.score}/${outputFormat.maxScore}</td>
+                        <td><div class="dimension-feedback">${escapeHtml(outputFormat.feedback)}</div></td>
                     </tr>
                     <tr>
                         <td class="dimension-name">Mission Context</td>
-                        <td class="dimension-score">${mission_context.score}/${mission_context.maxScore}</td>
-                        <td><div class="dimension-feedback">${mission_context.feedback}</div></td>
+                        <td class="dimension-score">${missionContext.score}/${missionContext.maxScore}</td>
+                        <td><div class="dimension-feedback">${escapeHtml(missionContext.feedback)}</div></td>
                     </tr>
                     <tr>
                         <td class="dimension-name">Prompt Structure</td>
-                        <td class="dimension-score">${prompt_structure.score}/${prompt_structure.maxScore}</td>
-                        <td><div class="dimension-feedback">${prompt_structure.feedback}</div></td>
+                        <td class="dimension-score">${promptStructure.score}/${promptStructure.maxScore}</td>
+                        <td><div class="dimension-feedback">${escapeHtml(promptStructure.feedback)}</div></td>
                     </tr>
                     <tr>
                         <td class="dimension-name">Tailoring</td>
                         <td class="dimension-score">${tailoring.score}/${tailoring.maxScore}</td>
-                        <td><div class="dimension-feedback">${tailoring.feedback}</div></td>
+                        <td><div class="dimension-feedback">${escapeHtml(tailoring.feedback)}</div></td>
                     </tr>
                 </tbody>
             </table>
@@ -460,23 +471,23 @@ function generateAnalysisHTML(analysis: AnalysisRow) {
         <div class="section">
             <h2>Strengths</h2>
             <ul class="list-items">
-                ${strengths.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}
+                ${strengths.map((s: string) => `<li>${escapeHtml(s)}</li>`).join('')}
             </ul>
         </div>
 
         <div class="section">
             <h2>Areas for Improvement</h2>
             <ul class="list-items improvements">
-                ${improvements.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}
+                ${improvements.map((i: string) => `<li>${escapeHtml(i)}</li>`).join('')}
             </ul>
         </div>
 
-        <div class="section">
+        ${rewrite ? `<div class="section">
             <h2>Rewrite Suggestion</h2>
             <div class="rewrite-box">
-                ${escapeHtml(rewrite_suggestion)}
+                ${escapeHtml(rewrite)}
             </div>
-        </div>
+        </div>` : ''}
 
         <div class="footer">
             <div class="footer-logo">ScoreMyPrompt</div>
@@ -496,14 +507,6 @@ function getGradeColor(grade: string) {
     D: '#6b7280',
   };
   return colors[grade] || '#9ca3af';
-}
-
-function getScoreColor(score: number) {
-  if (score >= 90) return '#10b981';
-  if (score >= 80) return '#3b82f6';
-  if (score >= 65) return '#f59e0b';
-  if (score >= 50) return '#ef4444';
-  return '#6b7280';
 }
 
 function escapeHtml(text: string) {
