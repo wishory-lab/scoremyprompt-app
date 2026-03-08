@@ -78,6 +78,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   ],
                   // aggregateRating: Real user review data will be added post-launch
                 },
+                {
+                  '@type': 'FAQPage',
+                  mainEntity: [
+                    {
+                      '@type': 'Question',
+                      name: 'What is ScoreMyPrompt?',
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: 'ScoreMyPrompt is a free AI prompt grading tool that scores your prompts on 6 dimensions (Precision, Role, Output Format, Mission Context, Structure, Tailoring) and provides actionable improvement tips.',
+                      },
+                    },
+                    {
+                      '@type': 'Question',
+                      name: 'How does the PROMPT scoring framework work?',
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: 'Each letter of PROMPT measures a key aspect: P for Precision, R for Role, O for Output format, M for Mission context, S for Structure, and T for Tailoring.',
+                      },
+                    },
+                    {
+                      '@type': 'Question',
+                      name: 'Is ScoreMyPrompt free?',
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: 'Yes. Free prompt scoring with no signup required. A Pro plan is available for bulk analysis and advanced insights.',
+                      },
+                    },
+                  ],
+                },
               ],
             }),
           }}

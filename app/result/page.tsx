@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../components/AuthProvider';
-import AdBanner from '../components/AdBanner';
+import dynamic from 'next/dynamic';
 import AnalysisLoading from '../components/AnalysisLoading';
 import ScoreCircle from '../components/ScoreCircle';
 import DimensionBar from '../components/DimensionBar';
@@ -17,9 +17,13 @@ import {
 } from '../constants';
 import { GUIDES_CONTENT } from '../guides/content';
 import { trackResultViewed, trackGradeCompleted, trackShare, trackSignupInitiated, trackReturnAnalysis } from '../lib/analytics';
-import Footer from '../components/Footer';
-import ProfilePrompt, { useProfilePrompt } from '../components/ProfilePrompt';
-import ShareCard from '../components/ShareCard';
+import { useProfilePrompt } from '../components/ProfilePrompt';
+
+// Lazy-load below-the-fold & heavy components
+const AdBanner = dynamic(() => import('../components/AdBanner'), { ssr: false });
+const Footer = dynamic(() => import('../components/Footer'), { ssr: false });
+const ProfilePrompt = dynamic(() => import('../components/ProfilePrompt'), { ssr: false });
+const ShareCard = dynamic(() => import('../components/ShareCard'), { ssr: false });
 
 // Map each dimension to the most relevant guide slug for improvement suggestions
 const DIMENSION_GUIDE_MAP: Record<string, string> = {

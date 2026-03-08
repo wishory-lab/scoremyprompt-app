@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Modal from './Modal';
 import { useAuth } from './AuthProvider';
-import { trackSignupInitiated } from '../lib/analytics';
+import { trackSignupInitiated, trackExitIntentShown, trackExitIntentCTA } from '../lib/analytics';
 
 const STORAGE_KEY = 'smp_exit_intent_shown';
 const DELAY_MS = 5000; // Don't trigger within first 5s
@@ -33,6 +33,7 @@ export default function ExitIntentModal() {
       sessionStorage.setItem(STORAGE_KEY, '1');
     } catch { /* SSR / private browsing */ }
     setShow(true);
+    trackExitIntentShown();
   }, [ready, user]);
 
   // Desktop: mouse leaves viewport from the top
@@ -60,6 +61,7 @@ export default function ExitIntentModal() {
     setAuthMessage('Create a free account to save your scores and track progress.');
     setShowAuth(true);
     trackSignupInitiated({ source: 'exit_intent' });
+    trackExitIntentCTA();
   };
 
   const handleDismiss = () => setShow(false);

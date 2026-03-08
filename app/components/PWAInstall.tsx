@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { trackPWAInstallPrompted, trackPWAInstalled } from '../lib/analytics';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -36,7 +37,10 @@ export default function PWAInstall() {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       // Show banner after a short delay so it doesn't block first paint
-      setTimeout(() => setShowBanner(true), 3000);
+      setTimeout(() => {
+        setShowBanner(true);
+        trackPWAInstallPrompted();
+      }, 3000);
     };
 
     window.addEventListener('beforeinstallprompt', handler);
@@ -49,6 +53,7 @@ export default function PWAInstall() {
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') {
       setShowBanner(false);
+      trackPWAInstalled();
     }
     setDeferredPrompt(null);
   };

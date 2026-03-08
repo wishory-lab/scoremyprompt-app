@@ -168,3 +168,115 @@ export function trackChallengeStarted({ score, grade }: { score: number; grade: 
     console.log('[Analytics] challenge_started', { score, grade });
   }
 }
+
+// ─── Phase 4: Funnel + Viral Events ───
+
+export function trackSignupCompleted({ method }: { method: string }): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('signup_completed', { method });
+  if (!isProd) {
+    console.log('[Analytics] signup_completed', { method });
+  }
+}
+
+export function trackReturnAnalysis({ analysisCount, jobRole }: { analysisCount: number; jobRole: string }): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('return_analysis', { analysis_count: analysisCount, job_role: jobRole });
+  if (!isProd) {
+    console.log('[Analytics] return_analysis', { analysis_count: analysisCount, job_role: jobRole });
+  }
+}
+
+export function trackProSubscribed({ plan, source }: { plan: string; source: string }): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('pro_subscribed', { plan, source });
+  if (!isProd) {
+    console.log('[Analytics] pro_subscribed', { plan, source });
+  }
+}
+
+export function trackViralReferral({ shareId, referrerGrade }: { shareId: string; referrerGrade: string }): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('viral_referral', { share_id: shareId, referrer_grade: referrerGrade });
+  if (!isProd) {
+    console.log('[Analytics] viral_referral', { share_id: shareId, referrer_grade: referrerGrade });
+  }
+}
+
+export function trackNewsletterSignup({ source }: { source: string }): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('newsletter_signup', { source });
+  if (!isProd) {
+    console.log('[Analytics] newsletter_signup', { source });
+  }
+}
+
+// ─── Phase 5: Enhanced Funnel + UTM ───
+
+/** Parse and persist UTM parameters from the current URL */
+export function captureUTMParams(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
+    const utmData: Record<string, string> = {};
+
+    for (const key of utmKeys) {
+      const value = params.get(key);
+      if (value) utmData[key] = value;
+    }
+
+    if (Object.keys(utmData).length > 0) {
+      // Persist to sessionStorage so it survives page navigation
+      try { sessionStorage.setItem('smp_utm', JSON.stringify(utmData)); } catch {}
+      window.posthog?.capture('utm_landing', utmData);
+      if (!isProd) console.log('[Analytics] utm_landing', utmData);
+    }
+  } catch {}
+}
+
+/** Retrieve stored UTM params (for enriching other events) */
+export function getStoredUTM(): Record<string, string> {
+  try {
+    const raw = sessionStorage.getItem('smp_utm');
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function trackExitIntentShown(): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('exit_intent_shown', getStoredUTM());
+  if (!isProd) console.log('[Analytics] exit_intent_shown');
+}
+
+export function trackExitIntentCTA(): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('exit_intent_cta_clicked', getStoredUTM());
+  if (!isProd) console.log('[Analytics] exit_intent_cta_clicked');
+}
+
+export function trackPWAInstallPrompted(): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('pwa_install_prompted');
+  if (!isProd) console.log('[Analytics] pwa_install_prompted');
+}
+
+export function trackPWAInstalled(): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('pwa_installed');
+  if (!isProd) console.log('[Analytics] pwa_installed');
+}
+
+export function trackShareCardDownloaded({ score, grade }: { score: number; grade: string }): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('share_card_downloaded', { score, grade });
+  if (!isProd) console.log('[Analytics] share_card_downloaded', { score, grade });
+}
+
+export function trackLocaleChanged({ from, to }: { from: string; to: string }): void {
+  if (typeof window === 'undefined') return;
+  window.posthog?.capture('locale_changed', { from, to });
+  if (!isProd) console.log('[Analytics] locale_changed', { from, to });
+}

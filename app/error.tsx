@@ -2,7 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export type ErrorCategory = {
   label: string;
@@ -54,10 +54,32 @@ export function ErrorIcon({ type }: { type: ErrorCategory['icon'] }) {
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const category = getErrorCategory(error);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
 
   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
+
+  // Auto-retry once for network errors
+  useEffect(() => {
+    if (category.icon === 'network' && retryCount === 0) {
+      const timer = setTimeout(() => {
+        setRetryCount(1);
+        reset();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [category.icon, retryCount, reset]);
+
+  const handleRetry = () => {
+    if (retryCount >= MAX_RETRIES) {
+      window.location.href = '/';
+      return;
+    }
+    setRetryCount((c) => c + 1);
+    reset();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark flex items-center justify-center p-4">
@@ -75,12 +97,16 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
           <p className="text-xs text-gray-600 mb-4 font-mono">Ref: {error.digest}</p>
         )}
 
+        {retryCount > 0 && retryCount < MAX_RETRIES && (
+          <p className="text-xs text-gray-600 mb-4">Retry attempt {retryCount} of {MAX_RETRIES}</p>
+        )}
+
         <div className="flex gap-3 justify-center">
-          <button onClick={reset} className="btn-primary inline-flex items-center gap-2">
+          <button onClick={handleRetry} className="btn-primary inline-flex items-center gap-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            Try Again
+            {retryCount >= MAX_RETRIES ? 'Go Home' : 'Try Again'}
           </button>
           <Link href="/" className="btn-secondary inline-flex items-center gap-2">
             Go Home

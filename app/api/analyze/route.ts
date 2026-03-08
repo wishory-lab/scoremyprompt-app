@@ -5,6 +5,7 @@ import { PROMPT_SCORE_SYSTEM } from '@/app/constants/system-prompt';
 import { JOB_ROLE_LABELS, ROLE_BENCHMARKS } from '@/app/constants';
 import { AppError, errorResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
+import { sanitizeInput, containsScriptPattern } from '@/app/lib/sanitize';
 import type { AnalysisResult, Grade } from '@/app/types';
 
 // ─── Request validation ───
@@ -89,11 +90,13 @@ async function saveToDatabase(params: {
 
   const shareId = generateShareId();
 
+  const promptPreview = params.prompt.substring(0, 80) + (params.prompt.length > 80 ? '...' : '');
+
   try {
     const { data, error } = await supabase
       .from('analyses')
       .insert({
-        prompt_text: params.prompt,
+        prompt_preview: promptPreview,
         job_role: params.jobRole,
         overall_score: params.result.overallScore,
         grade: params.result.grade,
@@ -142,7 +145,13 @@ export async function POST(request: Request) {
       throw new AppError(firstError.message, 'VALIDATION_ERROR', 400);
     }
 
-    const { prompt, jobRole } = parsed.data;
+    const prompt = sanitizeInput(parsed.data.prompt);
+    const jobRole = parsed.data.jobRole;
+
+    // ─── Script injection check ───
+    if (containsScriptPattern(prompt)) {
+      throw new AppError('Input contains disallowed patterns.', 'VALIDATION_ERROR', 400);
+    }
 
     // ─── Extract authenticated user (optional) ───
     let userId: string | undefined;
