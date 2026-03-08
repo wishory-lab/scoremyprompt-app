@@ -44,6 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -73,12 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     { '@type': 'Offer', price: '0', priceCurrency: 'USD', name: 'Free' },
                     { '@type': 'Offer', price: '9.99', priceCurrency: 'USD', name: 'Pro', billingIncrement: 'P1M' },
                   ],
-                  aggregateRating: {
-                    '@type': 'AggregateRating',
-                    ratingValue: '4.8',
-                    ratingCount: '1200',
-                    bestRating: '5',
-                  },
+                  // aggregateRating: Real user review data will be added post-launch
                 },
               ],
             }),

@@ -10,6 +10,7 @@ import AnalysisLoading from './components/AnalysisLoading';
 import DemoMode from './components/DemoMode';
 import Footer from './components/Footer';
 import OnboardingTour from './components/OnboardingTour';
+import ExitIntentModal from './components/ExitIntentModal';
 import type { JobRole } from './types';
 import { TEMPLATES } from './templates/data';
 import { trackJobRoleSelected, trackPromptSubmitted, trackGradeStarted, trackDemoClick, trackSignupInitiated } from './lib/analytics';
@@ -309,7 +310,7 @@ export default function HomeClient() {
           <h3 className="text-lg font-semibold text-white mb-4">
             Example Prompts
           </h3>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4 stagger-children">
             {EXAMPLE_PROMPTS.map((example, index) => (
               <button
                 key={index}
@@ -327,19 +328,19 @@ export default function HomeClient() {
 
         {/* Trust Signals */}
         <div className="py-12 border-t border-b border-border">
-          <div className="grid sm:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-3 gap-6 stagger-children">
             <div className="text-center">
-              <div className="text-2xl mb-2">&#9889;</div>
+              <div className="text-2xl mb-2 hover-bounce inline-block">&#9889;</div>
               <p className="text-white font-semibold mb-1">Instant Results</p>
               <p className="text-sm text-gray-400">Get your score in under 5 seconds with detailed AI analysis</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl mb-2">&#127919;</div>
+              <div className="text-2xl mb-2 hover-bounce inline-block">&#127919;</div>
               <p className="text-white font-semibold mb-1">Actionable Fixes</p>
               <p className="text-sm text-gray-400">Not just a score — specific improvements to make your prompts work harder</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl mb-2">&#128202;</div>
+              <div className="text-2xl mb-2 hover-bounce inline-block">&#128202;</div>
               <p className="text-white font-semibold mb-1">Benchmark Yourself</p>
               <p className="text-sm text-gray-400">See how your prompts compare with other professionals in your field</p>
             </div>
@@ -368,6 +369,9 @@ export default function HomeClient() {
 
       {/* Onboarding Tour for first-time visitors */}
       <OnboardingTour />
+
+      {/* Exit-Intent Modal for leaving guests */}
+      <ExitIntentModal />
     </main>
   );
 }

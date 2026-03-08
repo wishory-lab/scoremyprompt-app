@@ -19,6 +19,7 @@ import { GUIDES_CONTENT } from '../guides/content';
 import { trackResultViewed, trackGradeCompleted, trackShare, trackSignupInitiated, trackReturnAnalysis } from '../lib/analytics';
 import Footer from '../components/Footer';
 import ProfilePrompt, { useProfilePrompt } from '../components/ProfilePrompt';
+import ShareCard from '../components/ShareCard';
 
 // Map each dimension to the most relevant guide slug for improvement suggestions
 const DIMENSION_GUIDE_MAP: Record<string, string> = {
@@ -304,7 +305,7 @@ export default function ResultPage() {
         <div className="card mb-12 relative">
           <h3 className="text-xl font-bold text-white mb-2">PROMPT Dimensions</h3>
           <p className="text-sm text-gray-400 mb-8">Each letter of PROMPT measures a key aspect of prompt quality.</p>
-          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-x-8">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-x-8 stagger-children">
             {DIMENSION_KEYS.map((key, idx) => (
               <DimensionBar key={key} dimKey={key} data={result.dimensions?.[key]} meta={DIMENSION_META[key]} feedback={DIMENSION_FEEDBACK[key]} blurred={isGuest && idx > 0} index={idx} />
             ))}
@@ -583,7 +584,17 @@ export default function ResultPage() {
               {copied ? 'Copied!' : 'Copy Link'}
             </button>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
+            {result.dimensions && (
+              <ShareCard
+                score={result.overallScore}
+                grade={result.grade}
+                gradeLabel={result.scoreLevel || gradeConfig.label}
+                jobRole={result.jobRole || 'professionals'}
+                percentile={result.benchmarks?.percentile || 50}
+                dimensions={result.dimensions}
+              />
+            )}
             <a
               href={`/api/badge?score=${result.overallScore}&grade=${result.grade}`}
               target="_blank"
