@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { logger } from '@/app/lib/logger';
 import { unauthorizedResponse } from '@/app/lib/errors';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 import type { Grade } from '@/app/types';
 
 const HistoryQuerySchema = z.object({
@@ -75,6 +76,9 @@ function extractDimensions(resultJson: Record<string, unknown> | null): Record<s
 }
 
 export async function GET(request: Request) {
+  const rl = rateLimit(request, LIMITS.READ);
+  if (!rl.ok) return rl.response;
+
   try {
     // ─── Auth ───
     const authHeader = request.headers.get('authorization');

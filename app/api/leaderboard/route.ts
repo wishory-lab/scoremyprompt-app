@@ -1,6 +1,7 @@
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { logger } from '@/app/lib/logger';
 import { cacheHeaders, TTL } from '@/app/lib/cache';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 import type { LeaderboardEntry } from '@/app/types';
 
 const MOCK_LEADERBOARD: LeaderboardEntry[] = [
@@ -44,6 +45,9 @@ function generateDisplayName(jobRole: string, rank: number): string {
 const VALID_ROLES = new Set(['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other']);
 
 export async function GET(request: Request) {
+  const rl = rateLimit(request, LIMITS.READ);
+  if (!rl.ok) return rl.response;
+
   try {
     const url = new URL(request.url);
     const rawRole = url.searchParams.get('role');

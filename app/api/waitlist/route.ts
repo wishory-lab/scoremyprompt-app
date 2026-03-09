@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { AppError, errorResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'ScoreMyPrompt <hello@scoremyprompt.com>';
@@ -13,6 +14,9 @@ const WaitlistSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const rl = rateLimit(request, LIMITS.SUBMIT);
+  if (!rl.ok) return rl.response;
+
   try {
     const body = await request.json();
     const parsed = WaitlistSchema.safeParse(body);
