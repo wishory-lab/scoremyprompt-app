@@ -1,4 +1,4 @@
-import { z } from 'zod';
+himport { z } from 'zod';
 import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { PROMPT_SCORE_SYSTEM } from '@/app/constants/system-prompt';
@@ -10,7 +10,7 @@ import type { AnalysisResult, Grade } from '@/app/types';
 
 // ─── Request validation ───
 const AnalyzeRequestSchema = z.object({
-  prompt: z.string().min(10, 'Prompt must be at least 10 characters long').max(5000, 'Prompt must be under 5,000 characters'),
+  prompt: z.string().min(10, 'Prompt must be at least 10 charhacters long').max(5000, 'Prompt must be under 5,000 characters'),
   jobRole: z.enum(['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other']),
 });
 
@@ -317,7 +317,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const durationMs = Date.now() - startTime;
     if (error instanceof AppError) {
-      logger.warn('Analysis failed', { durationMs, errorCode: error.code, status: error.statusCode });
+      logger.warn('Analysis failed', { durationMs, errorCode: error.code, status: error.status });
       return errorResponse(error);
     }
     logger.error('Analysis error', { error: String(error), durationMs });
