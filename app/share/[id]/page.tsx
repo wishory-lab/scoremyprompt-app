@@ -89,7 +89,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
       title: shareTitle,
       description: shareDescription,
       images: ogImageUrl.toString(),
-      creator: '@PromptTribe',
+      creator: '@scoremyprompt',
     },
     alternates: {
       canonical: shareUrl,

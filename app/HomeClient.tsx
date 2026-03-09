@@ -350,6 +350,30 @@ export default function HomeClient() {
       {/* Waitlist / Newsletter Section */}
       <Waitlist />
 
+      {/* Final CTA */}
+      <section className="max-w-4xl mx-auto px-4 py-16">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600/20 via-purple-600/10 to-transparent border border-indigo-500/20 p-8 sm:p-12 text-center">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(99,102,241,0.1),transparent_60%)]" />
+          <div className="relative z-10">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+              Ready to write better prompts?
+            </h2>
+            <p className="text-gray-400 max-w-md mx-auto mb-6">
+              Join thousands of professionals who improve their AI skills with ScoreMyPrompt.
+            </p>
+            <a
+              href="#analyze"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-semibold hover:brightness-110 transition-all shadow-lg shadow-indigo-500/20"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Score My Prompt — It&apos;s Free
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <Footer />
 

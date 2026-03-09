@@ -1,26 +1,17 @@
 import type { Metadata } from 'next';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://scoremyprompt.com';
-
 export const metadata: Metadata = {
-  title: 'Challenge — Beat This Prompt Score | ScoreMyPrompt',
-  description: 'Can you beat this PROMPT Score? Take the challenge and see how your AI prompting skills stack up.',
-  alternates: { canonical: `${baseUrl}/challenge` },
+  title: 'Prompt Challenge — ScoreMyPrompt',
+  description:
+    'Test your prompt engineering skills with timed challenges. Can you beat the target score? Compete and improve your AI prompts.',
+  alternates: { canonical: 'https://scoremyprompt.com/challenge' },
   openGraph: {
-    title: 'Challenge — Beat This Prompt Score | ScoreMyPrompt',
-    description: 'Can you beat this PROMPT Score? Take the challenge and see how your AI prompting skills stack up.',
-    url: `${baseUrl}/challenge`,
-    siteName: 'ScoreMyPrompt',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Challenge — Beat This Prompt Score | ScoreMyPrompt',
-    description: 'Can you beat this PROMPT Score? Take the challenge and see how your AI prompting skills stack up.',
-    creator: '@scoremyprompt',
+    title: 'Prompt Challenge — ScoreMyPrompt',
+    description: 'Timed prompt engineering challenges. Beat the target score and prove your skills.',
+    url: 'https://scoremyprompt.com/challenge',
   },
 };
 
 export default function ChallengeLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return children;
 }
