@@ -177,7 +177,7 @@ export default function GuidePage() {
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map(({ title, href, desc, free }) => {
-              const Tag = href ? Link : 'div';
+              const Tag = (href ? Link : 'div') as any;
               const props = href ? { href } : {};
               return (
                 <Tag
