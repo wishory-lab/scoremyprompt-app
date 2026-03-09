@@ -1,0 +1,11 @@
+# ScoreMyPrompt Security Policy
+# https://securitytxt.org/
+
+Contact: mailto:security@scoremyprompt.com
+Expires: 2027-03-09T00:00:00.000Z
+Preferred-Languages: en, ko
+Canonical: https://scoremyprompt.com/.well-known/security.txt
+Policy: https://scoremyprompt.com/security-policy
+
+# If you discover a vulnerability, please report it responsibly.
+# We appreciate your help in keeping ScoreMyPrompt safe.

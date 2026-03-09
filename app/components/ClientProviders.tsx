@@ -9,6 +9,7 @@ import PWAInstall from './PWAInstall';
 import dynamic from 'next/dynamic';
 
 const NetworkStatusBanner = dynamic(() => import('./NetworkStatusBanner'), { ssr: false });
+const CookieConsent = dynamic(() => import('./CookieConsent'), { ssr: false });
 
 function GlobalAuthModal() {
   const { showAuth, setShowAuth, authMessage } = useAuth();
@@ -31,6 +32,7 @@ export default function ClientProviders({ children }: { children: React.ReactNod
             <GlobalAuthModal />
             <PWAInstall />
             <NetworkStatusBanner />
+            <CookieConsent />
           </ToastProvider>
         </AuthProvider>
       </AnalyticsProvider>
