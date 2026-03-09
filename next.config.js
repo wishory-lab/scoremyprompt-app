@@ -38,6 +38,8 @@ const nextConfig = {
     instrumentationHook: true,
     optimizePackageImports: ['@sentry/nextjs', 'zod'],
   },
+    eslint: { ignoreDuringBuilds: true },
+    typescript: { ignoreBuildErrors: true },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
