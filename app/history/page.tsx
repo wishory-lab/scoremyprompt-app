@@ -170,7 +170,7 @@ export default function HistoryPage() {
 
   if (authLoading || !user) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
+      <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark pt-14">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <Skeleton variant="rect" className="h-10 w-64 mb-12" />
           <Skeleton variant="card" className="mb-8" />
@@ -192,27 +192,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
-      {/* Navigation */}
-      <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">S</span>
-            </div>
-            <h1 className="text-xl font-bold text-white">ScoreMyPrompt</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-              Home
-            </a>
-            <a href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
-              Dashboard
-            </a>
-          </div>
-        </div>
-      </nav>
-
+    <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark pt-14">
       <section id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-4xl font-bold text-white">Analysis History</h2>

@@ -11,7 +11,6 @@ import { trackResultViewed, trackGradeCompleted, trackSignupInitiated, trackRetu
 import { useProfilePrompt } from '../components/ProfilePrompt';
 
 // Sub-components (extracted from this monolith)
-import ResultNav from './components/ResultNav';
 import ScoreHero from './components/ScoreHero';
 import BenchmarkComparison from './components/BenchmarkComparison';
 import DimensionSection from './components/DimensionSection';
@@ -97,12 +96,6 @@ export default function ResultPage() {
     router.push('/');
   };
 
-  const handleSignIn = () => {
-    setAuthMessage('Sign in to see all 6 dimension details.');
-    setShowAuth(true);
-    trackSignupInitiated({ source: 'result_nav' });
-  };
-
   const handleDimensionSignup = () => {
     setAuthMessage('Sign up free to unlock all 6 dimension insights.');
     setShowAuth(true);
@@ -152,7 +145,7 @@ export default function ResultPage() {
   // --- Loading state ---
   if (loading || !result) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark flex items-center justify-center px-4">
+      <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark flex items-center justify-center px-4 pt-14">
         <div className="max-w-md w-full">
           <AnalysisLoading />
         </div>
@@ -163,9 +156,7 @@ export default function ResultPage() {
   const gradeConfig = GRADE_CONFIG[result.grade] || GRADE_CONFIG.B;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
-      <ResultNav user={user} onNewAnalysis={handleNewAnalysis} onSignIn={handleSignIn} />
-
+    <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark pt-14">
       <section id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         {/* Score Hero */}
         <ScoreHero result={result} gradeConfig={gradeConfig} />
