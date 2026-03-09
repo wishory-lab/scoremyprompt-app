@@ -1,4 +1,4 @@
-himport { z } from 'zod';
+import { z } from 'zod';
 import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { PROMPT_SCORE_SYSTEM } from '@/app/constants/system-prompt';
