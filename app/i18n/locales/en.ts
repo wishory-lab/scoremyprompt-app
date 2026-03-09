@@ -211,6 +211,13 @@ const en = {
     countdown: 'Try again in {time}',
   },
 
+  // ─── CTA ─────────────────────────────────────────
+  cta: {
+    title: 'Ready to write better prompts?',
+    subtitle: 'Join thousands of professionals who improve their AI skills with ScoreMyPrompt.',
+    button: 'Score My Prompt — It\'s Free',
+  },
+
   // ─── Footer ───────────────────────────────────────
   footer: {
     privacy: 'Privacy',

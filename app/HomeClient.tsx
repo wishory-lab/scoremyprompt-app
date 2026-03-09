@@ -10,6 +10,7 @@ import type { JobRole } from './types';
 import { TEMPLATES } from './templates/data';
 import { trackJobRoleSelected, trackPromptSubmitted, trackGradeStarted, trackDemoClick } from './lib/analytics';
 import { VALIDATION, ERRORS, PLACEHOLDERS, HINTS } from './constants/messages';
+import { useTranslation } from './i18n';
 
 const AdBanner = dynamic(() => import('./components/AdBanner'), { ssr: false });
 const DemoMode = dynamic(() => import('./components/DemoMode'), { ssr: false });
@@ -45,6 +46,7 @@ export default function HomeClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { supabase } = useAuth();
+  const t = useTranslation();
   const [prompt, setPrompt] = useState('');
   const [jobRole, setJobRole] = useState<JobRole>('Marketing');
   const [loading, setLoading] = useState(false);
@@ -156,14 +158,14 @@ export default function HomeClient() {
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div className="text-center mb-8 animate-fade-in">
           <h2 className="text-fluid-hero font-bold mb-6">
-            Write better prompts.{' '}
+            {t.hero.title}{' '}
             <br className="hidden sm:block" />
-            Get <span className="text-gradient">better AI results</span>.
+            Get <span className="text-gradient">{t.hero.titleHighlight}</span>.
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
-            Paste your prompt. Get an instant score with actionable fixes.
+            {t.hero.subtitle}
             <br className="hidden sm:block" />
-            Free, no signup required.
+            {t.hero.subtitleLine2}
           </p>
         </div>
 
@@ -171,17 +173,17 @@ export default function HomeClient() {
         <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mb-12 animate-fade-in">
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-gradient">5,000+</span>
-            <span className="text-sm text-gray-400">Prompts Scored</span>
+            <span className="text-sm text-gray-400">{t.socialProof.promptsScored}</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-border" />
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-gradient">92%</span>
-            <span className="text-sm text-gray-400">Find It Helpful</span>
+            <span className="text-sm text-gray-400">{t.socialProof.findItHelpful}</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-border" />
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-gradient">6</span>
-            <span className="text-sm text-gray-400">AI Dimensions</span>
+            <span className="text-sm text-gray-400">{t.socialProof.aiDimensions}</span>
           </div>
         </div>
 
@@ -190,7 +192,7 @@ export default function HomeClient() {
           {/* Job Role Selector */}
           <div className="mb-6" data-tour="role-selector" role="group" aria-label="Select your job role">
             <label className="block text-sm font-medium text-gray-300 mb-3">
-              Your Job Role
+              {t.form.jobRoleLabel}
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {JOB_ROLES.map((role) => (
@@ -262,19 +264,19 @@ export default function HomeClient() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Analyzing with AI...
+                {t.form.analyzing}
               </span>
             ) : retryCountdown > 0 ? (
               `Please wait ${retryCountdown}s...`
             ) : (
-              'Score My Prompt — Free'
+              t.form.scoreFree
             )}
           </button>
 
           {/* PROMPT Framework Hint + Rate limit info */}
           <div className="flex items-center justify-between mt-4">
             <p className="text-xs text-gray-400">
-              Scored on 6 dimensions: Precision · Role · Output Format · Mission Context · Structure · Tailoring
+              {t.form.frameworkHint}
             </p>
             {rateLimitRemaining !== null && rateLimitRemaining <= 5 && (
               <p className={`text-xs shrink-0 ml-3 ${rateLimitRemaining <= 2 ? 'text-amber-400' : 'text-gray-500'}`}>
@@ -317,18 +319,18 @@ export default function HomeClient() {
           <div className="grid sm:grid-cols-3 gap-6 stagger-children">
             <div className="text-center">
               <div className="text-2xl mb-2 hover-bounce inline-block">&#9889;</div>
-              <p className="text-white font-semibold mb-1">Instant Results</p>
-              <p className="text-sm text-gray-400">Get your score in under 5 seconds with detailed AI analysis</p>
+              <p className="text-white font-semibold mb-1">{t.trust.instantResults}</p>
+              <p className="text-sm text-gray-400">{t.trust.instantResultsDesc}</p>
             </div>
             <div className="text-center">
               <div className="text-2xl mb-2 hover-bounce inline-block">&#127919;</div>
-              <p className="text-white font-semibold mb-1">Actionable Fixes</p>
-              <p className="text-sm text-gray-400">Not just a score — specific improvements to make your prompts work harder</p>
+              <p className="text-white font-semibold mb-1">{t.trust.actionableFixes}</p>
+              <p className="text-sm text-gray-400">{t.trust.actionableFixesDesc}</p>
             </div>
             <div className="text-center">
               <div className="text-2xl mb-2 hover-bounce inline-block">&#128202;</div>
-              <p className="text-white font-semibold mb-1">Benchmark Yourself</p>
-              <p className="text-sm text-gray-400">See how your prompts compare with other professionals in your field</p>
+              <p className="text-white font-semibold mb-1">{t.trust.benchmarkYourself}</p>
+              <p className="text-sm text-gray-400">{t.trust.benchmarkYourselfDesc}</p>
             </div>
           </div>
         </div>
@@ -356,10 +358,10 @@ export default function HomeClient() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(99,102,241,0.1),transparent_60%)]" />
           <div className="relative z-10">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-              Ready to write better prompts?
+              {t.cta.title}
             </h2>
             <p className="text-gray-400 max-w-md mx-auto mb-6">
-              Join thousands of professionals who improve their AI skills with ScoreMyPrompt.
+              {t.cta.subtitle}
             </p>
             <a
               href="#analyze"
@@ -368,7 +370,7 @@ export default function HomeClient() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              Score My Prompt — It&apos;s Free
+              {t.cta.button}
             </a>
           </div>
         </div>

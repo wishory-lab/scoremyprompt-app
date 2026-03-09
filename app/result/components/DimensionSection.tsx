@@ -1,6 +1,7 @@
 'use client';
 
 import DimensionBar from '../../components/DimensionBar';
+import { useTranslation } from '../../i18n';
 import type { DimensionScores } from '../../types';
 import {
   DIMENSION_META as DIMENSION_META_CENTRAL,
@@ -24,10 +25,11 @@ interface DimensionSectionProps {
 }
 
 export default function DimensionSection({ dimensions, isGuest, onSignupClick }: DimensionSectionProps) {
+  const t = useTranslation();
   return (
     <div className="card mb-12 relative">
-      <h2 className="text-xl font-bold text-white mb-2">PROMPT Dimensions</h2>
-      <p className="text-sm text-gray-400 mb-8">Each letter of PROMPT measures a key aspect of prompt quality.</p>
+      <h2 className="text-xl font-bold text-white mb-2">{t.result.promptDimensions}</h2>
+      <p className="text-sm text-gray-400 mb-8">{t.result.dimensionSubtitle}</p>
       <div className="flex flex-col sm:grid sm:grid-cols-2 gap-x-8 stagger-children">
         {DIMENSION_KEYS.map((key, idx) => (
           <DimensionBar

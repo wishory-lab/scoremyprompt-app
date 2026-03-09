@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslation } from '../../i18n';
 
 interface ActionButtonsProps {
   isPro: boolean;
@@ -19,10 +20,11 @@ export default function ActionButtons({
   onNewAnalysis,
   onExport,
 }: ActionButtonsProps) {
+  const t = useTranslation();
   return (
     <div className="flex gap-4 mt-12 justify-center flex-wrap">
       <button onClick={onNewAnalysis} className="btn-primary font-semibold">
-        Analyze Another Prompt
+        {t.result.analyzeAnother}
       </button>
       {isPro && analysisId ? (
         <div className="flex gap-2">
@@ -48,7 +50,7 @@ export default function ActionButtons({
           className="btn-secondary font-semibold flex items-center gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export Report
+          {t.result.exportReport}
           <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">PRO</span>
         </Link>
       ) : null}
