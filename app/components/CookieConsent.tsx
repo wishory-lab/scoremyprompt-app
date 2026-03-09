@@ -31,9 +31,9 @@ function saveConsent(choice: ConsentChoice) {
 
       // Enable/disable PostHog based on consent
       if (choice === 'accepted') {
-        window.posthog?.opt_in_capturing?.();
+        (window as any).posthog?.opt_in_capturing?.();
       } else if (choice === 'rejected' || choice === 'essential-only') {
-        window.posthog?.opt_out_capturing?.();
+        (window as any).posthog?.opt_out_capturing?.();
       }
     }
   } catch {
