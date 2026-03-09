@@ -1,0 +1,140 @@
+{
+  "name": "WF-1: Blog → Multi-Platform Content",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 24, "triggerAtHour": 6 }]
+        }
+      },
+      "name": "Daily 6AM EST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:json&sheet=Content_Calendar",
+        "options": {}
+      },
+      "name": "Read Content Calendar",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 300],
+      "typeVersion": 4,
+      "notes": "Reads Google Sheets Content Calendar for blog posts marked 'ready_to_convert'"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "value2": "ready_to_convert",
+              "operation": "equals"
+            }
+          ]
+        }
+      },
+      "name": "Filter Ready Posts",
+      "type": "n8n-nodes-base.filter",
+      "position": [680, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.GROQ_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "body": {
+          "json": {
+            "model": "llama-3.3-70b-versatile",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a content repurposing expert for ScoreMyPrompt, an AI prompt grading tool. Convert blog content into platform-specific formats."
+              },
+              {
+                "role": "user",
+                "content": "Convert this blog post into 7 platform-specific pieces:\n\n1. X thread (5-7 tweets, each under 280 chars, with hooks and hashtags)\n2. LinkedIn post (professional tone, 1300 chars max, with CTA)\n3. Bluesky post (casual tone, 300 chars, with link)\n4. Reddit post (educational, no self-promotion feel, for r/PromptEngineering)\n5. YouTube community post (conversational, with question for engagement)\n6. Instagram caption (with emojis and 20 hashtags)\n7. TikTok script (30-60 second hook + value + CTA)\n\nBlog title: {{ $json.title }}\nBlog content: {{ $json.content }}\n\nOutput as JSON with keys: x_thread, linkedin, bluesky, reddit, youtube, instagram, tiktok"
+              }
+            ],
+            "temperature": 0.7,
+            "max_tokens": 4000
+          }
+        }
+      },
+      "name": "Groq: Convert to 7 Formats",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 300],
+      "typeVersion": 4,
+      "notes": "Tier 1: Groq 70B free API — blog → 7 platform drafts"
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "method": "POST",
+        "body": {
+          "json": {
+            "model": "llama3.2:3b",
+            "prompt": "Generate 15 relevant hashtags for this content about AI prompt engineering. Topic: {{ $json.title }}. Return only hashtags separated by spaces.",
+            "stream": false
+          }
+        }
+      },
+      "name": "Ollama: Generate Hashtags",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1120, 200],
+      "typeVersion": 4,
+      "notes": "Tier 2: Ollama 3B local — hashtag generation (fast, free)"
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq",
+        "method": "POST",
+        "options": {}
+      },
+      "name": "Update Calendar: Drafts Ready",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1340, 300],
+      "typeVersion": 4,
+      "notes": "Updates Content Calendar status from 'ready_to_convert' to 'draft_ready' with all 7 format drafts"
+    },
+    {
+      "parameters": {
+        "channel": "#content-automation",
+        "text": "📝 Content Pack Ready!\n\nBlog: {{ $json.title }}\n✅ 7 platform drafts generated\n✅ Hashtags added\n\n→ Review in Google Sheets Content Calendar",
+        "options": {}
+      },
+      "name": "Notify: Pack Ready",
+      "type": "n8n-nodes-base.slack",
+      "position": [1340, 450],
+      "typeVersion": 2,
+      "notes": "Optional: Slack notification. Remove if not using Slack."
+    }
+  ],
+  "connections": {
+    "Daily 6AM EST": { "main": [[{ "node": "Read Content Calendar", "type": "main", "index": 0 }]] },
+    "Read Content Calendar": { "main": [[{ "node": "Filter Ready Posts", "type": "main", "index": 0 }]] },
+    "Filter Ready Posts": { "main": [[{ "node": "Groq: Convert to 7 Formats", "type": "main", "index": 0 }]] },
+    "Groq: Convert to 7 Formats": {
+      "main": [
+        [
+          { "node": "Ollama: Generate Hashtags", "type": "main", "index": 0 },
+          { "node": "Update Calendar: Drafts Ready", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Ollama: Generate Hashtags": { "main": [[{ "node": "Update Calendar: Drafts Ready", "type": "main", "index": 0 }]] },
+    "Update Calendar: Drafts Ready": { "main": [[{ "node": "Notify: Pack Ready", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "WF-1: Blog → Multi-Platform Content Repurposing (1→7+ pieces). Uses Groq 70B for drafts + Ollama 3B for hashtags. Packing Assistant model: prepares drafts, human reviews and publishes natively.",
+    "templateId": "smp-wf-1"
+  }
+}

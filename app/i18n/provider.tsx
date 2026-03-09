@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import en, { type Locale } from './locales/en';
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type SupportedLocale } from './config';
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, mapBrowserLocale, type SupportedLocale } from './config';
 
 interface LocaleContextValue {
   locale: SupportedLocale;
@@ -22,14 +22,19 @@ const STORAGE_KEY = 'smp_locale';
 const localeLoaders: Record<SupportedLocale, () => Promise<{ default: Locale }>> = {
   en: () => Promise.resolve({ default: en }),
   ko: () => import('./locales/ko'),
+  ja: () => import('./locales/ja'),
+  'zh-CN': () => import('./locales/zh-CN'),
+  'zh-TW': () => import('./locales/zh-TW'),
+  es: () => import('./locales/es'),
+  fr: () => import('./locales/fr'),
+  de: () => import('./locales/de'),
+  pt: () => import('./locales/pt'),
+  hi: () => import('./locales/hi'),
 };
 
 function detectBrowserLocale(): SupportedLocale {
   if (typeof navigator === 'undefined') return DEFAULT_LOCALE;
-  const browserLang = navigator.language.split('-')[0];
-  return SUPPORTED_LOCALES.includes(browserLang as SupportedLocale)
-    ? (browserLang as SupportedLocale)
-    : DEFAULT_LOCALE;
+  return mapBrowserLocale(navigator.language);
 }
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
@@ -52,6 +57,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     setLocaleState(newLocale);
     try { localStorage.setItem(STORAGE_KEY, newLocale); } catch {}
     localeLoaders[newLocale]().then((mod) => setMessages(mod.default));
+    // Update html lang attribute
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = newLocale;
+    }
   }, []);
 
   return (

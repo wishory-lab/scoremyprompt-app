@@ -39,9 +39,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Alternate language URLs for key pages
-  const i18nPages: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}?lang=ko`, lastModified: core, changeFrequency: 'weekly', priority: 0.6 },
-  ];
+  const langs = ['ko', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'de', 'pt', 'hi'];
+  const i18nPages: MetadataRoute.Sitemap = langs.map((lang) => ({
+    url: `${baseUrl}?lang=${lang}`,
+    lastModified: core,
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }));
 
   return [...staticPages, ...guidePages, ...i18nPages];
 }

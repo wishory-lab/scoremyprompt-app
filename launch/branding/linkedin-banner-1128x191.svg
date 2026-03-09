@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1128" height="191" viewBox="0 0 1128 191">
+  <defs>
+    <linearGradient id="bgG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1a"/>
+      <stop offset="50%" stop-color="#1a1145"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="acG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <radialGradient id="o1" cx="85%" cy="50%" r="30%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1128" height="191" fill="url(#bgG)"/>
+  <rect width="1128" height="191" fill="url(#o1)"/>
+
+  <!-- Logo -->
+  <rect x="60" y="56" width="56" height="56" rx="12" fill="url(#acG)"/>
+  <text x="88" y="94" text-anchor="middle" font-family="system-ui,sans-serif" font-size="34" font-weight="800" fill="white">S</text>
+
+  <!-- Text -->
+  <text x="135" y="92" font-family="system-ui,sans-serif" font-size="32" font-weight="800" fill="white">ScoreMyPrompt</text>
+  <text x="135" y="118" font-family="system-ui,sans-serif" font-size="14" font-weight="500" fill="#94a3b8">AI Prompt Grading for Professionals | PROMPT Framework</text>
+
+  <!-- Right side: PROMPT letters -->
+  <g transform="translate(780, 65)">
+    <rect x="0" y="0" width="36" height="36" rx="6" fill="#3b82f620" stroke="#3b82f640" stroke-width="1"/>
+    <text x="18" y="25" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#60a5fa">P</text>
+    <rect x="44" y="0" width="36" height="36" rx="6" fill="#3b82f620" stroke="#3b82f640" stroke-width="1"/>
+    <text x="62" y="25" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#60a5fa">R</text>
+    <rect x="88" y="0" width="36" height="36" rx="6" fill="#8b5cf620" stroke="#8b5cf640" stroke-width="1"/>
+    <text x="106" y="25" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#a78bfa">O</text>
+    <rect x="132" y="0" width="36" height="36" rx="6" fill="#8b5cf620" stroke="#8b5cf640" stroke-width="1"/>
+    <text x="150" y="25" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#a78bfa">M</text>
+    <rect x="176" y="0" width="36" height="36" rx="6" fill="#6366f120" stroke="#6366f140" stroke-width="1"/>
+    <text x="194" y="25" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#818cf8">S</text>
+    <rect x="220" y="0" width="36" height="36" rx="6" fill="#6366f120" stroke="#6366f140" stroke-width="1"/>
+    <text x="238" y="25" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#818cf8">T</text>
+  </g>
+
+  <!-- Bottom accent -->
+  <rect x="0" y="187" width="1128" height="4" fill="url(#acG)"/>
+</svg>

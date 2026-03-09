@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GRADE_CONFIG, DIMENSION_META } from '@/app/constants';
 import type { Grade } from '@/app/types';
-import { trackSharePageVisited, trackSharePageCTA, trackWaitlistSignup } from '@/app/lib/analytics';
+import { trackSharePageVisited, trackSharePageCTA, trackWaitlistSignup, trackViralReferral } from '@/app/lib/analytics';
 
 interface ShareCardData {
   score: number;
@@ -95,12 +95,13 @@ function ShareEmailCapture() {
   );
 }
 
-export default function ShareClient({ data }: ShareClientProps) {
+export default function ShareClient({ shareId, data }: ShareClientProps) {
   const gradeConfig = GRADE_CONFIG[data.grade];
 
   useEffect(() => {
     trackSharePageVisited({ score: data.score, grade: data.grade, jobRole: data.jobRole });
-  }, [data.score, data.grade, data.jobRole]);
+    trackViralReferral({ shareId, referrerGrade: data.grade });
+  }, [shareId, data.score, data.grade, data.jobRole]);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">

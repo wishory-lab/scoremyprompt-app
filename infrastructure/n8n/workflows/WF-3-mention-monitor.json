@@ -1,0 +1,138 @@
+{
+  "name": "WF-3: Mention & Competitor Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 4 }]
+        }
+      },
+      "name": "Every 4 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://www.google.com/alerts/feeds/ALERT_ID",
+        "options": {}
+      },
+      "name": "Google Alerts RSS: ScoreMyPrompt",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [460, 200],
+      "typeVersion": 1,
+      "notes": "Set up Google Alert for 'ScoreMyPrompt OR score my prompt OR prompt grading tool'"
+    },
+    {
+      "parameters": {
+        "url": "https://www.google.com/alerts/feeds/COMPETITOR_ALERT_ID",
+        "options": {}
+      },
+      "name": "Google Alerts RSS: Competitors",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [460, 400],
+      "typeVersion": 1,
+      "notes": "Monitor competitors: 'PromptPerfect OR promptfoo OR prompt optimization tool'"
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.GROQ_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "body": {
+          "json": {
+            "model": "llama-3.3-70b-versatile",
+            "messages": [
+              {
+                "role": "system",
+                "content": "Analyze this mention/article about AI prompt tools. Classify as: positive_mention, negative_mention, competitor_news, opportunity, or neutral. Also draft a brief response if it's a mention of ScoreMyPrompt."
+              },
+              {
+                "role": "user",
+                "content": "Title: {{ $json.title }}\nContent: {{ $json.contentSnippet }}\nSource: {{ $json.link }}\n\nOutput JSON: { \"classification\": \"...\", \"sentiment\": \"positive|neutral|negative\", \"priority\": \"high|medium|low\", \"suggested_response\": \"...\" }"
+              }
+            ],
+            "temperature": 0.3,
+            "max_tokens": 500
+          }
+        }
+      },
+      "name": "Groq: Classify & Draft Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 300],
+      "typeVersion": 4,
+      "notes": "Tier 1: Groq classifies mention sentiment + drafts response"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.priority }}",
+              "value2": "high",
+              "operation": "equals"
+            }
+          ]
+        }
+      },
+      "name": "Filter High Priority",
+      "type": "n8n-nodes-base.filter",
+      "position": [900, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq",
+        "method": "POST"
+      },
+      "name": "Log to Mentions Sheet",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 400],
+      "typeVersion": 4,
+      "notes": "Logs all mentions to Google Sheets 'Mentions' tab for tracking"
+    },
+    {
+      "parameters": {
+        "to": "team@scoremyprompt.com",
+        "subject": "🔔 [{{ $json.priority }}] {{ $json.classification }}: {{ $json.title }}",
+        "text": "New mention detected!\n\nClassification: {{ $json.classification }}\nSentiment: {{ $json.sentiment }}\nPriority: {{ $json.priority }}\nSource: {{ $json.link }}\n\nSuggested Response:\n{{ $json.suggested_response }}\n\n—\nScoreMyPrompt Mention Monitor"
+      },
+      "name": "Email Alert: High Priority",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [1120, 200],
+      "typeVersion": 2,
+      "notes": "Email alert for high-priority mentions (direct mentions, negative sentiment)"
+    }
+  ],
+  "connections": {
+    "Every 4 Hours": {
+      "main": [
+        [
+          { "node": "Google Alerts RSS: ScoreMyPrompt", "type": "main", "index": 0 },
+          { "node": "Google Alerts RSS: Competitors", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Google Alerts RSS: ScoreMyPrompt": { "main": [[{ "node": "Groq: Classify & Draft Response", "type": "main", "index": 0 }]] },
+    "Google Alerts RSS: Competitors": { "main": [[{ "node": "Groq: Classify & Draft Response", "type": "main", "index": 0 }]] },
+    "Groq: Classify & Draft Response": {
+      "main": [
+        [
+          { "node": "Filter High Priority", "type": "main", "index": 0 },
+          { "node": "Log to Mentions Sheet", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Filter High Priority": { "main": [[{ "node": "Email Alert: High Priority", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "WF-3: Brand & Competitor Mention Monitor. Google Alerts RSS → Groq classification → Email alerts for high-priority mentions. Logs all mentions to Google Sheets.",
+    "templateId": "smp-wf-3"
+  }
+}

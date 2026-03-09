@@ -86,7 +86,7 @@ describe('GET /api/history', () => {
     // data query
     mockRange.mockResolvedValueOnce({
       data: [
-        { id: '1', created_at: '2024-01-15T00:00:00Z', prompt_text: 'Test prompt', overall_score: 75, grade: 'B', job_role: 'Marketing', result_json: null },
+        { id: '1', created_at: '2024-01-15T00:00:00Z', prompt_preview: 'Test prompt', overall_score: 75, grade: 'B', job_role: 'Marketing', result_json: null },
       ],
       error: null,
     });

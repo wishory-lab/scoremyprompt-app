@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { AppError, errorResponse } from '@/app/lib/errors';
+import { logger } from '@/app/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
 
     if (!portalResponse.ok) {
       const errorData = await portalResponse.json();
-      console.error('Stripe API error:', errorData);
+      logger.error('Stripe API error', { error: JSON.stringify(errorData) });
       throw new AppError('Failed to create portal session', 'STRIPE_ERROR', portalResponse.status);
     }
 
@@ -60,7 +61,7 @@ export async function POST(request: Request) {
     return Response.json({ url: session.url }, { status: 200 });
   } catch (error) {
     if (error instanceof AppError) return errorResponse(error);
-    console.error('Portal error:', error);
+    logger.error('Portal error', { error: String(error) });
     return errorResponse(error as Error);
   }
 }

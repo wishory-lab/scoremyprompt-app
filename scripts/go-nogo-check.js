@@ -175,7 +175,7 @@ async function check3_PostHog() {
   try {
     const analyticsPath = path.join(__dirname, '..', 'app', 'lib', 'analytics.ts');
     const content = fs.readFileSync(analyticsPath, 'utf8');
-    const requiredEvents = ['grade_started', 'grade_completed', 'score_shared', 'waitlist_signup', 'pro_clicked'];
+    const requiredEvents = ['grade_started', 'grade_completed', 'score_shared', 'waitlist_signup', 'pro_clicked', 'signup_completed', 'return_analysis', 'pro_subscribed', 'viral_referral', 'newsletter_signup'];
     for (const event of requiredEvents) {
       if (content.includes(event)) {
         log('pass', `Funnel event: ${event} tracked`);

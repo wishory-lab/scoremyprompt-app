@@ -62,6 +62,11 @@ export async function GET() {
       // Hide version and environment in production
       ...(isProduction ? {} : { version: '1.0.0', environment: process.env.NODE_ENV }),
     },
-    { status: statusCode }
+    {
+      status: statusCode,
+      headers: {
+        'Cache-Control': 'no-cache, max-age=0, must-revalidate',
+      },
+    }
   );
 }

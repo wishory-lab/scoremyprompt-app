@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Footer from '../../components/Footer';
+import { trackProSubscribed } from '@/app/lib/analytics';
 
 declare global {
   interface Window {
@@ -25,7 +27,14 @@ const FEATURES = [
 ];
 
 export default function ProSuccessPage() {
+  const searchParams = useSearchParams();
+
   useEffect(() => {
+    // Track Pro subscription conversion
+    const plan = searchParams.get('plan') || 'pro_monthly';
+    const source = searchParams.get('source') || 'pricing_page';
+    trackProSubscribed({ plan, source });
+
     // Trigger confetti animation on mount
     const triggerConfetti = () => {
       if (typeof window !== 'undefined' && window.confetti) {
@@ -41,7 +50,7 @@ export default function ProSuccessPage() {
     const timer = setTimeout(triggerConfetti, 500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [searchParams]);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">

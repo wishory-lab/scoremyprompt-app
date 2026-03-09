@@ -106,7 +106,7 @@ describe('POST /api/export', () => {
         overall_score: 85,
         grade: 'A',
         job_role: 'Marketing',
-        prompt_text: 'Test prompt for export',
+        prompt_preview: 'Test prompt for export',
         result_json: {
           dimensions: {
             precision: { score: 18, maxScore: 20, feedback: 'Good precision' },

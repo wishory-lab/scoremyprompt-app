@@ -1,0 +1,146 @@
+{
+  "name": "WF-4: Weekly Newsletter via Resend",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 9 * * 2" }]
+        }
+      },
+      "name": "Every Tuesday 9AM EST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1,
+      "notes": "Weekly newsletter send: Tuesday 9AM EST"
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:json&sheet=RSS_Raw",
+        "options": {}
+      },
+      "name": "Read Weekly RSS Digest",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 200],
+      "typeVersion": 4,
+      "notes": "Gets top 5-7 articles from RSS_Raw sheet (filtered by last 7 days)"
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:json&sheet=Content_Calendar",
+        "options": {}
+      },
+      "name": "Read This Week's Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 400],
+      "typeVersion": 4,
+      "notes": "Gets published content from this week for 'In Case You Missed It' section"
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.GROQ_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "body": {
+          "json": {
+            "model": "llama-3.3-70b-versatile",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You write the weekly newsletter for ScoreMyPrompt, an AI prompt grading tool. Tone: friendly, expert, concise. The newsletter has 4 sections: 1) Prompt Tip of the Week, 2) Top AI News (3-5 items), 3) In Case You Missed It (our content), 4) Challenge (link to scoremyprompt.com/challenge)."
+              },
+              {
+                "role": "user",
+                "content": "Generate this week's newsletter.\n\nRSS articles this week:\n{{ $json.articles }}\n\nOur published content:\n{{ $json.our_content }}\n\nOutput as JSON: { \"subject\": \"...\", \"preview_text\": \"...\", \"tip_title\": \"...\", \"tip_body\": \"...\", \"news_items\": [...], \"our_content_items\": [...], \"challenge_text\": \"...\" }"
+              }
+            ],
+            "temperature": 0.7,
+            "max_tokens": 2000
+          }
+        }
+      },
+      "name": "Groq: Draft Newsletter",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 300],
+      "typeVersion": 4,
+      "notes": "Tier 1: Groq 70B drafts newsletter from RSS digest + our content"
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq",
+        "method": "POST"
+      },
+      "name": "Save Draft to Sheets",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 200],
+      "typeVersion": 4,
+      "notes": "Save newsletter draft to 'Newsletter_Drafts' tab for review"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SCOREMYPROMPT_URL }}/api/newsletter/send",
+        "method": "POST",
+        "headers": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.SCOREMYPROMPT_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "body": {
+          "json": {
+            "subject": "={{ $json.subject }}",
+            "preview_text": "={{ $json.preview_text }}",
+            "html_content": "={{ $json.html_content }}",
+            "send_now": false
+          }
+        }
+      },
+      "name": "Queue via App API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 400],
+      "typeVersion": 4,
+      "notes": "Sends to ScoreMyPrompt /api/newsletter/send endpoint (Resend). Set send_now=true to send immediately, false to queue for manual review."
+    },
+    {
+      "parameters": {
+        "to": "team@scoremyprompt.com",
+        "subject": "📨 Newsletter Draft Ready: {{ $json.subject }}",
+        "text": "Weekly newsletter draft is ready for review.\n\nSubject: {{ $json.subject }}\nPreview: {{ $json.preview_text }}\n\n→ Review in Google Sheets: Newsletter_Drafts tab\n→ Or approve via API to send"
+      },
+      "name": "Notify: Draft Ready",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [1120, 300],
+      "typeVersion": 2
+    }
+  ],
+  "connections": {
+    "Every Tuesday 9AM EST": {
+      "main": [
+        [
+          { "node": "Read Weekly RSS Digest", "type": "main", "index": 0 },
+          { "node": "Read This Week's Content", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Read Weekly RSS Digest": { "main": [[{ "node": "Groq: Draft Newsletter", "type": "main", "index": 0 }]] },
+    "Read This Week's Content": { "main": [[{ "node": "Groq: Draft Newsletter", "type": "main", "index": 0 }]] },
+    "Groq: Draft Newsletter": {
+      "main": [
+        [
+          { "node": "Save Draft to Sheets", "type": "main", "index": 0 },
+          { "node": "Queue via App API", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Queue via App API": { "main": [[{ "node": "Notify: Draft Ready", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "WF-4: Weekly Newsletter. Groq drafts from RSS digest + our content → Saves draft to Sheets → Queues via Resend API. Human reviews before final send.",
+    "templateId": "smp-wf-4"
+  }
+}

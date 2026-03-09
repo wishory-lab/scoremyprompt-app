@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { logger } from './logger';
 
 // Client-side Supabase (public, anon key)
 let supabaseClient: SupabaseClient | null = null;
@@ -10,7 +11,7 @@ export function getSupabaseClient(): SupabaseClient | null {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey) {
-    console.warn('Supabase not configured — running without database');
+    logger.warn('Supabase not configured — running without database');
     return null;
   }
 
@@ -24,7 +25,7 @@ export function getSupabaseAdmin(): SupabaseClient | null {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceKey) {
-    console.warn('Supabase admin not configured');
+    logger.warn('Supabase admin not configured');
     return null;
   }
 

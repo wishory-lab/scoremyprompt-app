@@ -18,7 +18,7 @@ SELECT
   a.dim_tailoring,
   a.share_id,
   a.user_id,
-  LEFT(a.prompt_text, 80) AS prompt_preview,
+  a.prompt_preview,
   ROW_NUMBER() OVER (ORDER BY a.overall_score DESC, a.created_at ASC) AS rank
 FROM analyses a
 WHERE a.created_at >= date_trunc('week', now())

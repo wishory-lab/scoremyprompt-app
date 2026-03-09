@@ -58,7 +58,7 @@ const DimensionBar = ({ dimKey, data }: DimensionBarProps) => {
           {data.score}/{meta.maxScore}
         </span>
       </div>
-      <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+      <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden" role="progressbar" aria-valuenow={data.score} aria-valuemin={0} aria-valuemax={meta.maxScore} aria-label={`${meta.label}: ${data.score} out of ${meta.maxScore}`}>
         <div
           className="h-full transition-all duration-500 ease-out rounded-full"
           style={{ width: `${pct}%`, backgroundColor: color }}
@@ -82,7 +82,7 @@ const ScoreCircle = ({ score, grade, size = 120 }: ScoreCircleProps) => {
 
   return (
     <div className="flex flex-col items-center justify-center relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="transform -rotate-90">
+      <svg width={size} height={size} className="transform -rotate-90" role="img" aria-label={`Score ${score} out of 100`}>
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#1e293b" strokeWidth="8" />
         <circle
           cx={size / 2}
@@ -199,7 +199,7 @@ export default function ComparePage() {
         </div>
       </nav>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <section id="main-content" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">Compare Prompts</h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">

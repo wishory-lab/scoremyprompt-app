@@ -1,0 +1,124 @@
+{
+  "name": "WF-6: Internal Data → Content Ideas",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 8 * * 1" }]
+        }
+      },
+      "name": "Weekly Monday 8AM EST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1,
+      "notes": "Weekly internal data analysis for content ideas"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SCOREMYPROMPT_URL }}/api/analytics/weekly-summary",
+        "headers": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.SCOREMYPROMPT_API_KEY }}" }
+          ]
+        }
+      },
+      "name": "Fetch App Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 200],
+      "typeVersion": 4,
+      "notes": "Gets weekly stats: total grades, avg scores, popular job roles, top scoring prompts"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SCOREMYPROMPT_URL }}/api/leaderboard",
+        "options": {}
+      },
+      "name": "Fetch Leaderboard",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 400],
+      "typeVersion": 4,
+      "notes": "Gets current leaderboard for 'Top Prompters' content"
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.GROQ_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "body": {
+          "json": {
+            "model": "llama-3.3-70b-versatile",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a content strategist for ScoreMyPrompt. Generate content ideas from internal app data. Focus on: interesting trends, surprising stats, educational angles, and engagement hooks."
+              },
+              {
+                "role": "user",
+                "content": "Generate 5 content ideas from this week's ScoreMyPrompt data:\n\nWeekly Stats:\n{{ JSON.stringify($json.analytics) }}\n\nLeaderboard:\n{{ JSON.stringify($json.leaderboard) }}\n\nFor each idea, provide:\n1. Title/Hook\n2. Best platform (X, LinkedIn, Blog, YouTube, TikTok)\n3. Content angle\n4. Draft outline (3-4 bullet points)\n\nOutput as JSON array of ideas."
+              }
+            ],
+            "temperature": 0.8,
+            "max_tokens": 2000
+          }
+        }
+      },
+      "name": "Groq: Generate Content Ideas",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 300],
+      "typeVersion": 4,
+      "notes": "Tier 1: Groq 70B analyzes app data → generates 5 content ideas"
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq",
+        "method": "POST"
+      },
+      "name": "Add to Content Calendar",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 200],
+      "typeVersion": 4,
+      "notes": "Adds content ideas to Content Calendar as 'idea' status for review"
+    },
+    {
+      "parameters": {
+        "to": "team@scoremyprompt.com",
+        "subject": "💡 Weekly Content Ideas — {{ $json.ideas_count }} new from app data",
+        "text": "This week's data-driven content ideas:\n\n{{ $json.formatted_ideas }}\n\n━━━━━━━━━━━━━━━━━━━━━━━━\nWeekly Highlights:\n• Total grades this week: {{ $json.total_grades }}\n• Average score: {{ $json.avg_score }}\n• Most popular role: {{ $json.top_role }}\n\nAll ideas added to Content Calendar (status: 'idea').\nReview and promote to 'draft_needed' when ready.\n\n—\nScoreMyPrompt Data Analyst"
+      },
+      "name": "Email: Weekly Ideas",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [900, 400],
+      "typeVersion": 2
+    }
+  ],
+  "connections": {
+    "Weekly Monday 8AM EST": {
+      "main": [
+        [
+          { "node": "Fetch App Analytics", "type": "main", "index": 0 },
+          { "node": "Fetch Leaderboard", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Fetch App Analytics": { "main": [[{ "node": "Groq: Generate Content Ideas", "type": "main", "index": 0 }]] },
+    "Fetch Leaderboard": { "main": [[{ "node": "Groq: Generate Content Ideas", "type": "main", "index": 0 }]] },
+    "Groq: Generate Content Ideas": {
+      "main": [
+        [
+          { "node": "Add to Content Calendar", "type": "main", "index": 0 },
+          { "node": "Email: Weekly Ideas", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "WF-6: Internal Data → Content Ideas. Fetches app analytics + leaderboard weekly → Groq generates 5 data-driven content ideas → adds to Content Calendar. Turns product data into marketing content.",
+    "templateId": "smp-wf-6"
+  }
+}

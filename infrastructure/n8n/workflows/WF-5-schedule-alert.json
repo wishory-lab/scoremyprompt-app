@@ -1,0 +1,94 @@
+{
+  "name": "WF-5: Content Schedule Packet & Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 7 * * *" }]
+        }
+      },
+      "name": "Daily 7AM EST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1,
+      "notes": "Daily schedule packet: wake up to today's content ready"
+    },
+    {
+      "parameters": {
+        "url": "https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:json&sheet=Content_Calendar",
+        "options": {}
+      },
+      "name": "Read Content Calendar",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 300],
+      "typeVersion": 4
+    },
+    {
+      "parameters": {
+        "functionCode": "// Filter today's scheduled posts\nconst today = new Date().toISOString().split('T')[0];\nconst items = $input.all();\nconst todayPosts = items.filter(item => {\n  const postDate = item.json.date?.split('T')[0];\n  return postDate === today;\n});\n\n// Also get upcoming 3 days\nconst upcoming = items.filter(item => {\n  const postDate = new Date(item.json.date);\n  const now = new Date();\n  const diff = (postDate - now) / (1000 * 60 * 60 * 24);\n  return diff > 0 && diff <= 3;\n});\n\nreturn [{\n  json: {\n    today: todayPosts.map(p => p.json),\n    upcoming: upcoming.map(p => p.json),\n    today_count: todayPosts.length,\n    upcoming_count: upcoming.length\n  }\n}];"
+      },
+      "name": "Filter Today + Upcoming",
+      "type": "n8n-nodes-base.function",
+      "position": [680, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.today_count }}",
+              "value2": 0,
+              "operation": "notEqual"
+            }
+          ]
+        }
+      },
+      "name": "Has Posts Today?",
+      "type": "n8n-nodes-base.filter",
+      "position": [900, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "method": "POST",
+        "body": {
+          "json": {
+            "model": "llama3.2:3b",
+            "prompt": "Format this as a brief daily content schedule packet. Include platform, time (EST), and status for each post:\n\n{{ JSON.stringify($json.today) }}\n\nUpcoming 3 days: {{ $json.upcoming_count }} posts scheduled.\n\nKeep it concise, like a morning briefing.",
+            "stream": false
+          }
+        }
+      },
+      "name": "Ollama: Format Packet",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1120, 300],
+      "typeVersion": 4,
+      "notes": "Tier 2: Ollama 3B formats the daily schedule packet (fast, local)"
+    },
+    {
+      "parameters": {
+        "to": "team@scoremyprompt.com",
+        "subject": "📋 Today's Content Packet — {{ $json.today_count }} posts to publish",
+        "text": "{{ $json.formatted_packet }}\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n🔜 Coming up: {{ $json.upcoming_count }} posts in next 3 days\n\n⏰ Remember: Post natively on each platform at the scheduled time.\n   Copy-paste from Google Sheets Content Calendar.\n\n—\nScoreMyPrompt Packing Assistant"
+      },
+      "name": "Email: Daily Packet",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [1340, 300],
+      "typeVersion": 2
+    }
+  ],
+  "connections": {
+    "Daily 7AM EST": { "main": [[{ "node": "Read Content Calendar", "type": "main", "index": 0 }]] },
+    "Read Content Calendar": { "main": [[{ "node": "Filter Today + Upcoming", "type": "main", "index": 0 }]] },
+    "Filter Today + Upcoming": { "main": [[{ "node": "Has Posts Today?", "type": "main", "index": 0 }]] },
+    "Has Posts Today?": { "main": [[{ "node": "Ollama: Format Packet", "type": "main", "index": 0 }]] },
+    "Ollama: Format Packet": { "main": [[{ "node": "Email: Daily Packet", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "WF-5: Daily Content Schedule Packet. Reads Content Calendar → filters today's posts → Ollama formats briefing → emails you a morning packet. Packing Assistant model: you publish natively.",
+    "templateId": "smp-wf-5"
+  }
+}

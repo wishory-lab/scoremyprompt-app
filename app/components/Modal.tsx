@@ -100,6 +100,7 @@ export default function Modal({
     <div
       className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      aria-hidden="false"
     >
       <div
         ref={modalRef}

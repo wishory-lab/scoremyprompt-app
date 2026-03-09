@@ -19,6 +19,14 @@ export const metadata: Metadata = {
     languages: {
       en: 'https://scoremyprompt.com',
       ko: 'https://scoremyprompt.com?lang=ko',
+      ja: 'https://scoremyprompt.com?lang=ja',
+      'zh-CN': 'https://scoremyprompt.com?lang=zh-CN',
+      'zh-TW': 'https://scoremyprompt.com?lang=zh-TW',
+      es: 'https://scoremyprompt.com?lang=es',
+      fr: 'https://scoremyprompt.com?lang=fr',
+      de: 'https://scoremyprompt.com?lang=de',
+      pt: 'https://scoremyprompt.com?lang=pt',
+      hi: 'https://scoremyprompt.com?lang=hi',
     },
   },
   robots: {

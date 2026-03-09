@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1a"/>
+      <stop offset="40%" stop-color="#1a1145"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="ac2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="70%" cy="40%" r="35%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="30%" cy="60%" r="30%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="2560" height="1440" fill="url(#bg2)"/>
+  <rect width="2560" height="1440" fill="url(#glow1)"/>
+  <rect width="2560" height="1440" fill="url(#glow2)"/>
+
+  <!-- Safe area guide (TV: 1546x423 centered) — content within this -->
+  <!-- Center block -->
+  <g transform="translate(1280, 720)">
+    <!-- Logo -->
+    <rect x="-350" y="-100" width="100" height="100" rx="20" fill="url(#ac2)"/>
+    <text x="-300" y="-35" text-anchor="middle" font-family="system-ui,sans-serif" font-size="60" font-weight="800" fill="white">S</text>
+
+    <!-- Brand name -->
+    <text x="-230" y="-35" font-family="system-ui,sans-serif" font-size="60" font-weight="800" fill="white">ScoreMyPrompt</text>
+
+    <!-- Tagline -->
+    <text x="0" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" font-weight="500" fill="#94a3b8">AI Prompt Grading for Professionals</text>
+
+    <!-- PROMPT badges -->
+    <g transform="translate(-165, 60)">
+      <rect x="0" y="0" width="48" height="48" rx="10" fill="#3b82f620" stroke="#3b82f640" stroke-width="1"/>
+      <text x="24" y="32" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#60a5fa">P</text>
+      <rect x="60" y="0" width="48" height="48" rx="10" fill="#3b82f620" stroke="#3b82f640" stroke-width="1"/>
+      <text x="84" y="32" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#60a5fa">R</text>
+      <rect x="120" y="0" width="48" height="48" rx="10" fill="#8b5cf620" stroke="#8b5cf640" stroke-width="1"/>
+      <text x="144" y="32" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#a78bfa">O</text>
+      <rect x="180" y="0" width="48" height="48" rx="10" fill="#8b5cf620" stroke="#8b5cf640" stroke-width="1"/>
+      <text x="204" y="32" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#a78bfa">M</text>
+      <rect x="240" y="0" width="48" height="48" rx="10" fill="#6366f120" stroke="#6366f140" stroke-width="1"/>
+      <text x="264" y="32" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#818cf8">S</text>
+      <rect x="300" y="0" width="48" height="48" rx="10" fill="#6366f120" stroke="#6366f140" stroke-width="1"/>
+      <text x="324" y="32" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#818cf8">T</text>
+    </g>
+
+    <!-- URL -->
+    <text x="0" y="150" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" font-weight="600" fill="#8b5cf6">scoremyprompt.com</text>
+  </g>
+</svg>

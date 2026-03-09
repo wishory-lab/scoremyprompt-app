@@ -1,9 +1,10 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { getSupabaseClient } from '@/app/lib/supabase';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 import type { Tier } from '@/app/types';
+import { trackSignupCompleted } from '@/app/lib/analytics';
 
 interface AuthContextValue {
   user: User | null;
@@ -36,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
+  const hasTrackedSignup = useRef(false);
 
   useEffect(() => {
     if (!supabase) {
@@ -59,10 +61,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
         setUser(session?.user ?? null);
         if (session?.user) {
           fetchTier(session.user.id);
+          // Track signup completion for new sign-ins (magic link or OAuth)
+          if (event === 'SIGNED_IN' && !hasTrackedSignup.current) {
+            hasTrackedSignup.current = true;
+            const method = session.user.app_metadata?.provider || 'email';
+            trackSignupCompleted({ method });
+          }
         } else {
           setTier('guest');
           setLoading(false);

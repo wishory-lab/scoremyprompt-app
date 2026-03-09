@@ -1,31 +1,36 @@
+'use client';
+
+import { useTranslation } from '@/app/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Footer() {
+  const t = useTranslation();
+
   return (
     <footer className="border-t border-border py-8 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex flex-wrap items-center gap-4 text-sm">
             <p className="text-gray-400">
               &copy; {new Date().getFullYear()} ScoreMyPrompt
             </p>
-            <span className="text-gray-600 hidden sm:inline">·</span>
+            <span className="text-gray-600 hidden sm:inline">&middot;</span>
             <a href="/guide" className="text-gray-500 hover:text-white transition-colors">
-              Guide
+              {t.footer.guides}
             </a>
             <a href="/changelog" className="text-gray-500 hover:text-white transition-colors">
               Changelog
             </a>
             <a href="/privacy" className="text-gray-500 hover:text-white transition-colors">
-              Privacy
+              {t.footer.privacy}
             </a>
             <a href="/terms" className="text-gray-500 hover:text-white transition-colors">
-              Terms
+              {t.footer.terms}
             </a>
             <a href="/security-policy" className="text-gray-500 hover:text-white transition-colors">
               Security
             </a>
-            <span className="text-gray-600 hidden sm:inline">·</span>
+            <span className="text-gray-600 hidden sm:inline">&middot;</span>
             <LanguageSwitcher />
           </div>
           <div className="flex items-center gap-4">

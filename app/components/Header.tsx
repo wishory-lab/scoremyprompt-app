@@ -3,20 +3,22 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from '@/app/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
-
-const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/guide', label: 'Guide' },
-  { href: '/templates', label: 'Templates' },
-  { href: '/guides', label: 'Articles' },
-  { href: '/pricing', label: 'Pricing' },
-];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const t = useTranslation();
+
+  const NAV_LINKS = [
+    { href: '/', label: t.common.appName === 'ScoreMyPrompt' ? 'Home' : 'Home' },
+    { href: '/guide', label: t.footer.guides },
+    { href: '/templates', label: t.nav.templates },
+    { href: '/guides', label: t.examples.title.includes('Example') ? 'Articles' : t.examples.title },
+    { href: '/pricing', label: t.nav.pricing },
+  ];
 
   // Close menu on route change
   useEffect(() => {
@@ -141,7 +143,7 @@ export default function Header() {
               Changelog
             </Link>
             <Link href="/dashboard" className="px-4 py-3 text-sm text-gray-500 hover:text-gray-300 rounded-xl hover:bg-white/5 transition-colors">
-              Dashboard
+              {t.nav.dashboard}
             </Link>
 
             <hr className="border-white/5 my-3" />

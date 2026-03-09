@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
+import { logger } from '@/app/lib/logger';
 
 export const runtime = 'nodejs';
 
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
   try {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!webhookSecret) {
-      console.error('STRIPE_WEBHOOK_SECRET not configured');
+      logger.error('STRIPE_WEBHOOK_SECRET not configured');
       return Response.json({ received: true }, { status: 200 });
     }
 
@@ -32,12 +33,12 @@ export async function POST(request: Request) {
     const signature = request.headers.get('stripe-signature');
 
     if (!signature) {
-      console.warn('Missing Stripe signature header');
+      logger.warn('Missing Stripe signature header');
       return Response.json({ received: true }, { status: 200 });
     }
 
     if (!verifyStripeSignature(rawBody, signature, webhookSecret)) {
-      console.warn('Invalid Stripe signature');
+      logger.warn('Invalid Stripe signature');
       return Response.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
 
     const supabase = getSupabaseAdmin();
     if (!supabase) {
-      console.error('Supabase not configured');
+      logger.error('Supabase not configured');
       return Response.json({ received: true }, { status: 200 });
     }
 
@@ -67,8 +68,8 @@ export async function POST(request: Request) {
             })
             .eq('id', userId);
 
-          if (error) console.error('Error updating user profile:', error);
-          else console.log(`User ${userId} upgraded to pro tier`);
+          if (error) logger.error('Error updating user profile', { error: error.message });
+          else logger.info(`User ${userId} upgraded to pro tier`);
         }
         break;
       }
@@ -85,15 +86,15 @@ export async function POST(request: Request) {
             .single();
 
           if (findError) {
-            console.error('Error finding user by Stripe customer ID:', findError);
+            logger.error('Error finding user by Stripe customer ID', { error: findError.message });
           } else if (user) {
             const { error: updateError } = await supabase
               .from('user_profiles')
               .update({ tier: 'free', updated_at: new Date().toISOString() })
               .eq('id', user.id);
 
-            if (updateError) console.error('Error downgrading user:', updateError);
-            else console.log(`User ${user.id} downgraded to free tier`);
+            if (updateError) logger.error('Error downgrading user', { error: updateError.message });
+            else logger.info(`User ${user.id} downgraded to free tier`);
           }
         }
         break;
@@ -111,19 +112,19 @@ export async function POST(request: Request) {
             .single();
 
           if (!findError && user) {
-            console.warn(`Payment failed for user ${user.id} (${user.email}). Invoice: ${invoice.id}`);
+            logger.warn(`Payment failed for user ${user.id} (${user.email}). Invoice: ${invoice.id}`);
           }
         }
         break;
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        logger.info(`Unhandled event type: ${event.type}`);
     }
 
     return Response.json({ received: true }, { status: 200 });
   } catch (error) {
-    console.error('Webhook error:', error);
+    logger.error('Webhook error', { error: String(error) });
     return Response.json({ received: true }, { status: 200 });
   }
 }

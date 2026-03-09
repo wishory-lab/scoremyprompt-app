@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { trackWaitlistSignup } from '@/app/lib/analytics';
+import { trackWaitlistSignup, trackNewsletterSignup } from '@/app/lib/analytics';
 
 export default function Waitlist({ source = 'homepage_newsletter' }: { source?: string }) {
   const [email, setEmail] = useState('');
@@ -44,6 +44,7 @@ export default function Waitlist({ source = 'homepage_newsletter' }: { source?: 
       }
 
       trackWaitlistSignup({ source });
+      trackNewsletterSignup({ source });
       setSubmitted(true);
       setEmail('');
 

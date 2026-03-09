@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { AppError, errorResponse } from '@/app/lib/errors';
+import { logger } from '@/app/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
 
     if (!checkoutResponse.ok) {
       const errorData = await checkoutResponse.json();
-      console.error('Stripe API error:', errorData);
+      logger.error('Stripe API error', { error: JSON.stringify(errorData) });
       throw new AppError('Failed to create checkout session', 'STRIPE_ERROR', checkoutResponse.status);
     }
 
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
     return Response.json({ url: session.url }, { status: 200 });
   } catch (error) {
     if (error instanceof AppError) return errorResponse(error);
-    console.error('Checkout error:', error);
+    logger.error('Checkout error', { error: String(error) });
     return errorResponse(error as Error);
   }
 }
