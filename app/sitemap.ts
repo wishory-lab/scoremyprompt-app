@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/pricing`, lastModified: core, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/guides`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/templates`, lastModified: core, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/leaderboard`, lastModified: core, changeFrequency: 'daily', priority: 0.7 },
+    // leaderboard: will be added when page is implemented
     { url: `${baseUrl}/challenge`, lastModified: core, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/compare`, lastModified: core, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/changelog`, lastModified: core, changeFrequency: 'monthly', priority: 0.5 },

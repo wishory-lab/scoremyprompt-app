@@ -18,6 +18,9 @@ export default function Footer() {
             <a href="/guide" className="text-gray-500 hover:text-white transition-colors">
               {t.footer.guides}
             </a>
+            <a href="/guides" className="text-gray-500 hover:text-white transition-colors">
+              Articles
+            </a>
             <a href="/changelog" className="text-gray-500 hover:text-white transition-colors">
               Changelog
             </a>

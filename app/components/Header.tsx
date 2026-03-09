@@ -13,10 +13,9 @@ export default function Header() {
   const t = useTranslation();
 
   const NAV_LINKS = [
-    { href: '/', label: t.common.appName === 'ScoreMyPrompt' ? 'Home' : 'Home' },
+    { href: '/', label: 'Home' },
     { href: '/guide', label: t.footer.guides },
     { href: '/templates', label: t.nav.templates },
-    { href: '/guides', label: t.examples.title.includes('Example') ? 'Articles' : t.examples.title },
     { href: '/pricing', label: t.nav.pricing },
   ];
 
@@ -139,11 +138,11 @@ export default function Header() {
             <hr className="border-white/5 my-3" />
 
             {/* Additional links */}
+            <Link href="/guides" className="px-4 py-3 text-sm text-gray-500 hover:text-gray-300 rounded-xl hover:bg-white/5 transition-colors">
+              Articles
+            </Link>
             <Link href="/changelog" className="px-4 py-3 text-sm text-gray-500 hover:text-gray-300 rounded-xl hover:bg-white/5 transition-colors">
               Changelog
-            </Link>
-            <Link href="/dashboard" className="px-4 py-3 text-sm text-gray-500 hover:text-gray-300 rounded-xl hover:bg-white/5 transition-colors">
-              {t.nav.dashboard}
             </Link>
 
             <hr className="border-white/5 my-3" />
