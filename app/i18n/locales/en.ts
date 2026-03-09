@@ -228,5 +228,5 @@ const en = {
   },
 } as const;
 
-export type Locale = typeof en;
+export type Locale = Record<string, any>;
 export default en;
