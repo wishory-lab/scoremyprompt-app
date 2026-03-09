@@ -1,5 +1,11 @@
-import * as Sentry from '@sentry/nextjs';
-import { headers } from 'next/headers';
+/**
+ * Universal logger that works in both Server and Client components.
+ *
+ * - Server-side: attempts to read X-Request-Id from headers and forward
+ *   errors to Sentry (lazy-loaded to avoid importing next/headers at module
+ *   level, which breaks client bundles).
+ * - Client-side: plain structured console logging.
+ */
 
 type LogLevel = 'info' | 'warn' | 'error';
 
@@ -11,49 +17,72 @@ interface LogEntry {
   timestamp: string;
 }
 
+const isServer = typeof window === 'undefined';
+
 /**
  * Try to read the X-Request-Id header set by middleware.
- * Returns undefined if called outside a request context (e.g. build time).
+ * Only works server-side; returns undefined on the client.
  */
-function getRequestId(): string | undefined {
+async function getRequestId(): Promise<string | undefined> {
+  if (!isServer) return undefined;
   try {
+    // Dynamic import so next/headers is never bundled into client chunks
+    const { headers } = await import('next/headers');
     const headerStore = headers();
     return headerStore.get('x-request-id') || undefined;
   } catch {
-    // Not in a request context — return undefined
     return undefined;
   }
 }
 
-function log(level: LogLevel, message: string, context?: Record<string, unknown>) {
-  const requestId = getRequestId();
+/**
+ * Forward error to Sentry (server-side only, lazy-loaded).
+ */
+async function captureToSentry(message: string, context?: Record<string, unknown>, requestId?: string) {
+  if (!isServer) return;
+  try {
+    const Sentry = await import('@sentry/nextjs');
+    Sentry.captureMessage(message, {
+      level: 'error',
+      extra: { ...context, requestId },
+    });
+  } catch {
+    // Sentry not initialized — silent fallback
+  }
+}
 
-  const entry: LogEntry = {
-    level,
-    message,
-    ...(requestId && { requestId }),
-    timestamp: new Date().toISOString(),
-    ...(context && { context }),
+function log(level: LogLevel, message: string, context?: Record<string, unknown>) {
+  // Fire-and-forget async work (requestId + Sentry)
+  const work = async () => {
+    const requestId = await getRequestId();
+
+    const entry: LogEntry = {
+      level,
+      message,
+      ...(requestId && { requestId }),
+      timestamp: new Date().toISOString(),
+      ...(context && { context }),
+    };
+
+    const output = JSON.stringify(entry);
+
+    if (level === 'error') {
+      console.error(output);
+      await captureToSentry(message, context, requestId);
+    } else if (level === 'warn') {
+      console.warn(output);
+    } else {
+      console.log(output);
+    }
   };
 
-  const output = JSON.stringify(entry);
-
-  if (level === 'error') {
-    console.error(output);
-    // Forward errors to Sentry when configured
-    try {
-      Sentry.captureMessage(message, {
-        level: 'error',
-        extra: { ...context, requestId },
-      });
-    } catch {
-      // Sentry not initialized — silent fallback
-    }
-  } else if (level === 'warn') {
-    console.warn(output);
-  } else {
-    console.log(output);
-  }
+  work().catch(() => {
+    // Fallback: plain console log if anything goes wrong
+    console[level === 'error' ? 'error' : level === 'warn' ? 'warn' : 'log'](
+      `[${level.toUpperCase()}] ${message}`,
+      context || ''
+    );
+  });
 }
 
 export const logger = {
