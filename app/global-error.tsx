@@ -22,21 +22,39 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                 Ref: {error.digest}
               </p>
             )}
-            <button
-              onClick={reset}
-              style={{
-                backgroundColor: '#6474ff',
-                color: 'white',
-                border: 'none',
-                padding: '0.5rem 1.5rem',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-              }}
-            >
-              Try Again
-            </button>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+              <button
+                onClick={reset}
+                style={{
+                  backgroundColor: '#6474ff',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.5rem 1.5rem',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                }}
+              >
+                Try Again
+              </button>
+              <a
+                href="/"
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#94a3b8',
+                  border: '1px solid #334155',
+                  padding: '0.5rem 1.5rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                }}
+              >
+                Go Home
+              </a>
+            </div>
           </div>
         </div>
       </body>

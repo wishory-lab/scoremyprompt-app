@@ -10,11 +10,20 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} ScoreMyPrompt
             </p>
             <span className="text-gray-600 hidden sm:inline">·</span>
+            <a href="/guide" className="text-gray-500 hover:text-white transition-colors">
+              Guide
+            </a>
+            <a href="/changelog" className="text-gray-500 hover:text-white transition-colors">
+              Changelog
+            </a>
             <a href="/privacy" className="text-gray-500 hover:text-white transition-colors">
               Privacy
             </a>
             <a href="/terms" className="text-gray-500 hover:text-white transition-colors">
               Terms
+            </a>
+            <a href="/security-policy" className="text-gray-500 hover:text-white transition-colors">
+              Security
             </a>
             <span className="text-gray-600 hidden sm:inline">·</span>
             <LanguageSwitcher />

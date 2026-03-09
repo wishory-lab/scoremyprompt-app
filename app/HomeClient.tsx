@@ -2,15 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { useAuth } from './components/AuthProvider';
 import dynamic from 'next/dynamic';
 import AnalysisLoading from './components/AnalysisLoading';
 import PromptQualityIndicator from './components/PromptQualityIndicator';
 import type { JobRole } from './types';
 import { TEMPLATES } from './templates/data';
-import { trackJobRoleSelected, trackPromptSubmitted, trackGradeStarted, trackDemoClick, trackSignupInitiated } from './lib/analytics';
-import { VALIDATION, ERRORS, LOADING, AUTH, PLACEHOLDERS, HINTS, CTA } from './constants/messages';
+import { trackJobRoleSelected, trackPromptSubmitted, trackGradeStarted, trackDemoClick } from './lib/analytics';
+import { VALIDATION, ERRORS, PLACEHOLDERS, HINTS } from './constants/messages';
 
 const AdBanner = dynamic(() => import('./components/AdBanner'), { ssr: false });
 const DemoMode = dynamic(() => import('./components/DemoMode'), { ssr: false });
@@ -45,7 +44,7 @@ const JOB_ROLES: JobRole[] = ['Marketing', 'Design', 'Product', 'Finance', 'Free
 export default function HomeClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, tier, supabase, setShowAuth, setAuthMessage, signOut } = useAuth();
+  const { supabase } = useAuth();
   const [prompt, setPrompt] = useState('');
   const [jobRole, setJobRole] = useState<JobRole>('Marketing');
   const [loading, setLoading] = useState(false);
@@ -152,61 +151,9 @@ export default function HomeClient() {
   };
 
   return (
-    <main id="main-content" className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
-      {/* Navigation */}
-      <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">S</span>
-            </div>
-            <h1 className="text-xl font-bold text-white">ScoreMyPrompt</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/templates" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-              Templates
-            </Link>
-            <Link href="/pricing" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-              Pricing
-            </Link>
-            {user ? (
-              <div className="flex items-center gap-3">
-                <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-                  Dashboard
-                </Link>
-                {tier === 'pro' && (
-                  <Link href="/bulk" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-                    Bulk
-                  </Link>
-                )}
-                <span className="text-sm text-gray-300 hidden sm:block">
-                  {user.email?.split('@')[0]}
-                </span>
-                <button
-                  onClick={signOut}
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => {
-                  setAuthMessage(AUTH.SIGN_IN_FEATURES);
-                  setShowAuth(true);
-                  trackSignupInitiated({ source: 'homepage_nav' });
-                }}
-                className="text-sm px-4 py-1.5 bg-primary/20 border border-primary/40 text-primary rounded-lg hover:bg-primary/30 transition-colors"
-              >
-                Sign In
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
-
+    <main id="main-content" className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark pt-14">
       {/* Hero Section */}
-      <section id="main-content" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div className="text-center mb-8 animate-fade-in">
           <h2 className="text-fluid-hero font-bold mb-6">
             Write better prompts.{' '}
