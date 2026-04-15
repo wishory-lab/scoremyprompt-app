@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useCookieConsent } from './CookieConsent';
 
 declare global {
   interface Window {
@@ -18,6 +19,7 @@ interface AdBannerProps {
 
 export default function AdBanner({ slot = 'leaderboard', className = '', isPro = false }: AdBannerProps) {
   const [isClient, setIsClient] = useState(false);
+  const { isAnalyticsAllowed, hasConsented } = useCookieConsent();
 
   const adSlots = {
     leaderboard: process.env.NEXT_PUBLIC_ADSENSE_SLOT_LEADERBOARD || '',
@@ -26,7 +28,8 @@ export default function AdBanner({ slot = 'leaderboard', className = '', isPro =
 
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
   const hasValidSlot = !!adSlots[slot];
-  const shouldShow = isClient && adsenseId && !isPro && hasValidSlot;
+  // Require explicit "Accept all" consent before loading AdSense (GDPR).
+  const shouldShow = isClient && adsenseId && !isPro && hasValidSlot && isAnalyticsAllowed;
 
   useEffect(() => {
     setIsClient(true);
@@ -45,6 +48,20 @@ export default function AdBanner({ slot = 'leaderboard', className = '', isPro =
 
   if (!isClient || !adsenseId || isPro) {
     return null;
+  }
+
+  // Show a neutral placeholder instead of AdSense while consent is pending or declined.
+  if (!isAnalyticsAllowed) {
+    const placeholderMsg = hasConsented
+      ? 'Ads disabled — accept all cookies to support free tier.'
+      : 'Ads will load after cookie consent.';
+    return (
+      <div
+        className={`flex items-center justify-center min-h-[90px] rounded-lg border border-border bg-surface/30 text-xs text-gray-500 ${className}`}
+      >
+        {placeholderMsg}
+      </div>
+    );
   }
 
   if (!hasValidSlot) {
