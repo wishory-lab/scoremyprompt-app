@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { trackCookieConsent } from '@/app/lib/analytics';
 
 const CONSENT_KEY = 'smp_cookie_consent';
 type ConsentChoice = 'accepted' | 'rejected' | 'essential-only';
@@ -75,11 +76,13 @@ export default function CookieConsent() {
 
   const handleAccept = useCallback(() => {
     saveConsent('accepted');
+    trackCookieConsent({ choice: 'all' });
     setVisible(false);
   }, []);
 
   const handleEssentialOnly = useCallback(() => {
     saveConsent('essential-only');
+    trackCookieConsent({ choice: 'essential' });
     setVisible(false);
   }, []);
 
