@@ -1,7 +1,7 @@
-// __tests__/api/harness-analyze.test.ts
 /**
  * @jest-environment node
  */
+// __tests__/api/harness-analyze.test.ts
 
 import { POST } from '@/app/api/harness/analyze/route';
 
@@ -73,8 +73,9 @@ describe('/api/harness/analyze', () => {
     });
 
     it('rejects unsupported lang', async () => {
+      // Use unique IP so burst limit from earlier tests doesn't interfere
       const response = await POST(
-        makeRequest({ input: 'x'.repeat(100), lang: 'xx' }),
+        makeRequest({ input: 'x'.repeat(100), lang: 'xx' }, '10.0.0.42'),
       );
       expect(response.status).toBe(400);
     });
