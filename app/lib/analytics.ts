@@ -356,3 +356,50 @@ export function trackBuilderShared({ id }: BuilderSharedEvent): void {
   window.posthog?.capture('builder_shared', event);
   if (!isProd) console.log('[Analytics] builder_shared', event);
 }
+
+// ─── Sprint 3 (Pricing + SEO + Launch) ─────────────────────────────
+interface PricingViewedEvent {
+  tier: 'guest' | 'free' | 'pro';
+  pricingPlan: 'legacy_999' | 'pro_499' | null;
+}
+
+export function trackPricingViewed(evt: PricingViewedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { ...evt, timestamp: new Date().toISOString() };
+  window.posthog?.capture('pricing_viewed', event);
+  if (!isProd) console.log('[Analytics] pricing_viewed', event);
+}
+
+interface GuideViewedEvent {
+  slug: string;
+  locale: string;
+}
+
+export function trackGuideViewed({ slug, locale }: GuideViewedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { slug, locale, timestamp: new Date().toISOString() };
+  window.posthog?.capture('guide_viewed', event);
+  if (!isProd) console.log('[Analytics] guide_viewed', event);
+}
+
+interface CookieConsentEvent {
+  choice: 'all' | 'essential';
+}
+
+export function trackCookieConsent({ choice }: CookieConsentEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { choice, timestamp: new Date().toISOString() };
+  window.posthog?.capture('cookie_consent', event);
+  if (!isProd) console.log('[Analytics] cookie_consent', event);
+}
+
+interface LaunchVisitedEvent {
+  source: 'direct' | 'producthunt' | 'social' | 'unknown';
+}
+
+export function trackLaunchVisited({ source }: LaunchVisitedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { source, timestamp: new Date().toISOString() };
+  window.posthog?.capture('launch_visited', event);
+  if (!isProd) console.log('[Analytics] launch_visited', event);
+}
