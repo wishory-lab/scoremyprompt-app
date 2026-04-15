@@ -532,4 +532,202 @@ export const GUIDES_CONTENT: GuideContent[] = [
       },
     ],
   },
+  {
+    slug: 'harness-101',
+    title: 'Harness Engineering 101: Why AI Setup Matters More Than Your Prompt',
+    description: 'Learn why 95% of AI output quality comes from the setup (harness), not the prompt. A non-developer guide to CLAUDE.md, sub-agents, and the HARNES framework.',
+    readingTime: 6,
+    difficulty: 'Beginner',
+    relatedSlugs: ['claude-md-template', 'sub-agents-explained', 'prompt-vs-harness'],
+    sections: [
+      {
+        heading: 'The 95/5 Rule of AI Output Quality',
+        content: [
+          'Most people believe a great AI result is about writing a clever prompt. The research shows the opposite: the same model produces results ranging from mediocre to expert-level based almost entirely on the context and rules it runs inside. That context is the harness.',
+          'A harness is the set of files, folders, rules, and tools your AI assistant has access to. A bare prompt gives the AI nothing but your words. A harness gives it brand guidelines, sub-agent roles, external data connections, and a standard operating procedure.',
+          'Teams that invest in a harness report 4–10x output quality on the same tasks, with the same AI model, versus teams that rely on raw prompting.',
+        ],
+      },
+      {
+        heading: 'The HARNES Framework (6 Dimensions)',
+        content: [
+          'HARNES is an evaluation framework we built at ScoreMyPrompt to measure the quality of an AI agent setup. Six dimensions, 100 points total.',
+          'H — Hierarchy: folder structure separating context, agents, templates. 15 points.',
+          'A — Agents: sub-agents with distinct roles instead of one monolithic prompt. 20 points.',
+          'R — Routing: explicit "if X, then call Y" rules between agents or tools. 15 points.',
+          'N — Norms: brand voice, tone, and style guidelines loaded from context files. 15 points.',
+          'E — Extensions: external MCPs / APIs / tools connected to the agent. 15 points.',
+          'S — SafeOps: standard operating procedures, permissions, failure loops. 20 points.',
+        ],
+      },
+      {
+        heading: "What Elite Setups Have That Bare Prompts Don't",
+        content: [
+          'A production-ready harness (85+ HARNES score) ships with: at least two sub-agent files, a CLAUDE.md with three conditional routing rules, a brand_guidelines.md with tone examples, at least one external tool connection (e.g., web search), and a documented SafeOps section covering permissions and failure retry.',
+          "You don't have to build all of this by hand. ScoreMyPrompt's Harness Builder generates a production-ready setup in 2 minutes based on five wizard questions.",
+        ],
+      },
+      {
+        heading: 'Where to Go Next',
+        content: [
+          'Score your existing setup to see where you are today: paste your CLAUDE.md into our free Harness Score tool.',
+          "If you're starting from scratch, run the Harness Builder wizard — it outputs a ZIP you can unzip into any project and open with Claude Code.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'claude-md-template',
+    title: 'The Anatomy of a Great CLAUDE.md File (With Template)',
+    description: 'A clear, non-technical walkthrough of what belongs in your CLAUDE.md — the main file that directs your AI agent team. Includes a downloadable template.',
+    readingTime: 7,
+    difficulty: 'Beginner',
+    relatedSlugs: ['harness-101', 'sub-agents-explained', 'mcp-beginners'],
+    sections: [
+      {
+        heading: 'What CLAUDE.md Does',
+        content: [
+          'CLAUDE.md is the operating system for a Claude Code project. When you open a folder containing CLAUDE.md in VS Code, Claude Code reads the file first and uses it as the master rulebook for every action it takes inside that folder.',
+          "The file is plain Markdown. No code. No programming. It's closer to a well-organized employee handbook than to a config file.",
+        ],
+      },
+      {
+        heading: 'The 4 Required Sections',
+        content: [
+          '1. Project Overview — one paragraph explaining what this folder does, for whom, at what cadence.',
+          '2. Folder Map — a bullet list of the sub-folders (/context, /agents, /templates, /data) and what each holds.',
+          '3. Routing Rules — at least two "if X, then call Y" rules that describe how sub-agents hand off work.',
+          '4. Work Rules — constants the AI should always obey: tone requirements, approval checkpoints, brand guardrails.',
+        ],
+      },
+      {
+        heading: 'A Working Template',
+        content: [
+          'Below is a minimal but production-grade CLAUDE.md you can copy as a starting point.',
+          '# [Project Name]\n\n## Project Overview\n[One paragraph: what, for whom, cadence]\n\n## Folder Map\n- /context — brand & business context\n- /agents — sub-agents (research, content, review)\n- /templates — standard output formats\n- /data — CSV inputs\n\n## Routing Rules\n1. If user asks for [X], call research_agent first.\n2. If research returns < 3 sources, loop before content_agent.\n\n## Work Rules\n- All outputs must match /context/brand_guidelines.md tone.\n- Semi-auto mode: confirm before publishing.',
+        ],
+      },
+      {
+        heading: 'Generate Yours in 2 Minutes',
+        content: [
+          'If writing CLAUDE.md from scratch feels intimidating, use the Harness Builder. Answer five questions and you get a complete CLAUDE.md plus sub-agent files as a ZIP.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'sub-agents-explained',
+    title: 'Sub-Agents vs One Big Prompt: Why Division of Labor Beats a Genius Assistant',
+    description: 'Why splitting your AI instructions into specialized sub-agents (researcher, writer, reviewer) beats asking one mega-prompt to do everything.',
+    readingTime: 5,
+    difficulty: 'Beginner',
+    relatedSlugs: ['harness-101', 'claude-md-template'],
+    sections: [
+      {
+        heading: 'The Mega-Prompt Failure Mode',
+        content: [
+          'New users write one giant prompt: "You are a marketing expert that does research, writes content, checks facts, optimizes for SEO, and formats for Instagram." The result is mediocre at everything.',
+          'The reason is simple: large-language models, like humans, lose focus when juggling too many roles in a single context window. Quality drops on the last 3 tasks while the AI satisfies the first 2.',
+        ],
+      },
+      {
+        heading: 'The Sub-Agent Pattern',
+        content: [
+          'Split the work. Each sub-agent is a separate Markdown file describing one role: research_agent.md, content_agent.md, review_agent.md. Each has its own tools, its own output format, its own success criteria.',
+          'The main CLAUDE.md orchestrates: "If the user asks for a weekly newsletter, first call research_agent, then hand its output to content_agent, then hand that to review_agent for fact-check and brand compliance."',
+          'Each agent runs with a small, focused context — and produces better output than the mega-prompt.',
+        ],
+      },
+      {
+        heading: 'Minimum Viable Split for Non-Developers',
+        content: [
+          "You don't need five agents. Start with three: a researcher (gathers sources), a writer (drafts output), a reviewer (fact-checks and brand-checks).",
+          'The Harness Builder wizard creates these three files automatically from your answers. Each file is about 30 lines.',
+        ],
+      },
+      {
+        heading: "Common Objection: Isn't This More Work?",
+        content: [
+          "Upfront, yes — about 10 extra minutes on the first setup. Ongoing, it's far less work: when output quality drops, you tune one agent file instead of rewriting a mega-prompt and losing everything that worked.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'mcp-beginners',
+    title: 'MCP for Non-Developers: What It Is and Why It Makes Your AI 10x More Useful',
+    description: "MCP (Model Context Protocol) is how AI talks to external tools. Here's what it is without the jargon, and which ones are worth connecting first.",
+    readingTime: 5,
+    difficulty: 'Beginner',
+    relatedSlugs: ['harness-101', 'claude-md-template'],
+    sections: [
+      {
+        heading: 'What Is MCP, Really',
+        content: [
+          'MCP (Model Context Protocol) is a standard way for AI assistants to talk to external tools. Think of it as the USB-C port for AI: plug in web search, Google Sheets, Notion, Slack, and the AI can read from and write to each of them.',
+          "Without MCP, the AI knows only what's in its training data and the current conversation. With MCP, it can look up live information, update a spreadsheet, or post to a channel.",
+        ],
+      },
+      {
+        heading: 'Which MCPs to Connect First',
+        content: [
+          'Web search: the single highest-leverage connection. The AI can now cite current sources instead of hallucinating. Most teams start here.',
+          'Google Sheets: turn the AI into a junior analyst that updates your pipeline or content calendar.',
+          'Notion: let the AI save research drafts directly into your workspace.',
+          'Slack: deliver weekly reports or morning briefings where your team already reads.',
+        ],
+      },
+      {
+        heading: 'How Connections Happen (Non-Technical)',
+        content: [
+          "You don't install MCPs like apps from an app store. You list them in CLAUDE.md's Extensions section, add the tool's API key to a .env file (a plain text file the AI reads but never shares), and Claude Code handles the rest.",
+          "The Harness Builder wizard includes a checkbox for each MCP you want. It writes the Extensions section and the .env.example for you.",
+        ],
+      },
+      {
+        heading: 'Safety Considerations',
+        content: [
+          'Never commit .env files to a public folder. Use .env.example with placeholders for sharing. Keep production API keys in Vercel or your password manager, not in the project folder.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'prompt-vs-harness',
+    title: 'Prompt Score vs Harness Score: Which One Should You Focus On?',
+    description: "Two complementary scores for AI practitioners. Here's when a better prompt is the answer, when a better harness is the answer, and how they multiply together.",
+    readingTime: 4,
+    difficulty: 'Beginner',
+    relatedSlugs: ['harness-101', 'how-to-write-better-ai-prompts'],
+    sections: [
+      {
+        heading: 'The Short Answer',
+        content: [
+          'Prompt Score measures how well you phrase a single request. Harness Score measures the environment your AI is running in. You need both.',
+          'Improvement in prompt alone has a ceiling. Improvement in harness removes the ceiling entirely, because it turns a single-shot AI into an accountable agent team.',
+        ],
+      },
+      {
+        heading: 'When to Prioritize Prompt',
+        content: [
+          "You're using ChatGPT or Claude's consumer web app for ad-hoc tasks. The chat window is the entire experience. Here, a well-structured prompt (Precision, Role, Output Format, Mission Context, Structure, Tailoring — our PROMPT framework) is 80% of the outcome.",
+          'There is no folder, no persistent files. Harness is not the leverage point.',
+        ],
+      },
+      {
+        heading: 'When to Prioritize Harness',
+        content: [
+          "You're using Claude Code or running recurring AI workflows — weekly reports, content pipelines, research automation. Here, harness is where you spend effort.",
+          'A single Elite (85+) harness produces better output than 100 tuned one-shot prompts over a quarter — because the harness compounds. Each improvement to CLAUDE.md or a sub-agent file improves every future run.',
+        ],
+      },
+      {
+        heading: 'How They Multiply',
+        content: [
+          'Great harness + bare prompt = good output. Great prompt + no harness = good output. Great harness + great prompt = exceptional output and it scales across your team.',
+          'Score both. Score your prompts with the PROMPT framework, score your setup with the HARNES framework, and ladder both up over time.',
+        ],
+      },
+    ],
+  },
 ];
