@@ -9,6 +9,7 @@ import type { Grade, AnalysisResult, GradeConfig } from '../types';
 import { GRADE_CONFIG as GRADE_CONFIG_CENTRAL } from '../constants';
 import { trackResultViewed, trackGradeCompleted, trackSignupInitiated, trackReturnAnalysis } from '../lib/analytics';
 import { useProfilePrompt } from '../components/ProfilePrompt';
+import { useTranslation } from '../i18n';
 
 // Sub-components (extracted from this monolith)
 import ScoreHero from './components/ScoreHero';
@@ -44,6 +45,7 @@ const GRADE_CONFIG: Record<Grade, ExtendedGradeConfig> = {
 export default function ResultPage() {
   const router = useRouter();
   const { user, tier, supabase, setShowAuth, setAuthMessage } = useAuth();
+  const t = useTranslation();
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
@@ -212,6 +214,19 @@ export default function ResultPage() {
             myGrade={result.grade}
           />
         )}
+
+        {/* Cross-sell to Harness Score (Sprint 1) */}
+        <div className="mt-8 rounded-xl border border-primary/40 bg-primary/5 p-5 text-center">
+          <div className="text-sm text-gray-300">
+            {t.harness.promptCta}
+          </div>
+          <a
+            href="/harness"
+            className="inline-block mt-3 rounded-lg bg-gradient-to-r from-primary to-accent px-5 py-2 text-sm font-semibold text-white"
+          >
+            {t.harness.pageTitle}
+          </a>
+        </div>
 
         {/* Share Section (Desktop + Mobile + Embed) */}
         <ShareSection
