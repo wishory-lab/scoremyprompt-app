@@ -320,3 +320,39 @@ export function trackHarnessUpsellClicked({ tier, total, from }: HarnessUpsellEv
   window.posthog?.capture('harness_upsell_clicked', event);
   if (!isProd) console.log('[Analytics] harness_upsell_clicked', event);
 }
+
+// ─── Harness Builder (Sprint 2) ──────────────────────────────────────
+interface BuilderStartedEvent {
+  tier: 'free' | 'pro';
+}
+
+export function trackBuilderStarted({ tier }: BuilderStartedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, timestamp: new Date().toISOString() };
+  window.posthog?.capture('builder_started', event);
+  if (!isProd) console.log('[Analytics] builder_started', event);
+}
+
+interface BuilderCompletedEvent {
+  tier: 'free' | 'pro';
+  role: string;
+  goalCount: number;
+}
+
+export function trackBuilderCompleted({ tier, role, goalCount }: BuilderCompletedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, role, goalCount, timestamp: new Date().toISOString() };
+  window.posthog?.capture('builder_completed', event);
+  if (!isProd) console.log('[Analytics] builder_completed', event);
+}
+
+interface BuilderSharedEvent {
+  id: string;
+}
+
+export function trackBuilderShared({ id }: BuilderSharedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { id, timestamp: new Date().toISOString() };
+  window.posthog?.capture('builder_shared', event);
+  if (!isProd) console.log('[Analytics] builder_shared', event);
+}
