@@ -11,7 +11,7 @@ export const HARNES_DIMENSIONS = {
   S: { name: 'SafeOps', max: 20, label: 'SOPs, permissions, failure loops' },
 } as const;
 
-export type HarnesDimKey = keyof typeof HARNES_DIMENSIONS;
+export type HarnessDimKey = keyof typeof HARNES_DIMENSIONS;
 
 export const HARNES_MAX_TOTAL = 100;
 
