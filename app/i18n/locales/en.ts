@@ -286,6 +286,30 @@ const en = {
     },
     promptCta: 'Now score your AI setup →',
   },
+
+  // ─── Harness Builder (Sprint 2) ───────────────────────
+  builder: {
+    pageTitle: 'Build Your AI Setup',
+    nextCta: 'Next →',
+    backCta: '← Back',
+    generateCta: 'Generate my harness',
+    generating: 'Generating…',
+    result: {
+      title: 'Your harness is ready',
+      expiresNotice: 'Download within {min} minutes — this link expires for your privacy.',
+      downloadCta: 'Download ZIP',
+      vscodeCta: 'Open in VS Code',
+      videoGuideCta: '60-second video guide',
+      previewTitle: 'File preview',
+      shareBonusTitle: 'Want another free build this month?',
+      shareBonusBody: "Share your harness link on any social platform — you'll earn +1 build this month.",
+      shareCta: 'Share & earn +1 build',
+      shareClaimed: '✓ Bonus claimed',
+      shareError: 'Share not verified — please try again.',
+      buildAnotherCta: 'Build another',
+      scoreItCta: 'Score this setup',
+    },
+  },
 } as const;
 
 export type Locale = typeof en;
