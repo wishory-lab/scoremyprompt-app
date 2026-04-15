@@ -61,7 +61,7 @@ describe('/api/builder/generate', () => {
       expect(data).toHaveProperty('files');
       expect(data).toHaveProperty('quota');
       expect(data).toHaveProperty('expiresAt');
-      expect(data.files).toHaveProperty('CLAUDE.md');
+      expect(data.files['CLAUDE.md']).toBeDefined();
       expect(typeof data.files['CLAUDE.md']).toBe('string');
     });
 
