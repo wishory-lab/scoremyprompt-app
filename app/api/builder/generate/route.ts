@@ -196,7 +196,7 @@ export async function POST(req: Request): Promise<Response> {
 
     // 7. Persist
     const supa = getSupabaseAdmin();
-    let id = crypto.randomUUID();
+    let id: string = crypto.randomUUID();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
     const isProBuild = user.tier === 'pro';
 
