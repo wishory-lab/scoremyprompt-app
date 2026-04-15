@@ -226,6 +226,66 @@ const en = {
     guides: 'Guides',
     copyright: '© {year} ScoreMyPrompt. All rights reserved.',
   },
+
+  // ─── Home entry cards (Sprint 1 — 3-card entry) ─────
+  homeEntry: {
+    tagline: 'Grade & Build your AI',
+    scorePrompt: {
+      title: 'Score a Prompt',
+      subtitle: '30 seconds · Free',
+      cta: 'Start',
+    },
+    scoreSetup: {
+      title: 'Score a Setup',
+      subtitle: 'New · Free',
+      cta: 'Start',
+    },
+    buildSetup: {
+      title: 'Build a Setup',
+      subtitle: 'Pro · 2 min',
+      cta: 'Start',
+    },
+  },
+
+  // ─── Harness Score (Sprint 1) ────────────────────────
+  harness: {
+    pageTitle: 'Score Your AI Setup',
+    pageSubtitle: 'Paste your CLAUDE.md or describe your AI agent setup. Get a HARNES score in 6 dimensions.',
+    inputLabel: 'Your AI setup (CLAUDE.md or description)',
+    inputPlaceholder: 'Paste your CLAUDE.md file or describe your current AI setup…',
+    minChars: 'Min 20 characters',
+    submitCta: 'Score My Setup — Free',
+    submitting: 'Analyzing with HARNES…',
+    learnMoreTitle: 'What is HARNES?',
+    dimensions: {
+      H: 'Hierarchy — folder structure',
+      A: 'Agents — sub-agent roles',
+      R: 'Routing — conditional rules',
+      N: 'Norms — brand & tone',
+      E: 'Extensions — external tools',
+      S: 'SafeOps — SOPs & permissions',
+    },
+    result: {
+      tier: {
+        Elite: 'Elite',
+        Proficient: 'Proficient',
+        Developing: 'Developing',
+        NeedsHarness: 'Needs a Harness',
+      },
+      tierMsg: {
+        Elite: 'Your agent team is production-ready.',
+        Proficient: 'Solid foundation. Optimize extensions.',
+        Developing: 'Level up with the Harness Builder.',
+        NeedsHarness: 'Start with the Builder to create your first setup.',
+      },
+      feedbackTitle: 'Improvement areas',
+      quickWinsTitle: 'Quick wins',
+      shareCta: 'Share my score',
+      buildCta: 'Build a better setup with Pro →',
+      rescoreCta: 'Score another setup',
+    },
+    promptCta: 'Now score your AI setup →',
+  },
 } as const;
 
 export type Locale = typeof en;
