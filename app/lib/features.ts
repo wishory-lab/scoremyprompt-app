@@ -37,6 +37,8 @@ export const FEATURES = {
   STRIPE_BILLING: 'STRIPE_BILLING',
   /** Templates library */
   TEMPLATES: 'TEMPLATES',
+  /** Harness scoring engine (Sprint 1) */
+  HARNESS_SCORE: 'HARNESS_SCORE',
 } as const;
 
 export type FeatureFlag = (typeof FEATURES)[keyof typeof FEATURES];
@@ -57,6 +59,7 @@ const DEFAULT_ENABLED: Set<FeatureFlag> = new Set([
 const DEV_ONLY: Set<FeatureFlag> = new Set([
   FEATURES.BULK_ANALYZE,
   FEATURES.LEADERBOARD_V2,
+  FEATURES.HARNESS_SCORE,
 ]);
 
 /** Parse enabled features from environment */
