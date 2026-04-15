@@ -191,7 +191,7 @@ export default function HomeClient() {
             <div className="mt-4 text-sm text-primary group-hover:underline">{t.homeEntry.scoreSetup.cta} →</div>
           </a>
           <a
-            href="/pricing"
+            href="/builder"
             className="group rounded-xl border border-border bg-surface/60 p-6 text-left hover:border-primary transition"
           >
             <div className="text-3xl mb-2">🏗</div>
