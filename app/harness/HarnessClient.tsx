@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from '@/app/i18n';
+import { useTranslation, useLocale } from '@/app/i18n';
 import AdSlot from '@/app/components/AdSlot';
 import { HARNES_DIMENSIONS } from '@/app/types/harness';
 import { trackHarnessAnalyzed } from '@/app/lib/analytics';
@@ -12,6 +12,7 @@ const MAX_CHARS = 20_000;
 
 export default function HarnessClient() {
   const t = useTranslation();
+  const { locale } = useLocale();
   const router = useRouter();
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +28,7 @@ export default function HarnessClient() {
       const res = await fetch('/api/harness/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: input.trim() }),
+        body: JSON.stringify({ input: input.trim(), lang: locale }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
@@ -35,7 +36,7 @@ export default function HarnessClient() {
       }
       const data = (await res.json()) as { shareId: string; total: number; tier: string };
       trackHarnessAnalyzed({
-        lang: typeof navigator !== 'undefined' ? navigator.language : 'en',
+        lang: locale,
         total: data.total,
         tier: data.tier,
       });

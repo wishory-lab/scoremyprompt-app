@@ -185,6 +185,9 @@ export async function POST(req: Request): Promise<Response> {
 
     // 5. Persist
     let analysisId: string = crypto.randomUUID();
+    if (!supa) {
+      logger.warn('Supabase not configured — share link will not resolve', { shareId });
+    }
     if (supa) {
       const { data: inserted, error } = await supa
         .from('harness_scores')
