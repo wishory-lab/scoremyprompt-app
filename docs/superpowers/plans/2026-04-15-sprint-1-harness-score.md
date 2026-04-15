@@ -92,7 +92,7 @@ export const HarnessAnalyzeRequestSchema = z.object({
 export type HarnessAnalyzeRequest = z.infer<typeof HarnessAnalyzeRequestSchema>;
 
 /** Per-dimension score 0..max */
-export const HarnesScoresSchema = z.object({
+export const HarnessScoresSchema = z.object({
   H: z.number().int().min(0).max(15),
   A: z.number().int().min(0).max(20),
   R: z.number().int().min(0).max(15),
@@ -100,7 +100,7 @@ export const HarnesScoresSchema = z.object({
   E: z.number().int().min(0).max(15),
   S: z.number().int().min(0).max(20),
 });
-export type HarnesScores = z.infer<typeof HarnesScoresSchema>;
+export type HarnessScores = z.infer<typeof HarnessScoresSchema>;
 
 /** Feedback item returned per dimension */
 export const HarnessFeedbackItemSchema = z.object({
@@ -116,7 +116,7 @@ export const HarnessAnalyzeResponseSchema = z.object({
   shareId: z.string().min(6).max(32),
   total: z.number().int().min(0).max(100),
   tier: z.enum(['Elite', 'Proficient', 'Developing', 'NeedsHarness']),
-  scores: HarnesScoresSchema,
+  scores: HarnessScoresSchema,
   feedback: z.array(HarnessFeedbackItemSchema).min(3).max(10),
   quickWins: z.array(z.string().min(1).max(200)).min(2).max(5),
   usage: z
@@ -130,14 +130,14 @@ export type HarnessAnalyzeResponse = z.infer<typeof HarnessAnalyzeResponseSchema
 
 /** Claude response shape — subset we parse */
 export const HarnessClaudeOutputSchema = z.object({
-  scores: HarnesScoresSchema,
+  scores: HarnessScoresSchema,
   feedback: z.array(HarnessFeedbackItemSchema).min(3).max(10),
   quickWins: z.array(z.string().min(1).max(200)).min(2).max(5),
 });
 export type HarnessClaudeOutput = z.infer<typeof HarnessClaudeOutputSchema>;
 
 /** Compute total from scores */
-export function computeTotal(scores: HarnesScores): number {
+export function computeTotal(scores: HarnessScores): number {
   return scores.H + scores.A + scores.R + scores.N + scores.E + scores.S;
 }
 ```
