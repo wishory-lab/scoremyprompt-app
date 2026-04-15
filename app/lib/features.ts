@@ -39,6 +39,8 @@ export const FEATURES = {
   TEMPLATES: 'TEMPLATES',
   /** Harness scoring engine (Sprint 1) */
   HARNESS_SCORE: 'HARNESS_SCORE',
+  /** Harness Builder wizard (Sprint 2) */
+  BUILDER: 'BUILDER',
 } as const;
 
 export type FeatureFlag = (typeof FEATURES)[keyof typeof FEATURES];
@@ -60,6 +62,7 @@ const DEV_ONLY: Set<FeatureFlag> = new Set([
   FEATURES.BULK_ANALYZE,
   FEATURES.LEADERBOARD_V2,
   FEATURES.HARNESS_SCORE,
+  FEATURES.BUILDER,
 ]);
 
 /** Parse enabled features from environment */
