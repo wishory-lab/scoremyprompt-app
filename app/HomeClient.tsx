@@ -169,6 +169,38 @@ export default function HomeClient() {
           </p>
         </div>
 
+        {/* 3-card entry (Sprint 1 — Score + Build positioning) */}
+        <div className="mt-10 mb-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto animate-fade-in">
+          <a
+            href="#analyze"
+            className="group rounded-xl border border-border bg-surface/60 p-6 text-left hover:border-primary transition"
+          >
+            <div className="text-3xl mb-2">📝</div>
+            <div className="text-lg font-bold text-white">{t.homeEntry.scorePrompt.title}</div>
+            <div className="text-sm text-gray-400 mt-1">{t.homeEntry.scorePrompt.subtitle}</div>
+            <div className="mt-4 text-sm text-primary group-hover:underline">{t.homeEntry.scorePrompt.cta} →</div>
+          </a>
+          <a
+            href="/harness"
+            className="group rounded-xl border border-primary/50 bg-surface/60 p-6 text-left hover:border-primary transition relative"
+          >
+            <span className="absolute top-3 right-3 text-[10px] uppercase tracking-wider bg-primary/20 text-primary px-2 py-0.5 rounded-full">New</span>
+            <div className="text-3xl mb-2">🧩</div>
+            <div className="text-lg font-bold text-white">{t.homeEntry.scoreSetup.title}</div>
+            <div className="text-sm text-gray-400 mt-1">{t.homeEntry.scoreSetup.subtitle}</div>
+            <div className="mt-4 text-sm text-primary group-hover:underline">{t.homeEntry.scoreSetup.cta} →</div>
+          </a>
+          <a
+            href="/pricing"
+            className="group rounded-xl border border-border bg-surface/60 p-6 text-left hover:border-primary transition"
+          >
+            <div className="text-3xl mb-2">🏗</div>
+            <div className="text-lg font-bold text-white">{t.homeEntry.buildSetup.title}</div>
+            <div className="text-sm text-gray-400 mt-1">{t.homeEntry.buildSetup.subtitle}</div>
+            <div className="mt-4 text-sm text-primary group-hover:underline">{t.homeEntry.buildSetup.cta} →</div>
+          </a>
+        </div>
+
         {/* Social Proof - Above the fold */}
         <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mb-12 animate-fade-in">
           <div className="flex items-center gap-2">
