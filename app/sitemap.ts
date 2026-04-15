@@ -19,14 +19,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const core = LAST_UPDATED.core;
   const legal = LAST_UPDATED.legal;
 
-  function hreflangMap(path: string): Record<string, string> {
-    const m: Record<string, string> = {};
-    for (const loc of SUPPORTED_LOCALES) {
-      m[loc] = `${baseUrl}${path}${path.includes('?') ? '&' : '?'}lang=${loc}`;
-    }
-    m['x-default'] = `${baseUrl}${path}`;
-    return m;
-  }
+  // TODO(i18n-paths): hreflang alternates were removed because the current
+  // i18n system reads locale from localStorage / navigator.language, not from
+  // a `?lang=` query param. Announcing `?lang=ko` alternates would mislead
+  // search engines — Google would crawl the alternate URLs expecting Korean
+  // content and get English. Add hreflang back once path-based i18n
+  // (e.g., `/ko/...`, `/ja/...`) is implemented, at which point each
+  // SupportedLocale's URL should be the path-prefixed version.
+  // Reference: SUPPORTED_LOCALES is imported to keep this dependency live
+  // and remind us to revisit when path-based routing lands.
+  void SUPPORTED_LOCALES;
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -34,7 +36,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: core,
       changeFrequency: 'weekly',
       priority: 1.0,
-      alternates: { languages: hreflangMap('/') },
     },
     { url: `${baseUrl}/pricing`, lastModified: core, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/guides`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
@@ -55,7 +56,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: LAST_UPDATED.guides,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
-    alternates: { languages: hreflangMap(`/guides/${guide.slug}`) },
   }));
 
   // Alternate language URLs for key pages

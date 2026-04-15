@@ -124,32 +124,53 @@ function percentile(arr: number[], p: number): number {
   return sorted[idx]!;
 }
 
+// Server rate limit is 5 requests / 60 seconds (LIMITS.ANALYZE).
+// At 5 req/min the theoretical minimum interval is 12s. We use 13s for safety.
+const REQUEST_INTERVAL_MS = 13_000;
+const MAX_RETRIES_ON_429 = 3;
+
 async function score(name: string, input: string): Promise<ScoredSample | null> {
-  try {
-    const res = await fetch(`${BASE_URL}/api/harness/analyze`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input, lang: 'en' }),
-    });
-    if (!res.ok) {
-      console.error(`[${name}] HTTP ${res.status}`);
+  for (let attempt = 0; attempt <= MAX_RETRIES_ON_429; attempt++) {
+    try {
+      const res = await fetch(`${BASE_URL}/api/harness/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input, lang: 'en' }),
+      });
+      if (res.status === 429) {
+        const retryAfter = Number(res.headers.get('Retry-After') ?? '60');
+        const waitMs = (retryAfter + 2) * 1000;
+        console.warn(`[${name}] 429 — waiting ${waitMs / 1000}s before retry ${attempt + 1}/${MAX_RETRIES_ON_429}`);
+        await new Promise((resolve) => setTimeout(resolve, waitMs));
+        continue;
+      }
+      if (!res.ok) {
+        console.error(`[${name}] HTTP ${res.status}`);
+        return null;
+      }
+      const data = (await res.json()) as { scores: Record<Dim, number>; total: number; tier: string };
+      return { name, scores: data.scores, total: data.total, tier: data.tier };
+    } catch (err) {
+      console.error(`[${name}] error`, err);
       return null;
     }
-    const data = (await res.json()) as { scores: Record<Dim, number>; total: number; tier: string };
-    return { name, scores: data.scores, total: data.total, tier: data.tier };
-  } catch (err) {
-    console.error(`[${name}] error`, err);
-    return null;
   }
+  console.error(`[${name}] gave up after ${MAX_RETRIES_ON_429} 429 retries`);
+  return null;
 }
 
 async function main() {
   const results: ScoredSample[] = [];
-  for (const s of SAMPLES) {
+  console.log(`Scoring ${SAMPLES.length} samples with ${REQUEST_INTERVAL_MS / 1000}s interval — estimated total: ${((SAMPLES.length * REQUEST_INTERVAL_MS) / 60_000).toFixed(0)} minutes.`);
+  for (let i = 0; i < SAMPLES.length; i++) {
+    const s = SAMPLES[i]!;
+    console.log(`[${i + 1}/${SAMPLES.length}] scoring ${s.name}...`);
     const r = await score(s.name, s.input);
     if (r) results.push(r);
-    // Pause 250ms to respect the 5 req/60s rate limit.
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    // Wait before the next request to respect the 5 req/60s rate limit.
+    if (i < SAMPLES.length - 1) {
+      await new Promise((resolve) => setTimeout(resolve, REQUEST_INTERVAL_MS));
+    }
   }
 
   console.log(`\n=== Harness Bias Audit (${results.length}/${SAMPLES.length} succeeded) ===\n`);
