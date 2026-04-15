@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useTranslation } from '@/app/i18n';
 import AdSlot from '@/app/components/AdSlot';
 import { HARNES_DIMENSIONS, type HarnessAnalyzeResponse } from '@/app/types/harness';
+import { trackHarnessShared, trackHarnessUpsellClicked } from '@/app/lib/analytics';
 
 const TIER_COLORS: Record<HarnessAnalyzeResponse['tier'], string> = {
   Elite: 'from-yellow-400 to-yellow-600',
@@ -84,6 +85,9 @@ export default function HarnessResultClient({ result }: { result: HarnessAnalyze
             className="flex-1 rounded-lg bg-surface border border-border py-3 text-white hover:bg-surface/70"
             onClick={() => {
               const url = typeof window !== 'undefined' ? window.location.href : '';
+              const hasNativeShare = typeof navigator !== 'undefined' && typeof (navigator as Navigator & { share?: unknown }).share === 'function';
+              const method: 'native' | 'clipboard' = hasNativeShare ? 'native' : 'clipboard';
+              trackHarnessShared({ tier: result.tier, total: result.total, method });
               if (navigator.share) {
                 navigator.share({ title: `HARNES Score: ${result.total}/100`, url }).catch(() => void 0);
               } else {
@@ -95,6 +99,7 @@ export default function HarnessResultClient({ result }: { result: HarnessAnalyze
           </button>
           <Link
             href="/pricing"
+            onClick={() => trackHarnessUpsellClicked({ tier: result.tier, total: result.total, from: 'result_page' })}
             className="flex-1 rounded-lg bg-gradient-to-r from-primary to-accent py-3 text-center font-semibold text-white"
           >
             {t.harness.result.buildCta}

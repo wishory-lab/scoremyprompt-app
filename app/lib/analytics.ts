@@ -280,3 +280,43 @@ export function trackLocaleChanged({ from, to }: { from: string; to: string }): 
   window.posthog?.capture('locale_changed', { from, to });
   if (!isProd) console.log('[Analytics] locale_changed', { from, to });
 }
+
+// ─── Harness Score (Sprint 1) ────────────────────────────────────────
+interface HarnessAnalyzedEvent {
+  lang: string;
+  total?: number;
+  tier?: string;
+}
+
+export function trackHarnessAnalyzed({ lang, total, tier }: HarnessAnalyzedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { lang, total, tier, timestamp: new Date().toISOString() };
+  window.posthog?.capture('harness_analyzed', event);
+  if (!isProd) console.log('[Analytics] harness_analyzed', event);
+}
+
+interface HarnessShareEvent {
+  tier: string;
+  total: number;
+  method: 'native' | 'clipboard';
+}
+
+export function trackHarnessShared({ tier, total, method }: HarnessShareEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, total, method, timestamp: new Date().toISOString() };
+  window.posthog?.capture('harness_shared', event);
+  if (!isProd) console.log('[Analytics] harness_shared', event);
+}
+
+interface HarnessUpsellEvent {
+  tier: string;
+  total: number;
+  from: 'result_page' | 'home_card';
+}
+
+export function trackHarnessUpsellClicked({ tier, total, from }: HarnessUpsellEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, total, from, timestamp: new Date().toISOString() };
+  window.posthog?.capture('harness_upsell_clicked', event);
+  if (!isProd) console.log('[Analytics] harness_upsell_clicked', event);
+}

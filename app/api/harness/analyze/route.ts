@@ -1,6 +1,7 @@
 // app/api/harness/analyze/route.ts
 import { z } from 'zod';
 import crypto from 'crypto';
+import * as Sentry from '@sentry/nextjs';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { HARNES_SYSTEM_PROMPT } from '@/app/constants/harness-system-prompt';
 import { AppError, errorResponse, badRequestResponse } from '@/app/lib/errors';
@@ -223,6 +224,11 @@ export async function POST(req: Request): Promise<Response> {
 
     return Response.json(response, { headers: rl.response.headers });
   } catch (err) {
+    Sentry.withScope((scope) => {
+      scope.setTag('route', 'harness_analyze');
+      if (typeof parsed !== 'undefined') scope.setTag('lang', parsed.lang);
+      Sentry.captureException(err);
+    });
     if (err instanceof AppError) return errorResponse(err);
     logger.error('Unhandled harness analyze error', { error: String(err) });
     return errorResponse(err as Error);

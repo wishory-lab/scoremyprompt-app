@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/i18n';
 import AdSlot from '@/app/components/AdSlot';
 import { HARNES_DIMENSIONS } from '@/app/types/harness';
+import { trackHarnessAnalyzed } from '@/app/lib/analytics';
 
 const MIN_CHARS = 20;
 const MAX_CHARS = 20_000;
@@ -32,7 +33,12 @@ export default function HarnessClient() {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error || 'Request failed');
       }
-      const data = (await res.json()) as { shareId: string };
+      const data = (await res.json()) as { shareId: string; total: number; tier: string };
+      trackHarnessAnalyzed({
+        lang: typeof navigator !== 'undefined' ? navigator.language : 'en',
+        total: data.total,
+        tier: data.tier,
+      });
       router.push(`/harness/result/${data.shareId}`);
     } catch (err) {
       setError((err as Error).message);
