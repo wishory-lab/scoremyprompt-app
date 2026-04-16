@@ -70,21 +70,31 @@ function jsToJson(block: string): string {
 async function main() {
   const enPath = path.join(ROOT, 'en.ts');
   const enSource = fs.readFileSync(enPath, 'utf8');
-  const harnessBlock = extractBlock(enSource, 'harness');
-  const homeEntryBlock = extractBlock(enSource, 'homeEntry');
-  const harnessJson = jsToJson(harnessBlock);
-  const homeEntryJson = jsToJson(homeEntryBlock);
+  // Extract all three namespaces (Sprint 1: harness + homeEntry, Sprint 2: builder)
+  const namespaces = ['harness', 'homeEntry', 'builder'] as const;
+  const blocks: Record<string, string> = {};
+  for (const ns of namespaces) {
+    try {
+      blocks[ns] = jsToJson(extractBlock(enSource, ns));
+    } catch {
+      console.warn(`Namespace "${ns}" not found in en.ts — skipping.`);
+    }
+  }
 
   for (const t of TARGETS) {
     console.log(`Translating → ${t.code} (${t.name})`);
-    const translatedHarness = await translate(harnessJson, t.name, t.tonePrompt);
-    const translatedHomeEntry = await translate(homeEntryJson, t.name, t.tonePrompt);
+    const translated: Record<string, string> = {};
+    for (const ns of namespaces) {
+      if (!blocks[ns]) continue;
+      translated[ns] = await translate(blocks[ns], t.name, t.tonePrompt);
+    }
     const targetPath = path.join(ROOT, `${t.code}.ts`);
     let target = fs.readFileSync(targetPath, 'utf8');
 
-    // Remove any prior harness/homeEntry blocks (idempotency)
-    target = target.replace(/^\s{2}harness:\s*\{[\s\S]*?\},\n/m, '');
-    target = target.replace(/^\s{2}homeEntry:\s*\{[\s\S]*?\},\n/m, '');
+    // Remove any prior blocks (idempotency)
+    for (const ns of namespaces) {
+      target = target.replace(new RegExp(`^\\s{2}${ns}:\\s*\\{[\\s\\S]*?\\},\\n`, 'm'), '');
+    }
 
     // Insert before final closing `}` of the locale object
     const objEnd = target.search(/\n\};?\s*\n\s*export default/);
@@ -93,8 +103,11 @@ async function main() {
     }
     const before = target.slice(0, objEnd);
     const after = target.slice(objEnd);
-    const injected = `\n  homeEntry: ${translatedHomeEntry},\n  harness: ${translatedHarness},`;
-    target = before + injected + after;
+    const lines = namespaces
+      .filter((ns) => translated[ns])
+      .map((ns) => `  ${ns}: ${translated[ns]},`)
+      .join('\n');
+    target = before + '\n' + lines + after;
     fs.writeFileSync(targetPath, target, 'utf8');
     console.log(`  wrote ${targetPath}`);
   }

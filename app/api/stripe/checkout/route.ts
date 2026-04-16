@@ -63,12 +63,8 @@ export async function POST(request: Request) {
     params.append('cancel_url', `${baseUrl}/pricing`);
     params.append('customer_email', userEmail);
     params.append('metadata[userId]', user.id);
-    // NOTE: metadata[pricingPlan] is consumed by a Stripe webhook that writes
-    // it to user_profiles.pricing_plan on checkout.session.completed.
-    // That webhook is NOT implemented yet (Sprint 3 Out of Scope). Until the
-    // webhook ships, new subscribers' pricing_plan column stays NULL and the
-    // pricing page won't display their tier correctly. Ship the webhook
-    // before enabling PRICING_V2 in production.
+    // pricingPlan is picked up by the Stripe webhook (app/api/stripe/webhook/route.ts)
+    // on checkout.session.completed → stamped to user_profiles.pricing_plan.
     params.append('metadata[pricingPlan]', pricingPlan);
     params.append('subscription_data[trial_period_days]', '7');
 
