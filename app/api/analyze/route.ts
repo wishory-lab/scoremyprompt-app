@@ -317,7 +317,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const durationMs = Date.now() - startTime;
     if (error instanceof AppError) {
-      logger.warn('Analysis failed', { durationMs, errorCode: error.code, status: error.statusCode });
+      logger.warn('Analysis failed', { durationMs, errorCode: error.code, status: error.status });
       return errorResponse(error);
     }
     logger.error('Analysis error', { error: String(error), durationMs });

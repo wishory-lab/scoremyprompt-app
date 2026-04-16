@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import en, { type Locale } from './locales/en';
+import en, { type Locale, type PartialLocale } from './locales/en';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, mapBrowserLocale, type SupportedLocale } from './config';
 
 interface LocaleContextValue {
@@ -18,8 +18,9 @@ const LocaleContext = createContext<LocaleContextValue>({
 
 const STORAGE_KEY = 'smp_locale';
 
-// Lazy-load locale files to avoid bundling all locales upfront
-const localeLoaders: Record<SupportedLocale, () => Promise<{ default: Locale }>> = {
+// Lazy-load locale files to avoid bundling all locales upfront.
+// Non-English locales use PartialLocale — missing keys fall back to English.
+const localeLoaders: Record<SupportedLocale, () => Promise<{ default: Locale | PartialLocale }>> = {
   en: () => Promise.resolve({ default: en }),
   ko: () => import('./locales/ko'),
   ja: () => import('./locales/ja'),
@@ -37,6 +38,24 @@ function detectBrowserLocale(): SupportedLocale {
   return mapBrowserLocale(navigator.language);
 }
 
+/**
+ * Deep-merge a partial translation onto the English base so missing keys
+ * fall back to English at runtime while still type-checking as Locale.
+ */
+function mergeLocale(partial: PartialLocale): Locale {
+  function merge<T>(base: T, patch: unknown): T {
+    if (patch === null || patch === undefined) return base;
+    if (typeof base !== 'object' || base === null) return (patch as T) ?? base;
+    if (typeof patch !== 'object') return base;
+    const out: Record<string, unknown> = { ...(base as Record<string, unknown>) };
+    for (const [k, v] of Object.entries(patch as Record<string, unknown>)) {
+      out[k] = merge((base as Record<string, unknown>)[k], v);
+    }
+    return out as T;
+  }
+  return merge(en, partial);
+}
+
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<SupportedLocale>(DEFAULT_LOCALE);
   const [messages, setMessages] = useState<Locale>(en);
@@ -48,7 +67,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       const initial = stored && SUPPORTED_LOCALES.includes(stored) ? stored : detectBrowserLocale();
       if (initial !== DEFAULT_LOCALE) {
         setLocaleState(initial);
-        localeLoaders[initial]().then((mod) => setMessages(mod.default));
+        localeLoaders[initial]().then((mod) => setMessages(mergeLocale(mod.default)));
       }
     } catch { /* SSR or private browsing */ }
   }, []);
@@ -56,7 +75,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const setLocale = useCallback((newLocale: SupportedLocale) => {
     setLocaleState(newLocale);
     try { localStorage.setItem(STORAGE_KEY, newLocale); } catch {}
-    localeLoaders[newLocale]().then((mod) => setMessages(mod.default));
+    localeLoaders[newLocale]().then((mod) => setMessages(mergeLocale(mod.default)));
     // Update html lang attribute
     if (typeof document !== 'undefined') {
       document.documentElement.lang = newLocale;

@@ -2,9 +2,9 @@
  * Korean locale — 한국어 번역 파일.
  * Structure must match en.ts exactly.
  */
-import type { Locale } from './en';
+import type { PartialLocale } from './en';
 
-const ko: Locale = {
+const ko: PartialLocale = {
   common: {
     appName: 'ScoreMyPrompt',
     tagline: '30초만에 AI 프롬프트 점수 받기',

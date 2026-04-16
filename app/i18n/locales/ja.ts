@@ -1,9 +1,9 @@
 /**
  * Japanese locale — 日本語翻訳ファイル
  */
-import type { Locale } from './en';
+import type { PartialLocale } from './en';
 
-const ja: Locale = {
+const ja: PartialLocale = {
   common: {
     appName: 'ScoreMyPrompt',
     tagline: '30秒でAIプロンプトを採点',

@@ -1,9 +1,9 @@
 /**
  * Hindi locale — हिन्दी अनुवाद फ़ाइल
  */
-import type { Locale } from './en';
+import type { PartialLocale } from './en';
 
-const hi: Locale = {
+const hi: PartialLocale = {
   common: {
     appName: 'ScoreMyPrompt',
     tagline: '30 सेकंड में अपने AI प्रॉम्प्ट की रेटिंग पाएं',

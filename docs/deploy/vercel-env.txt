@@ -1,0 +1,59 @@
+===============================================================
+ScoreMyPrompt · Vercel 환경변수 추가/업데이트 체크리스트
+===============================================================
+Vercel Dashboard > Project > Settings > Environment Variables
+각 항목을 Production + Preview 둘 다에 추가.
+
+# ─── Sprint 1+2+3 활성화 (모두의 창업 심사용) ───────────────
+
+NEXT_PUBLIC_FEATURES
+  값: HARNESS_SCORE,BUILDER,PRICING_V2,SEO_HUB_EXT,ADS,DASHBOARD,TEMPLATES,NEWSLETTER,REWRITE_SUGGESTION,GUIDE_SUGGESTIONS,PWA_INSTALL,EXIT_INTENT
+  (쉼표 구분, 공백 없음. 기존 flag + 신규 4개 추가)
+
+
+# ─── Sprint 3 신규 ─────────────────────────────────────────
+
+STRIPE_PRICE_ID_499
+  값: <Stripe 대시보드에서 $4.99/월 가격 생성 후 'price_...' id 복사>
+  설명: 신규 Pro 구독자 → 이 가격. 기존 STRIPE_PRICE_ID는 Legacy로 유지.
+
+NEXT_PUBLIC_PRODUCTHUNT_POST_ID
+  값: <Product Hunt 포스트 생성 후 post id, 예: 987654>
+  설명: 미설정 시 /launch 페이지의 뱃지가 숨겨짐 (placeholder 제거됨).
+
+ADMIN_API_TOKEN
+  값: <안전한 랜덤 시크릿, 32자+ 권장>
+  설명: Grandfathering 이메일 엔드포인트(/api/account/grandfathering-email) 인증.
+  생성 예시: openssl rand -base64 32
+
+
+# ─── 기존 확인 (이미 있어야 함) ────────────────────────────
+
+ANTHROPIC_API_KEY                  ← 핵심
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+STRIPE_PRICE_ID                    ← Legacy $9.99 유지
+RESEND_API_KEY
+NEXT_PUBLIC_APP_URL                (예: https://scoremyprompt.app)
+NEXT_PUBLIC_BASE_URL               (예: https://scoremyprompt.app)
+NEXT_PUBLIC_POSTHOG_KEY            (optional)
+NEXT_PUBLIC_ADSENSE_ID             (AdSense 승인 후)
+NEXT_PUBLIC_ADSENSE_SLOT_LEADERBOARD
+NEXT_PUBLIC_ADSENSE_SLOT_RECTANGLE
+GRANDFATHERING_FROM_EMAIL          (기본: noreply@scoremyprompt.com)
+
+
+# ─── 추가 후 재배포 ─────────────────────────────────────────
+
+Vercel Dashboard > Deployments > ... 최상단 배포 > Redeploy
+또는: git push origin main 트리거
+
+재배포 후 확인:
+- https://scoremyprompt.app/harness     → 정상 렌더링 (404 아님)
+- https://scoremyprompt.app/builder     → 로그인 유도
+- https://scoremyprompt.app/launch      → Product Hunt 뱃지 표시
+- https://scoremyprompt.app/pricing     → $4.99 표시
+- https://scoremyprompt.app/?lang=ko    → 한국어 (3-카드 포함)

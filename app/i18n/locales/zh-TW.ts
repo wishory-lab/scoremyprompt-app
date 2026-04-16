@@ -1,9 +1,9 @@
 /**
  * Traditional Chinese locale — 繁體中文翻譯檔案
  */
-import type { Locale } from './en';
+import type { PartialLocale } from './en';
 
-const zhTW: Locale = {
+const zhTW: PartialLocale = {
   common: {
     appName: 'ScoreMyPrompt',
     tagline: '30秒內為你的AI提示詞評分',

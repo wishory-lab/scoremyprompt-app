@@ -1,9 +1,9 @@
 /**
  * French locale — Fichier de traduction française
  */
-import type { Locale } from './en';
+import type { PartialLocale } from './en';
 
-const fr: Locale = {
+const fr: PartialLocale = {
   common: {
     appName: 'ScoreMyPrompt',
     tagline: 'Notez votre prompt IA en 30 secondes',

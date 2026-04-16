@@ -312,5 +312,24 @@ const en = {
   },
 } as const;
 
-export type Locale = typeof en;
+// DeepReadonly+DeepWidened version of the en shape — keeps key structure as
+// the type contract but relaxes string literal types so translated locales
+// (ko.ts, ja.ts, …) can hold their own values instead of the English ones.
+type DeepWiden<T> = T extends readonly (infer U)[]
+  ? ReadonlyArray<DeepWiden<U>>
+  : T extends object
+    ? { readonly [K in keyof T]: DeepWiden<T[K]> }
+    : T extends string
+      ? string
+      : T extends number
+        ? number
+        : T extends boolean
+          ? boolean
+          : T;
+export type Locale = DeepWiden<typeof en>;
+/** Non-English locale files may be partially translated — missing keys fall
+ *  back to English at runtime. Use `PartialLocale` as the type annotation for
+ *  those files so incomplete translations don't break the build. */
+type DeepPartial<T> = T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
+export type PartialLocale = DeepPartial<Locale>;
 export default en;

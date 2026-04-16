@@ -177,14 +177,9 @@ export default function GuidePage() {
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map(({ title, href, desc, free }) => {
-              const Tag = href ? Link : 'div';
-              const props = href ? { href } : {};
-              return (
-                <Tag
-                  key={title}
-                  {...(props as Record<string, string>)}
-                  className="bg-surface/30 border border-white/5 rounded-xl p-4 hover:border-indigo-500/20 transition-colors block"
-                >
+              const className = "bg-surface/30 border border-white/5 rounded-xl p-4 hover:border-indigo-500/20 transition-colors block";
+              const inner = (
+                <>
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-sm font-semibold text-white">{title}</h3>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
@@ -193,8 +188,17 @@ export default function GuidePage() {
                       {free ? 'Free' : 'Pro'}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
-                </Tag>
+                  <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+                </>
+              );
+              return href ? (
+                <Link key={title} href={href} className={className}>
+                  {inner}
+                </Link>
+              ) : (
+                <div key={title} className={className}>
+                  {inner}
+                </div>
               );
             })}
           </div>

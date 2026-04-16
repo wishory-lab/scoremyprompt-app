@@ -1,9 +1,9 @@
 /**
  * German locale — Deutsche Übersetzungsdatei
  */
-import type { Locale } from './en';
+import type { PartialLocale } from './en';
 
-const de: Locale = {
+const de: PartialLocale = {
   common: {
     appName: 'ScoreMyPrompt',
     tagline: 'Bewerte deinen KI-Prompt in 30 Sekunden',
