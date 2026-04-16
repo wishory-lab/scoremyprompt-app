@@ -3,6 +3,10 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { autoLinkGuides } from '@/app/lib/autoLinkGuides';
 import Footer from '@/app/components/Footer';
+import StructuredData, {
+  buildArticleSchema,
+  buildSoftwareApplicationSchema,
+} from '@/app/components/StructuredData';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -99,8 +103,18 @@ export default async function GuideDetail({ params }: PageProps) {
         .slice(0, 3)
     : GUIDES_CONTENT.filter((g) => g.slug !== guide.slug).slice(0, 3);
 
+  const articleSchema = buildArticleSchema({
+    headline: guide.title,
+    description: guide.description,
+    url: `https://scoremyprompt.com/guides/${guide.slug}`,
+    datePublished: '2026-04-16',
+  });
+  const softwareSchema = buildSoftwareApplicationSchema();
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
+      <StructuredData data={articleSchema} />
+      <StructuredData data={softwareSchema} />
       {/* Navigation */}
       <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">

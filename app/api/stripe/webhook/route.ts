@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { logger } from '@/app/lib/logger';
 
@@ -7,11 +7,6 @@ export const runtime = 'nodejs';
 async function getRawBody(request: Request): Promise<string> {
   const buffer = await request.arrayBuffer();
   return Buffer.from(buffer).toString('utf-8');
-}
-
-function verifyStripeSignature(body: string, signature: string, webhookSecret: string): boolean {
-  const hash = crypto.createHmac('sha256', webhookSecret).update(body).digest('hex');
-  return hash === signature;
 }
 
 interface StripeEvent {
@@ -24,8 +19,9 @@ interface StripeEvent {
 export async function POST(request: Request) {
   try {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-      logger.error('STRIPE_WEBHOOK_SECRET not configured');
+    const stripeApiKey = process.env.STRIPE_SECRET_KEY;
+    if (!webhookSecret || !stripeApiKey) {
+      logger.error('STRIPE_WEBHOOK_SECRET or STRIPE_SECRET_KEY not configured');
       return Response.json({ received: true }, { status: 200 });
     }
 
@@ -34,15 +30,19 @@ export async function POST(request: Request) {
 
     if (!signature) {
       logger.warn('Missing Stripe signature header');
-      return Response.json({ received: true }, { status: 200 });
+      return Response.json({ error: 'Missing signature' }, { status: 400 });
     }
 
-    if (!verifyStripeSignature(rawBody, signature, webhookSecret)) {
-      logger.warn('Invalid Stripe signature');
+    // Stripe sends signature as "t=<timestamp>,v1=<hmac>"; constructEvent
+    // parses this format correctly (homemade HMAC never matches).
+    const stripe = new Stripe(stripeApiKey);
+    let event: StripeEvent;
+    try {
+      event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret) as unknown as StripeEvent;
+    } catch (err) {
+      logger.warn('Invalid Stripe signature', { error: String(err) });
       return Response.json({ error: 'Invalid signature' }, { status: 401 });
     }
-
-    const event: StripeEvent = JSON.parse(rawBody);
 
     const supabase = getSupabaseAdmin();
     if (!supabase) {
@@ -53,23 +53,33 @@ export async function POST(request: Request) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
-        const userId = (session.metadata as Record<string, string>)?.userId;
+        const metadata = session.metadata as Record<string, string> | undefined;
+        const userId = metadata?.userId;
         const stripeCustomerId = session.customer as string;
         const stripeSubscriptionId = session.subscription as string;
+        // Sprint 3: pricingPlan is stamped at checkout by /api/stripe/checkout.
+        // Values: 'pro_499' (new) or 'legacy_999' (grandfathered).
+        const pricingPlan = metadata?.pricingPlan ?? null;
 
         if (userId && stripeCustomerId) {
+          const updatePayload: Record<string, unknown> = {
+            tier: 'pro',
+            stripe_customer_id: stripeCustomerId,
+            stripe_subscription_id: stripeSubscriptionId,
+            updated_at: new Date().toISOString(),
+          };
+          // Only write pricing_plan if provided (Sprint 3 checkout sends it).
+          if (pricingPlan === 'pro_499' || pricingPlan === 'legacy_999') {
+            updatePayload.pricing_plan = pricingPlan;
+          }
+
           const { error } = await supabase
             .from('user_profiles')
-            .update({
-              tier: 'pro',
-              stripe_customer_id: stripeCustomerId,
-              stripe_subscription_id: stripeSubscriptionId,
-              updated_at: new Date().toISOString(),
-            })
+            .update(updatePayload)
             .eq('id', userId);
 
           if (error) logger.error('Error updating user profile', { error: error.message });
-          else logger.info(`User ${userId} upgraded to pro tier`);
+          else logger.info(`User ${userId} upgraded to pro tier (plan=${pricingPlan ?? 'unset'})`);
         }
         break;
       }
@@ -90,7 +100,7 @@ export async function POST(request: Request) {
           } else if (user) {
             const { error: updateError } = await supabase
               .from('user_profiles')
-              .update({ tier: 'free', updated_at: new Date().toISOString() })
+              .update({ tier: 'free', pricing_plan: null, updated_at: new Date().toISOString() })
               .eq('id', user.id);
 
             if (updateError) logger.error('Error downgrading user', { error: updateError.message });

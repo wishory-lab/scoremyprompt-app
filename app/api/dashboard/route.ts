@@ -2,6 +2,7 @@ import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { logger } from '@/app/lib/logger';
 import { unauthorizedResponse } from '@/app/lib/errors';
 import { cacheHeaders } from '@/app/lib/cache';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 import type { Grade } from '@/app/types';
 
 interface DashboardStats {
@@ -50,6 +51,9 @@ function getGradeFromScore(score: number): Grade {
 }
 
 export async function GET(request: Request) {
+  const rl = rateLimit(request, LIMITS.READ);
+  if (!rl.ok) return rl.response;
+
   try {
     // ─── Auth ───
     const authHeader = request.headers.get('authorization');

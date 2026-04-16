@@ -37,6 +37,14 @@ export const FEATURES = {
   STRIPE_BILLING: 'STRIPE_BILLING',
   /** Templates library */
   TEMPLATES: 'TEMPLATES',
+  /** Harness scoring engine (Sprint 1) */
+  HARNESS_SCORE: 'HARNESS_SCORE',
+  /** Harness Builder wizard (Sprint 2) */
+  BUILDER: 'BUILDER',
+  /** New $4.99 pricing (Sprint 3) — when off, pricing page displays $9.99 */
+  PRICING_V2: 'PRICING_V2',
+  /** Extended SEO hub guide entries (Sprint 3) */
+  SEO_HUB_EXT: 'SEO_HUB_EXT',
 } as const;
 
 export type FeatureFlag = (typeof FEATURES)[keyof typeof FEATURES];
@@ -57,6 +65,10 @@ const DEFAULT_ENABLED: Set<FeatureFlag> = new Set([
 const DEV_ONLY: Set<FeatureFlag> = new Set([
   FEATURES.BULK_ANALYZE,
   FEATURES.LEADERBOARD_V2,
+  FEATURES.HARNESS_SCORE,
+  FEATURES.BUILDER,
+  FEATURES.PRICING_V2,
+  FEATURES.SEO_HUB_EXT,
 ]);
 
 /** Parse enabled features from environment */

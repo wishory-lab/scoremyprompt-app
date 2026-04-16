@@ -79,9 +79,9 @@ export default function EmptyState({
           )}
         </div>
       )}
-      {/* Social Proof */}
+      {/* Tagline */}
       <p className="text-xs text-gray-500 mt-2">
-        Join 5,000+ professionals who&apos;ve scored their prompts
+        Score any prompt with the PROMPT 6-dimension framework — free.
       </p>
     </div>
   );

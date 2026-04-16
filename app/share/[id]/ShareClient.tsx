@@ -193,7 +193,7 @@ export default function ShareClient({ shareId, data }: ShareClientProps) {
               Get weekly AI prompt tips
             </h3>
             <p className="text-sm text-gray-400 text-center mb-4">
-              Join 5,000+ professionals leveling up their AI skills.
+              Weekly tips from professionals leveling up their AI skills.
             </p>
             <ShareEmailCapture />
             <p className="text-xs text-gray-500 text-center mt-3">No spam. Unsubscribe anytime.</p>

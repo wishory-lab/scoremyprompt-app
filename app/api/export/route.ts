@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { logger } from '@/app/lib/logger';
 import { unauthorizedResponse, forbiddenResponse, notFoundResponse, badRequestResponse, errorResponse } from '@/app/lib/errors';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 
 const ExportSchema = z.object({
   analysisId: z.string().uuid('Invalid analysis ID'),
@@ -50,6 +51,9 @@ interface AnalysisRow {
 const DEFAULT_DIM: DimensionData = { score: 0, maxScore: 0, feedback: 'N/A' };
 
 export async function POST(request: Request) {
+  const rl = rateLimit(request, LIMITS.EXPORT);
+  if (!rl.ok) return rl.response;
+
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {

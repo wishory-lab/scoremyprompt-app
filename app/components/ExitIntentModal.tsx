@@ -86,8 +86,8 @@ export default function ExitIntentModal() {
         {/* Stats row */}
         <div className="flex justify-center gap-6 mb-8">
           <div>
-            <p className="text-xl font-bold text-primary">5,000+</p>
-            <p className="text-xs text-gray-500">Prompts scored</p>
+            <p className="text-xl font-bold text-primary">Daily 10</p>
+            <p className="text-xs text-gray-500">free · no signup</p>
           </div>
           <div className="w-px bg-border" />
           <div>

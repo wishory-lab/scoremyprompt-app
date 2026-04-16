@@ -280,3 +280,126 @@ export function trackLocaleChanged({ from, to }: { from: string; to: string }): 
   window.posthog?.capture('locale_changed', { from, to });
   if (!isProd) console.log('[Analytics] locale_changed', { from, to });
 }
+
+// ─── Harness Score (Sprint 1) ────────────────────────────────────────
+interface HarnessAnalyzedEvent {
+  lang: string;
+  total?: number;
+  tier?: string;
+}
+
+export function trackHarnessAnalyzed({ lang, total, tier }: HarnessAnalyzedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { lang, total, tier, timestamp: new Date().toISOString() };
+  window.posthog?.capture('harness_analyzed', event);
+  if (!isProd) console.log('[Analytics] harness_analyzed', event);
+}
+
+interface HarnessShareEvent {
+  tier: string;
+  total: number;
+  method: 'native' | 'clipboard';
+}
+
+export function trackHarnessShared({ tier, total, method }: HarnessShareEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, total, method, timestamp: new Date().toISOString() };
+  window.posthog?.capture('harness_shared', event);
+  if (!isProd) console.log('[Analytics] harness_shared', event);
+}
+
+interface HarnessUpsellEvent {
+  tier: string;
+  total: number;
+  from: 'result_page' | 'home_card';
+}
+
+export function trackHarnessUpsellClicked({ tier, total, from }: HarnessUpsellEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, total, from, timestamp: new Date().toISOString() };
+  window.posthog?.capture('harness_upsell_clicked', event);
+  if (!isProd) console.log('[Analytics] harness_upsell_clicked', event);
+}
+
+// ─── Harness Builder (Sprint 2) ──────────────────────────────────────
+interface BuilderStartedEvent {
+  tier: 'free' | 'pro';
+}
+
+export function trackBuilderStarted({ tier }: BuilderStartedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, timestamp: new Date().toISOString() };
+  window.posthog?.capture('builder_started', event);
+  if (!isProd) console.log('[Analytics] builder_started', event);
+}
+
+interface BuilderCompletedEvent {
+  tier: 'free' | 'pro';
+  role: string;
+  goalCount: number;
+}
+
+export function trackBuilderCompleted({ tier, role, goalCount }: BuilderCompletedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { tier, role, goalCount, timestamp: new Date().toISOString() };
+  window.posthog?.capture('builder_completed', event);
+  if (!isProd) console.log('[Analytics] builder_completed', event);
+}
+
+interface BuilderSharedEvent {
+  id: string;
+}
+
+export function trackBuilderShared({ id }: BuilderSharedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { id, timestamp: new Date().toISOString() };
+  window.posthog?.capture('builder_shared', event);
+  if (!isProd) console.log('[Analytics] builder_shared', event);
+}
+
+// ─── Sprint 3 (Pricing + SEO + Launch) ─────────────────────────────
+interface PricingViewedEvent {
+  tier: 'guest' | 'free' | 'pro';
+  pricingPlan: 'legacy_999' | 'pro_499' | null;
+}
+
+export function trackPricingViewed(evt: PricingViewedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { ...evt, timestamp: new Date().toISOString() };
+  window.posthog?.capture('pricing_viewed', event);
+  if (!isProd) console.log('[Analytics] pricing_viewed', event);
+}
+
+interface GuideViewedEvent {
+  slug: string;
+  locale: string;
+}
+
+export function trackGuideViewed({ slug, locale }: GuideViewedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { slug, locale, timestamp: new Date().toISOString() };
+  window.posthog?.capture('guide_viewed', event);
+  if (!isProd) console.log('[Analytics] guide_viewed', event);
+}
+
+interface CookieConsentEvent {
+  choice: 'all' | 'essential';
+}
+
+export function trackCookieConsent({ choice }: CookieConsentEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { choice, timestamp: new Date().toISOString() };
+  window.posthog?.capture('cookie_consent', event);
+  if (!isProd) console.log('[Analytics] cookie_consent', event);
+}
+
+interface LaunchVisitedEvent {
+  source: 'direct' | 'producthunt' | 'social' | 'unknown';
+}
+
+export function trackLaunchVisited({ source }: LaunchVisitedEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { source, timestamp: new Date().toISOString() };
+  window.posthog?.capture('launch_visited', event);
+  if (!isProd) console.log('[Analytics] launch_visited', event);
+}

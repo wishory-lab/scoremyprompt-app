@@ -213,6 +213,78 @@ const ko: Locale = {
     guides: '가이드',
     copyright: '© {year} ScoreMyPrompt. All rights reserved.',
   },
+
+  // ─── Home Entry ───────────────────────────────────
+  homeEntry: {
+    tagline: 'AI를 평가하고 직접 만들어 보세요',
+    scorePrompt: { title: '프롬프트 채점', subtitle: '30초 · 무료', cta: '시작하기' },
+    scoreSetup: { title: 'AI 설정 채점', subtitle: '신규 · 무료', cta: '시작하기' },
+    buildSetup: { title: 'AI 설정 구축', subtitle: 'Pro · 2분', cta: '시작하기' },
+  },
+
+  // ─── Harness (AI Setup Scoring) ──────────────────
+  harness: {
+    pageTitle: 'AI 설정 점수 받기',
+    pageSubtitle: 'CLAUDE.md 파일을 붙여넣거나 AI 에이전트 설정을 설명해 주세요. 6가지 차원으로 HARNES 점수를 확인할 수 있습니다.',
+    inputLabel: 'AI 설정 내용 (CLAUDE.md 또는 설명)',
+    inputPlaceholder: 'CLAUDE.md 파일을 붙여넣거나 현재 AI 설정을 설명해 주세요…',
+    minChars: '최소 20자',
+    submitCta: '내 설정 채점하기 — 무료',
+    submitting: 'HARNES로 분석 중…',
+    learnMoreTitle: 'HARNES란?',
+    dimensions: {
+      H: 'Hierarchy — 폴더 구조',
+      A: 'Agents — 서브 에이전트 역할',
+      R: 'Routing — 조건부 라우팅 규칙',
+      N: 'Norms — 브랜드 및 톤앤매너',
+      E: 'Extensions — 외부 도구 연동',
+      S: 'SafeOps — 운영 절차 및 권한',
+    },
+    result: {
+      tier: {
+        Elite: 'Elite',
+        Proficient: 'Proficient',
+        Developing: 'Developing',
+        NeedsHarness: 'Needs a Harness',
+      },
+      tierMsg: {
+        Elite: '실제 업무에 바로 투입 가능한 수준입니다.',
+        Proficient: '기본기는 탄탄합니다. 확장 기능을 보강해 보세요.',
+        Developing: 'Harness Builder로 한 단계 더 발전시켜 보세요.',
+        NeedsHarness: 'Builder에서 첫 설정부터 차근차근 만들어 보세요.',
+      },
+      feedbackTitle: '개선이 필요한 영역',
+      quickWinsTitle: '바로 적용할 수 있는 개선안',
+      shareCta: '점수 공유하기',
+      buildCta: 'Pro로 더 나은 설정 만들기 →',
+      rescoreCta: '다른 설정 채점하기',
+    },
+    promptCta: '이제 AI 설정도 채점해 보세요 →',
+  },
+
+  // ─── Builder ─────────────────────────────────────
+  builder: {
+    pageTitle: 'AI 설정 직접 만들기',
+    nextCta: '다음 →',
+    backCta: '← 이전',
+    generateCta: '내 harness 생성하기',
+    generating: '생성 중…',
+    result: {
+      title: 'harness가 준비되었습니다',
+      expiresNotice: '{min}분 안에 다운로드해 주세요 — 개인정보 보호를 위해 링크가 만료됩니다.',
+      downloadCta: 'ZIP 다운로드',
+      vscodeCta: 'VS Code에서 열기',
+      videoGuideCta: '60초 영상 가이드',
+      previewTitle: '파일 미리보기',
+      shareBonusTitle: '이번 달 무료 빌드를 한 번 더 받고 싶으신가요?',
+      shareBonusBody: '어떤 SNS에든 harness 링크를 공유해 주시면 이번 달 빌드 1회가 추가로 적립됩니다.',
+      shareCta: '공유하고 +1 빌드 받기',
+      shareClaimed: '✓ 보너스 적립 완료',
+      shareError: '공유 내역을 확인하지 못했습니다 — 다시 시도해 주세요.',
+      buildAnotherCta: '새로 만들기',
+      scoreItCta: '이 설정 채점하기',
+    },
+  },
 } as const;
 
 export default ko;

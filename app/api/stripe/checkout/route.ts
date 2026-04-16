@@ -1,8 +1,14 @@
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { AppError, errorResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
+import { isFeatureEnabled, FEATURES } from '@/app/lib/features';
+import { readStripePriceIds } from '@/app/lib/pricing-plan';
 
 export async function POST(request: Request) {
+  const rl = rateLimit(request, LIMITS.SUBMIT);
+  if (!rl.ok) return rl.response;
+
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -27,10 +33,25 @@ export async function POST(request: Request) {
     }
 
     const stripeApiKey = process.env.STRIPE_SECRET_KEY;
-    const stripePriceId = process.env.STRIPE_PRICE_ID;
+    let stripePriceId: string;
+    let pricingPlan: 'legacy_999' | 'pro_499';
+    try {
+      const ids = readStripePriceIds();
+      if (isFeatureEnabled(FEATURES.PRICING_V2)) {
+        stripePriceId = ids.v2;
+        pricingPlan = 'pro_499';
+      } else if (ids.legacy) {
+        stripePriceId = ids.legacy;
+        pricingPlan = 'legacy_999';
+      } else {
+        throw new AppError('Stripe price not configured', 'STRIPE_NOT_CONFIGURED', 500);
+      }
+    } catch (err) {
+      throw new AppError((err as Error).message, 'STRIPE_NOT_CONFIGURED', 500);
+    }
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
-    if (!stripeApiKey || !stripePriceId) {
+    if (!stripeApiKey) {
       throw new AppError('Payment service not configured', 'STRIPE_NOT_CONFIGURED', 500);
     }
 
@@ -42,6 +63,9 @@ export async function POST(request: Request) {
     params.append('cancel_url', `${baseUrl}/pricing`);
     params.append('customer_email', userEmail);
     params.append('metadata[userId]', user.id);
+    // pricingPlan is picked up by the Stripe webhook (app/api/stripe/webhook/route.ts)
+    // on checkout.session.completed → stamped to user_profiles.pricing_plan.
+    params.append('metadata[pricingPlan]', pricingPlan);
     params.append('subscription_data[trial_period_days]', '7');
 
     const checkoutResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {

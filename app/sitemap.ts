@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { GUIDES_CONTENT } from './guides/content';
+import { SUPPORTED_LOCALES } from './i18n/config';
 
 /** Last content update per section — update these when content actually changes */
 const LAST_UPDATED = {
@@ -18,8 +19,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const core = LAST_UPDATED.core;
   const legal = LAST_UPDATED.legal;
 
+  // TODO(i18n-paths): hreflang alternates were removed because the current
+  // i18n system reads locale from localStorage / navigator.language, not from
+  // a `?lang=` query param. Announcing `?lang=ko` alternates would mislead
+  // search engines — Google would crawl the alternate URLs expecting Korean
+  // content and get English. Add hreflang back once path-based i18n
+  // (e.g., `/ko/...`, `/ja/...`) is implemented, at which point each
+  // SupportedLocale's URL should be the path-prefixed version.
+  // Reference: SUPPORTED_LOCALES is imported to keep this dependency live
+  // and remind us to revisit when path-based routing lands.
+  void SUPPORTED_LOCALES;
+
   const staticPages: MetadataRoute.Sitemap = [
-    { url: baseUrl, lastModified: core, changeFrequency: 'weekly', priority: 1.0 },
+    {
+      url: baseUrl,
+      lastModified: core,
+      changeFrequency: 'weekly',
+      priority: 1.0,
+    },
     { url: `${baseUrl}/pricing`, lastModified: core, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/guides`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/templates`, lastModified: core, changeFrequency: 'weekly', priority: 0.8 },
@@ -27,6 +44,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/challenge`, lastModified: core, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/compare`, lastModified: core, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/changelog`, lastModified: core, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${baseUrl}/launch`, lastModified: core, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/harness`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/builder`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/privacy`, lastModified: legal, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/terms`, lastModified: legal, changeFrequency: 'yearly', priority: 0.3 },
   ];

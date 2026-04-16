@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 const STEPS = [
   { label: 'Reading your prompt', detail: 'Identifying key elements and structure', duration: 1500, icon: '📖' },
   { label: 'Analyzing 6 PROMPT dimensions', detail: 'Precision · Role · Output · Mission · Structure · Tailoring', duration: 3000, icon: '🔬' },
-  { label: 'Calculating your score', detail: 'Comparing against 5,000+ analyzed prompts', duration: 2000, icon: '📊' },
+  { label: 'Calculating your score', detail: 'Applying the PROMPT 6-dimension rubric', duration: 2000, icon: '📊' },
   { label: 'Generating personalized feedback', detail: 'Creating actionable improvement suggestions', duration: 2000, icon: '✨' },
 ];
 

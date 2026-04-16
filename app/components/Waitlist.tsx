@@ -77,8 +77,7 @@ export default function Waitlist({ source = 'homepage_newsletter' }: { source?: 
                     Get smarter with AI every week
                   </h2>
                   <p className="text-lg text-gray-300">
-                    Join 5,000+ professionals. We send the week's top prompts,
-                    new AI tools, and practical tips.
+                    Weekly: top prompts of the week, new AI tools, and practical tips.
                   </p>
                 </div>
 
