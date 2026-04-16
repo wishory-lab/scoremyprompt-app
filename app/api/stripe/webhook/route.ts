@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { logger } from '@/app/lib/logger';
 
@@ -7,11 +7,6 @@ export const runtime = 'nodejs';
 async function getRawBody(request: Request): Promise<string> {
   const buffer = await request.arrayBuffer();
   return Buffer.from(buffer).toString('utf-8');
-}
-
-function verifyStripeSignature(body: string, signature: string, webhookSecret: string): boolean {
-  const hash = crypto.createHmac('sha256', webhookSecret).update(body).digest('hex');
-  return hash === signature;
 }
 
 interface StripeEvent {
@@ -24,8 +19,9 @@ interface StripeEvent {
 export async function POST(request: Request) {
   try {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-      logger.error('STRIPE_WEBHOOK_SECRET not configured');
+    const stripeApiKey = process.env.STRIPE_SECRET_KEY;
+    if (!webhookSecret || !stripeApiKey) {
+      logger.error('STRIPE_WEBHOOK_SECRET or STRIPE_SECRET_KEY not configured');
       return Response.json({ received: true }, { status: 200 });
     }
 
@@ -34,15 +30,19 @@ export async function POST(request: Request) {
 
     if (!signature) {
       logger.warn('Missing Stripe signature header');
-      return Response.json({ received: true }, { status: 200 });
+      return Response.json({ error: 'Missing signature' }, { status: 400 });
     }
 
-    if (!verifyStripeSignature(rawBody, signature, webhookSecret)) {
-      logger.warn('Invalid Stripe signature');
+    // Stripe sends signature as "t=<timestamp>,v1=<hmac>"; constructEvent
+    // parses this format correctly (homemade HMAC never matches).
+    const stripe = new Stripe(stripeApiKey);
+    let event: StripeEvent;
+    try {
+      event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret) as unknown as StripeEvent;
+    } catch (err) {
+      logger.warn('Invalid Stripe signature', { error: String(err) });
       return Response.json({ error: 'Invalid signature' }, { status: 401 });
     }
-
-    const event: StripeEvent = JSON.parse(rawBody);
 
     const supabase = getSupabaseAdmin();
     if (!supabase) {

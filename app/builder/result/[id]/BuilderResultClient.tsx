@@ -144,14 +144,35 @@ export default function BuilderResultClient({ id }: { id: string }) {
   }
 
   const fileEntries = Object.entries(build.files);
-  const expiresMin = Math.max(0, Math.round((new Date(build.expiresAt).getTime() - Date.now()) / 60_000));
+  // Live countdown: update every second so user sees time running out.
+  const [secondsLeft, setSecondsLeft] = useState<number>(() =>
+    Math.max(0, Math.round((new Date(build.expiresAt).getTime() - Date.now()) / 1000)),
+  );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const s = Math.max(0, Math.round((new Date(build.expiresAt).getTime() - Date.now()) / 1000));
+      setSecondsLeft(s);
+      if (s === 0) clearInterval(interval);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [build.expiresAt]);
+  const mm = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+  const ss = String(secondsLeft % 60).padStart(2, '0');
+  const expiresMin = Math.ceil(secondsLeft / 60);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
       <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <header className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white">{t.builder.result.title}</h1>
-          <p className="mt-2 text-sm text-gray-400">
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1">
+            <span className="text-xs text-amber-300">⏱</span>
+            <span className={`text-sm font-mono font-semibold ${secondsLeft < 60 ? 'text-red-300' : 'text-amber-300'}`}>
+              {mm}:{ss}
+            </span>
+            <span className="text-xs text-amber-300/80">left to download</span>
+          </div>
+          <p className="mt-2 text-xs text-gray-500">
             {t.builder.result.expiresNotice.replace('{min}', String(expiresMin))}
           </p>
         </header>

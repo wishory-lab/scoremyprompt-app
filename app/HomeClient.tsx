@@ -171,15 +171,18 @@ export default function HomeClient() {
 
         {/* 3-card entry (Sprint 1 — Score + Build positioning) */}
         <div className="mt-10 mb-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto animate-fade-in">
+          {/* Card 1: Primary CTA — most users start here (filled background for emphasis) */}
           <a
             href="#analyze"
-            className="group rounded-xl border border-border bg-surface/60 p-6 text-left hover:border-primary transition"
+            className="group rounded-xl border-2 border-primary bg-primary/10 p-6 text-left hover:bg-primary/20 transition relative"
           >
+            <span className="absolute top-3 right-3 text-[10px] uppercase tracking-wider bg-primary text-white px-2 py-0.5 rounded-full">Start Here</span>
             <div className="text-3xl mb-2">📝</div>
             <div className="text-lg font-bold text-white">{t.homeEntry.scorePrompt.title}</div>
-            <div className="text-sm text-gray-400 mt-1">{t.homeEntry.scorePrompt.subtitle}</div>
+            <div className="text-sm text-gray-300 mt-1">{t.homeEntry.scorePrompt.subtitle}</div>
             <div className="mt-4 text-sm text-primary group-hover:underline">{t.homeEntry.scorePrompt.cta} →</div>
           </a>
+          {/* Card 2: New free funnel */}
           <a
             href="/harness"
             className="group rounded-xl border border-primary/50 bg-surface/60 p-6 text-left hover:border-primary transition relative"
@@ -190,10 +193,12 @@ export default function HomeClient() {
             <div className="text-sm text-gray-400 mt-1">{t.homeEntry.scoreSetup.subtitle}</div>
             <div className="mt-4 text-sm text-primary group-hover:underline">{t.homeEntry.scoreSetup.cta} →</div>
           </a>
+          {/* Card 3: Gated (Pro tier) — visually distinct lock pill */}
           <a
             href="/builder"
-            className="group rounded-xl border border-border bg-surface/60 p-6 text-left hover:border-primary transition"
+            className="group rounded-xl border border-border bg-surface/60 p-6 text-left hover:border-primary transition relative"
           >
+            <span className="absolute top-3 right-3 text-[10px] uppercase tracking-wider bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">🔒 Pro</span>
             <div className="text-3xl mb-2">🏗</div>
             <div className="text-lg font-bold text-white">{t.homeEntry.buildSetup.title}</div>
             <div className="text-sm text-gray-400 mt-1">{t.homeEntry.buildSetup.subtitle}</div>

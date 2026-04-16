@@ -52,13 +52,13 @@ async function resolveUser(req: Request): Promise<ResolvedUser | null> {
   const { data: { user }, error } = await supa.auth.getUser(token);
   if (error || !user) return null;
 
-  // Check Pro tier from user_profiles (existing pattern).
+  // Check Pro tier from user_profiles (PK `id` references auth.users.id, column is `tier`).
   const { data: profile } = await supa
     .from('user_profiles')
-    .select('subscription_tier')
-    .eq('user_id', user.id)
+    .select('tier')
+    .eq('id', user.id)
     .maybeSingle();
-  const tier: 'free' | 'pro' = profile?.subscription_tier === 'pro' ? 'pro' : 'free';
+  const tier: 'free' | 'pro' = profile?.tier === 'pro' ? 'pro' : 'free';
   return { id: user.id, tier };
 }
 

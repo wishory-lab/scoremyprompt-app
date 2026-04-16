@@ -2,8 +2,7 @@ import { ImageResponse } from '@vercel/og';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 
 export const runtime = 'nodejs';
-export const contentType = 'image/png';
-export const size = { width: 1200, height: 630 };
+const imageSize = { width: 1200, height: 630 };
 
 const TIER_BG: Record<string, string> = {
   Elite: 'linear-gradient(135deg, #facc15, #ca8a04)',
@@ -54,6 +53,6 @@ export async function GET(req: Request): Promise<Response> {
         <div style={{ fontSize: 28, marginTop: 16, opacity: 0.9 }}>scoremyprompt.com/harness</div>
       </div>
     ),
-    { ...size },
+    { ...imageSize },
   );
 }

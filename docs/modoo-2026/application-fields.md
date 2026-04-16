@@ -90,7 +90,7 @@ scoremyprompt.app은 이미 런칭되어 있다. Next.js 14 + Supabase + Claude 
 타깃 시장은 3층 구조다.
 
 ▸ B2C 지식근로자 — 국내 450만 (기획·마케팅·디자인·PM·프리랜서)
-  · Free 매일 10건 / Pro $9.99 월
+  · Free 매일 10건 / Pro $4.99 월 (7일 무료 체험)
 ▸ B2B SMB Team — 국내 14만 기업 (5~50인 AI 도입 초기)
   · Team $49/월 (10인 기준)
 ▸ B2B Enterprise — 대기업·공공·교육기관

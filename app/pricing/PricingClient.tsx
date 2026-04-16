@@ -185,7 +185,7 @@ export default function PricingClient() {
               <h3 className="text-2xl font-bold text-white mb-2">{PRICING_PLANS.pro.name}</h3>
               {isLegacy && (
                 <div className="mb-4 inline-block rounded-full bg-amber-500/20 border border-amber-500/40 px-3 py-1 text-xs font-semibold text-amber-300">
-                  🏆 You have Legacy Pro — locked at $9.99 forever
+                  🏆 Founding Member — $9.99/mo grandfathered, every new feature included
                 </div>
               )}
               <div className="flex items-baseline gap-1 mb-2">
@@ -217,12 +217,16 @@ export default function PricingClient() {
 
             {/* Button */}
             <button
-              onClick={handleProPlan}
+              onClick={isLegacy ? () => router.push('/dashboard') : handleProPlan}
               className="btn-primary w-full font-semibold"
-              disabled={isLegacy}
             >
-              {isLegacy ? 'Already subscribed (Legacy)' : PRICING_PLANS.pro.cta}
+              {isLegacy ? 'Go to dashboard →' : PRICING_PLANS.pro.cta}
             </button>
+            {isLegacy && (
+              <p className="mt-2 text-xs text-center text-gray-500">
+                New subscribers now join at $4.99/mo. You joined at launch — locked in forever.
+              </p>
+            )}
           </div>
         </div>
 

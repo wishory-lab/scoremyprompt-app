@@ -33,23 +33,25 @@ export default function LaunchClient() {
           build a production-ready harness in 2 minutes.
         </p>
 
-        {/* Product Hunt badge (replace PRODUCT_ID with real one on launch day) */}
-        <div className="mt-8">
-          <a
-            href="https://www.producthunt.com/posts/scoremyprompt?utm_source=badge-featured"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block"
-          >
-            <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=PRODUCT_ID&theme=dark"
-              alt="ScoreMyPrompt - Launching on Product Hunt"
-              style={{ width: 250, height: 54 }}
-              width={250}
-              height={54}
-            />
-          </a>
-        </div>
+        {/* Product Hunt badge — rendered only when NEXT_PUBLIC_PRODUCTHUNT_POST_ID is set */}
+        {process.env.NEXT_PUBLIC_PRODUCTHUNT_POST_ID && (
+          <div className="mt-8">
+            <a
+              href="https://www.producthunt.com/posts/scoremyprompt?utm_source=badge-featured"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block"
+            >
+              <img
+                src={`https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=${process.env.NEXT_PUBLIC_PRODUCTHUNT_POST_ID}&theme=dark`}
+                alt="ScoreMyPrompt - Launching on Product Hunt"
+                style={{ width: 250, height: 54 }}
+                width={250}
+                height={54}
+              />
+            </a>
+          </div>
+        )}
 
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
           <Link href="/" className="rounded-xl border border-border bg-surface/60 p-6 hover:border-primary transition">

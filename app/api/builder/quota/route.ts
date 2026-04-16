@@ -18,10 +18,10 @@ export async function GET(req: Request): Promise<Response> {
 
     const { data: profile } = await supa
       .from('user_profiles')
-      .select('subscription_tier')
-      .eq('user_id', user.id)
+      .select('tier')
+      .eq('id', user.id)
       .maybeSingle();
-    const tier: 'free' | 'pro' = profile?.subscription_tier === 'pro' ? 'pro' : 'free';
+    const tier: 'free' | 'pro' = profile?.tier === 'pro' ? 'pro' : 'free';
 
     const state = await getQuota(user.id, tier);
     return Response.json(quotaToResponse(state));
