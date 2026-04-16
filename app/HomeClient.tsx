@@ -201,21 +201,21 @@ export default function HomeClient() {
           </a>
         </div>
 
-        {/* Social Proof - Above the fold */}
+        {/* Product facts — verifiable, no inflated metrics */}
         <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mb-12 animate-fade-in">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-gradient">5,000+</span>
-            <span className="text-sm text-gray-400">{t.socialProof.promptsScored}</span>
+            <span className="text-xl font-bold text-gradient">Daily 10</span>
+            <span className="text-sm text-gray-400">free · no signup</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-border" />
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-gradient">92%</span>
-            <span className="text-sm text-gray-400">{t.socialProof.findItHelpful}</span>
+            <span className="text-xl font-bold text-gradient">PROMPT</span>
+            <span className="text-sm text-gray-400">6-dim framework</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-border" />
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-gradient">6</span>
-            <span className="text-sm text-gray-400">{t.socialProof.aiDimensions}</span>
+            <span className="text-xl font-bold text-gradient">⚡ 5s</span>
+            <span className="text-sm text-gray-400">instant score + fixes</span>
           </div>
         </div>
 
