@@ -52,7 +52,8 @@ export async function POST(req: Request): Promise<Response> {
   const expected = process.env.ADMIN_API_TOKEN;
   if (!adminToken) return unauthorizedResponse();
   if (process.env.NODE_ENV !== 'test') {
-    if (!expected || adminToken !== expected) return unauthorizedResponse();
+    const { safeCompare } = await import('@/app/lib/safe-compare');
+    if (!expected || !safeCompare(adminToken, expected)) return unauthorizedResponse();
   }
 
   try {

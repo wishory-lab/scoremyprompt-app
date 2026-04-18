@@ -33,7 +33,8 @@ export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization');
   const token = authHeader?.replace('Bearer ', '');
 
-  if (token !== adminSecret) {
+  const { safeCompare } = await import('@/app/lib/safe-compare');
+  if (!token || !safeCompare(token, adminSecret)) {
     return Response.json(
       { error: 'Unauthorized', code: 'UNAUTHORIZED' },
       { status: 401 }

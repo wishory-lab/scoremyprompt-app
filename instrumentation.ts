@@ -3,11 +3,13 @@ import * as Sentry from '@sentry/nextjs';
 export async function register() {
   const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
-  if (dsn && process.env.NODE_ENV === 'production') {
+  // Enable Sentry in production AND staging/preview so pre-prod bugs are visible.
+  // Only skip in local development (NODE_ENV === 'development') to avoid noise.
+  if (dsn && process.env.NODE_ENV !== 'development') {
     Sentry.init({
       dsn,
-      tracesSampleRate: 0.1,
-      environment: process.env.NODE_ENV,
+      tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 0.5,
+      environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
       // D-Day monitoring: capture all errors, sample 10% of transactions
       beforeSend(event) {
         // Tag API route errors for alert filtering in Sentry dashboard

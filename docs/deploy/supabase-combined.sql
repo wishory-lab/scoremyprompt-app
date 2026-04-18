@@ -149,3 +149,20 @@ SELECT
 
 -- Legacy Pro 유저 수 확인
 SELECT pricing_plan, COUNT(*) FROM user_profiles GROUP BY pricing_plan;
+
+-- ============================================================
+-- DB 정리 정책: analyses 90일 TTL + harness_scores 90일 TTL
+-- 무한 성장 방지 (Supabase 500MB 한도 관리)
+-- ============================================================
+
+SELECT cron.schedule(
+  'analyses-90d-ttl',
+  '0 3 * * *',
+  $$DELETE FROM analyses WHERE created_at < now() - interval '90 days'$$
+);
+
+SELECT cron.schedule(
+  'harness-scores-90d-ttl',
+  '0 3 * * *',
+  $$DELETE FROM harness_scores WHERE created_at < now() - interval '90 days'$$
+);
