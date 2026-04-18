@@ -8,13 +8,14 @@
  */
 
 import { GET } from '@/app/api/embed/route';
+import { NextRequest } from 'next/server';
 
 function makeRequest(params: Record<string, string>) {
   const url = new URL('http://localhost:3000/api/embed');
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
   }
-  return new Request(url.toString());
+  return new NextRequest(url.toString());
 }
 
 describe('/api/embed', () => {

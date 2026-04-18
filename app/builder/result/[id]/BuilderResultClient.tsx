@@ -22,6 +22,8 @@ export default function BuilderResultClient({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [shareState, setShareState] = useState<'idle' | 'claimed' | 'error'>('idle');
+  // Live countdown: update every second so user sees time running out.
+  const [secondsLeft, setSecondsLeft] = useState<number>(0);
 
   useEffect(() => {
     if (!user) {
@@ -49,12 +51,14 @@ export default function BuilderResultClient({ id }: { id: string }) {
         if (new Date(data.expires_at as string) < new Date()) {
           throw new Error('This build has expired (5-minute TTL)');
         }
-        setBuild({
+        const loadedBuild: LoadedBuild = {
           files: data.files as BuilderFileMap,
           isProBuild: data.is_pro_build as boolean,
           expiresAt: data.expires_at as string,
           downloadUrl: `/api/builder/download/${id}`,
-        });
+        };
+        setBuild(loadedBuild);
+        setSecondsLeft(Math.max(0, Math.round((new Date(loadedBuild.expiresAt).getTime() - Date.now()) / 1000)));
       } catch (err) {
         setLoadError((err as Error).message);
       } finally {
@@ -62,6 +66,16 @@ export default function BuilderResultClient({ id }: { id: string }) {
       }
     })();
   }, [user, supabase, id, setShowAuth]);
+
+  useEffect(() => {
+    if (!build) return;
+    const interval = setInterval(() => {
+      const s = Math.max(0, Math.round((new Date(build.expiresAt).getTime() - Date.now()) / 1000));
+      setSecondsLeft(s);
+      if (s === 0) clearInterval(interval);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [build]);
 
   async function claimShare() {
     try {
@@ -144,18 +158,6 @@ export default function BuilderResultClient({ id }: { id: string }) {
   }
 
   const fileEntries = Object.entries(build.files);
-  // Live countdown: update every second so user sees time running out.
-  const [secondsLeft, setSecondsLeft] = useState<number>(() =>
-    Math.max(0, Math.round((new Date(build.expiresAt).getTime() - Date.now()) / 1000)),
-  );
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const s = Math.max(0, Math.round((new Date(build.expiresAt).getTime() - Date.now()) / 1000));
-      setSecondsLeft(s);
-      if (s === 0) clearInterval(interval);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [build.expiresAt]);
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const ss = String(secondsLeft % 60).padStart(2, '0');
   const expiresMin = Math.ceil(secondsLeft / 60);

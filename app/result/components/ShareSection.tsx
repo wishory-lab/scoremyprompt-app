@@ -118,7 +118,7 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
               gradeLabel={gradeLabel}
               jobRole={jobRole}
               percentile={percentile}
-              dimensions={result.dimensions}
+              dimensions={result.dimensions as unknown as Record<string, { score: number }>}
             />
           )}
           <a

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { trackLaunchVisited } from '@/app/lib/analytics';
 
@@ -42,12 +43,12 @@ export default function LaunchClient() {
               rel="noopener noreferrer"
               className="inline-block"
             >
-              <img
+              <Image
                 src={`https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=${process.env.NEXT_PUBLIC_PRODUCTHUNT_POST_ID}&theme=dark`}
                 alt="ScoreMyPrompt - Launching on Product Hunt"
-                style={{ width: 250, height: 54 }}
                 width={250}
                 height={54}
+                unoptimized
               />
             </a>
           </div>

@@ -5,11 +5,11 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ToastProvider, useToast } from '@/app/components/Toast';
 
 // Helper component to trigger toasts
-function ToastTrigger({ type = 'info' as const, message = 'Test message' }) {
+function ToastTrigger({ type = 'info', message = 'Test message' }: { type?: 'info' | 'success' | 'error' | 'warning'; message?: string }) {
   const { showToast, removeToast } = useToast();
   return (
     <>
-      <button onClick={() => showToast(message, type as 'info' | 'success' | 'error' | 'warning')}>
+      <button onClick={() => showToast(message, type)}>
         Show Toast
       </button>
       <button onClick={() => removeToast(Date.now())}>

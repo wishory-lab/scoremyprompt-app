@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react';
 import DimensionBar from '@/app/components/DimensionBar';
 
 const mockMeta = { label: 'Precision', letter: 'P', maxScore: 20 };
-const mockData = { score: 16, feedback: 'Good specificity in your prompt.' };
+const mockData = { score: 16, maxScore: 20, feedback: 'Good specificity in your prompt.' };
 
 describe('DimensionBar Component', () => {
   it('renders dimension label and score', () => {
@@ -53,14 +53,14 @@ describe('DimensionBar Component', () => {
   });
 
   it('shows emotional hint for low scores', () => {
-    const lowData = { score: 8, feedback: 'Needs work.' };
+    const lowData = { score: 8, maxScore: 20, feedback: 'Needs work.' };
     const feedback = { low: 'Try adding more detail', high: 'Excellent!' };
     render(<DimensionBar dimKey="precision" data={lowData} meta={mockMeta} feedback={feedback} />);
     expect(screen.getByText('Try adding more detail')).toBeInTheDocument();
   });
 
   it('shows emotional hint for high scores', () => {
-    const highData = { score: 18, feedback: 'Great job!' };
+    const highData = { score: 18, maxScore: 20, feedback: 'Great job!' };
     const feedback = { low: 'Needs work', high: 'Excellent work!' };
     render(<DimensionBar dimKey="precision" data={highData} meta={mockMeta} feedback={feedback} />);
     expect(screen.getByText('Excellent work!')).toBeInTheDocument();
@@ -69,9 +69,9 @@ describe('DimensionBar Component', () => {
   it('applies color based on score percentage', () => {
     // High score (85%+) should be green
     const { container } = render(
-      <DimensionBar dimKey="precision" data={{ score: 18, feedback: 'Great' }} meta={mockMeta} />
+      <DimensionBar dimKey="precision" data={{ score: 18, maxScore: 20, feedback: 'Great' }} meta={mockMeta} />
     );
     const badge = container.querySelector('span.w-7');
-    expect(badge?.style.color).toBe('rgb(16, 185, 129)'); // emerald #10b981
+    expect((badge as HTMLElement)?.style.color).toBe('rgb(16, 185, 129)'); // emerald #10b981
   });
 });

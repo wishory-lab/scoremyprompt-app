@@ -5,8 +5,11 @@ import { render, screen } from '@testing-library/react';
 import ScoreCircle from '@/app/components/ScoreCircle';
 
 const mockConfig = {
+  min: 90,
   color: '#10b981',
   label: 'Exceptional',
+  emoji: '🏆',
+  message: 'Prompt Master!',
   bg: 'from-emerald-500/10',
 };
 

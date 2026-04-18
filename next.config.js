@@ -34,14 +34,6 @@ if (process.env.NODE_ENV === 'production') {
 
 const nextConfig = {
   reactStrictMode: true,
-  // TEMPORARY: pre-existing (Sprint-0) TypeScript errors in unrelated files
-  // (e.g., app/result/components/ScoreHero.tsx ExtendedGradeConfig missing
-  // 'min' prop) block production builds. Tracked as a Sprint 4 follow-up.
-  // Runtime tests (45/45 Jest suites) still pass; this flag does not skip
-  // them — only the final `next build` static type check.
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   experimental: {
     instrumentationHook: true,
     optimizePackageImports: ['@sentry/nextjs', 'zod'],

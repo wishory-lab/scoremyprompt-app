@@ -1,13 +1,9 @@
 'use client';
 
 import ScoreCircle from '../../components/ScoreCircle';
-import type { Grade, AnalysisResult } from '../../types';
+import type { Grade, AnalysisResult, GradeConfig } from '../../types';
 
-interface ExtendedGradeConfig {
-  color: string;
-  label: string;
-  emoji: string;
-  message: string;
+interface ExtendedGradeConfig extends GradeConfig {
   bg: string;
 }
 
