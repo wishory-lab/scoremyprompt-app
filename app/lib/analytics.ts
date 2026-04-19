@@ -405,3 +405,17 @@ export function trackLaunchVisited({ source }: LaunchVisitedEvent): void {
   window.posthog?.capture('launch_visited', event);
   if (!isProd) console.log('[Analytics] launch_visited', event);
 }
+
+// ─── Sprint 4 (Beta) ────────────────────────────────────────
+interface BetaQuotaHitEvent {
+  route: 'analyze' | 'harness' | 'builder';
+  remainingAccount: number;
+  remainingWeek: number;
+}
+
+export function trackBetaQuotaHit({ route, remainingAccount, remainingWeek }: BetaQuotaHitEvent): void {
+  if (typeof window === 'undefined') return;
+  const event = { route, remainingAccount, remainingWeek, timestamp: new Date().toISOString() };
+  window.posthog?.capture('beta_quota_hit', event);
+  if (!isProd) console.log('[Analytics] beta_quota_hit', event);
+}
