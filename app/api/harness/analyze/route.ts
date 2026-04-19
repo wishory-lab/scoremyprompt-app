@@ -7,6 +7,8 @@ import { HARNES_SYSTEM_PROMPT } from '@/app/constants/harness-system-prompt';
 import { AppError, errorResponse, badRequestResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
 import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
+import { isFeatureEnabled, FEATURES } from '@/app/lib/features';
+import { getBetaQuotaForUser, incrementBetaUse } from '@/app/lib/beta-quota';
 import {
   HarnessAnalyzeRequestSchema,
   HarnessClaudeOutputSchema,
@@ -134,6 +136,34 @@ export async function POST(req: Request): Promise<Response> {
   const ipHash = sha(ip);
   const inputHash = sha(input);
 
+  // Beta quota (Sprint 4) — signed-in users get 50/account, 300/week.
+  // Anonymous users are unaffected (rate-limit only).
+  let betaUserId: string | null = null;
+  if (isFeatureEnabled(FEATURES.BETA_MODE)) {
+    const authHeader = req.headers.get('authorization');
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      const supaAuth = getSupabaseAdmin();
+      if (supaAuth) {
+        const { data: { user: authUser } } = await supaAuth.auth.getUser(token);
+        if (authUser) {
+          const quota = await getBetaQuotaForUser(authUser.id);
+          if (!quota.allowed) {
+            return Response.json(
+              {
+                error: quota.reason,
+                code: 'BETA_QUOTA_EXHAUSTED',
+                remaining: { account: quota.remainingAccount, week: quota.remainingWeek },
+              },
+              { status: 402, headers: rl.response.headers },
+            );
+          }
+          betaUserId = authUser.id;
+        }
+      }
+    }
+  }
+
   try {
     // 3. 24h input-hash cache (cost control)
     const supa = getSupabaseAdmin();
@@ -225,6 +255,7 @@ export async function POST(req: Request): Promise<Response> {
       usage,
     };
 
+    if (betaUserId) await incrementBetaUse(betaUserId);
     return Response.json(response, { headers: rl.response.headers });
   } catch (err) {
     Sentry.withScope((scope) => {

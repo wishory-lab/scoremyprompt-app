@@ -9,6 +9,8 @@ import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 import { maskApiKeys } from '@/app/lib/api-key-mask';
 import { validateBuilderFiles } from '@/app/lib/builder-validate';
 import { getQuota, incrementBuilds, quotaToResponse } from '@/app/lib/builder-quota';
+import { isFeatureEnabled, FEATURES } from '@/app/lib/features';
+import { getBetaQuotaForUser, incrementBetaUse } from '@/app/lib/beta-quota';
 import {
   BuilderAnswersSchema,
   BuilderClaudeOutputSchema,
@@ -150,7 +152,22 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   try {
-    // 4. Quota check
+    // 4a. Beta quota check (Sprint 4 — when BETA_MODE is on, enforce 50/account, 300/week)
+    if (isFeatureEnabled(FEATURES.BETA_MODE)) {
+      const betaQuota = await getBetaQuotaForUser(user.id);
+      if (!betaQuota.allowed) {
+        return Response.json(
+          {
+            error: betaQuota.reason,
+            code: 'BETA_QUOTA_EXHAUSTED',
+            remaining: { account: betaQuota.remainingAccount, week: betaQuota.remainingWeek },
+          },
+          { status: 402, headers: rl.response.headers },
+        );
+      }
+    }
+
+    // 4b. Builder monthly quota check
     const quotaState = await getQuota(user.id, user.tier);
     if (!quotaState.canBuild) {
       return Response.json(
@@ -223,6 +240,9 @@ export async function POST(req: Request): Promise<Response> {
 
     // 8. Increment quota
     await incrementBuilds(user.id, id);
+    if (isFeatureEnabled(FEATURES.BETA_MODE)) {
+      await incrementBetaUse(user.id);
+    }
 
     // 9. Refresh quota for response
     const finalQuota = await getQuota(user.id, user.tier);

@@ -207,6 +207,31 @@ export async function POST(request: Request) {
       return withRateLimitHeaders(errResp, rateLimit);
     }
 
+    // ─── Beta quota (Sprint 4) — signed-in users get 50/account, 300/week ───
+    let betaUserId: string | null = null;
+    const { isFeatureEnabled: isFE, FEATURES: FF } = await import('@/app/lib/features');
+    if (isFE(FF.BETA_MODE)) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader?.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        const supa = getSupabaseAdmin();
+        if (supa) {
+          const { data: { user: authUser } } = await supa.auth.getUser(token);
+          if (authUser) {
+            const { getBetaQuotaForUser } = await import('@/app/lib/beta-quota');
+            const quota = await getBetaQuotaForUser(authUser.id);
+            if (!quota.allowed) {
+              return Response.json(
+                { error: quota.reason, code: 'BETA_QUOTA_EXHAUSTED', remaining: { account: quota.remainingAccount, week: quota.remainingWeek } },
+                { status: 402 },
+              );
+            }
+            betaUserId = authUser.id;
+          }
+        }
+      }
+    }
+
     // ─── Claude API Call ───
     const apiKey = process.env.ANTHROPIC_API_KEY;
 
@@ -313,6 +338,10 @@ export async function POST(request: Request) {
       outputTokens: usage.outputTokens,
     });
 
+    if (betaUserId) {
+      const { incrementBetaUse } = await import('@/app/lib/beta-quota');
+      await incrementBetaUse(betaUserId);
+    }
     return withRateLimitHeaders(Response.json(enrichedResult, { status: 200 }), rateLimit);
   } catch (error) {
     const durationMs = Date.now() - startTime;
