@@ -6,6 +6,8 @@ import { FAQ_ITEMS } from './data';
 import Footer from '../components/Footer';
 import { useAuth } from '@/app/components/AuthProvider';
 import { trackPricingViewed } from '@/app/lib/analytics';
+import { isFeatureEnabled, FEATURES } from '@/app/lib/features';
+import { useLocale } from '@/app/i18n';
 
 const PRICING_PLANS = {
   free: {
@@ -94,8 +96,12 @@ export default function PricingClient() {
     }
   };
 
+  const { locale } = useLocale();
+  const proPrice = locale === 'ko' ? '₩4,900' : PRICING_PLANS.pro.price;
+
+  const isBeta = isFeatureEnabled(FEATURES.BETA_MODE);
   const isLegacy = pricingPlan === 'legacy_999';
-  const displayedProPrice = isLegacy ? '$9.99' : PRICING_PLANS.pro.price;
+  const displayedProPrice = isLegacy ? '$9.99' : proPrice;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
@@ -216,16 +222,42 @@ export default function PricingClient() {
             </div>
 
             {/* Button */}
-            <button
-              onClick={isLegacy ? () => router.push('/dashboard') : handleProPlan}
-              className="btn-primary w-full font-semibold"
-            >
-              {isLegacy ? 'Go to dashboard →' : PRICING_PLANS.pro.cta}
-            </button>
-            {isLegacy && (
-              <p className="mt-2 text-xs text-center text-gray-500">
-                New subscribers now join at $4.99/mo. You joined at launch — locked in forever.
-              </p>
+            {isBeta ? (
+              <>
+                <div className="mb-4 rounded-lg bg-primary/10 border border-primary/30 p-3 text-center">
+                  <div className="text-xs text-primary font-semibold uppercase tracking-wider">Pre-Launch Beta</div>
+                  <div className="text-sm text-gray-300 mt-1">All Pro features free during beta</div>
+                  <div className="text-xs text-gray-500 mt-1">50 uses/account · 300/week</div>
+                </div>
+                <button
+                  onClick={() => router.push('/?auth=1')}
+                  className="btn-primary w-full font-semibold"
+                >
+                  Start Free Beta
+                </button>
+                <p className="mt-2 text-xs text-center text-gray-500">
+                  Launching at {displayedProPrice}/mo · sign up now for beta access
+                </p>
+              </>
+            ) : isLegacy ? (
+              <>
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="btn-primary w-full font-semibold"
+                >
+                  Go to dashboard →
+                </button>
+                <p className="mt-2 text-xs text-center text-gray-500">
+                  New subscribers now join at $4.99/mo. You joined at launch — locked in forever.
+                </p>
+              </>
+            ) : (
+              <button
+                onClick={handleProPlan}
+                className="btn-primary w-full font-semibold"
+              >
+                {PRICING_PLANS.pro.cta}
+              </button>
             )}
           </div>
         </div>
