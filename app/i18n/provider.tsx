@@ -63,8 +63,17 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // Initialize from stored preference or browser detection
   useEffect(() => {
     try {
+      // Priority: 1) cookie set by middleware (path-based), 2) localStorage, 3) browser
+      const cookieLocale = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('smp_locale='))
+        ?.split('=')[1] as SupportedLocale | undefined;
+
       const stored = localStorage.getItem(STORAGE_KEY) as SupportedLocale | null;
-      const initial = stored && SUPPORTED_LOCALES.includes(stored) ? stored : detectBrowserLocale();
+      const initial = (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale) ? cookieLocale : null)
+        || (stored && SUPPORTED_LOCALES.includes(stored) ? stored : null)
+        || detectBrowserLocale();
+
       if (initial !== DEFAULT_LOCALE) {
         setLocaleState(initial);
         localeLoaders[initial]().then((mod) => setMessages(mergeLocale(mod.default)));
