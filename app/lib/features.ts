@@ -45,6 +45,8 @@ export const FEATURES = {
   PRICING_V2: 'PRICING_V2',
   /** Extended SEO hub guide entries (Sprint 3) */
   SEO_HUB_EXT: 'SEO_HUB_EXT',
+  /** Free beta mode — all users get Pro features with usage limits (Sprint 4) */
+  BETA_MODE: 'BETA_MODE',
 } as const;
 
 export type FeatureFlag = (typeof FEATURES)[keyof typeof FEATURES];
@@ -69,6 +71,7 @@ const DEV_ONLY: Set<FeatureFlag> = new Set([
   FEATURES.BUILDER,
   FEATURES.PRICING_V2,
   FEATURES.SEO_HUB_EXT,
+  FEATURES.BETA_MODE,
 ]);
 
 /** Parse enabled features from environment */
