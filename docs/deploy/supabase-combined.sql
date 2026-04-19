@@ -166,3 +166,17 @@ SELECT cron.schedule(
   '0 3 * * *',
   $$DELETE FROM harness_scores WHERE created_at < now() - interval '90 days'$$
 );
+
+-- ============================================================
+-- Migration 006: Beta quota columns (Sprint 4)
+-- ============================================================
+
+ALTER TABLE user_profiles
+  ADD COLUMN IF NOT EXISTS beta_uses_total int DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS beta_week_start timestamptz DEFAULT now(),
+  ADD COLUMN IF NOT EXISTS beta_uses_week int DEFAULT 0;
+
+COMMENT ON COLUMN user_profiles.beta_uses_total IS
+  'Lifetime beta analysis count (Sprint 4)';
+COMMENT ON COLUMN user_profiles.beta_uses_week IS
+  'Rolling weekly beta count — resets when beta_week_start + 7d < now()';
