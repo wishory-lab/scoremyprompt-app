@@ -31,6 +31,22 @@ const MAINTENANCE_BYPASS_PATHS = ['/maintenance', '/api/health', '/api/og', '/fa
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // ── Path-based i18n: extract locale prefix and rewrite ──
+  // /ko/pricing → rewrite to /pricing, set locale cookie + header
+  const localeMatch = pathname.match(/^\/(ko|ja|zh-CN|zh-TW|es|fr|de|pt|hi)(\/.*)?$/);
+  if (localeMatch) {
+    const locale = localeMatch[1]!;
+    const strippedPath = localeMatch[2] || '/';
+    const url = new URL(strippedPath, request.url);
+    // Preserve query string
+    url.search = request.nextUrl.search;
+    const response = NextResponse.rewrite(url);
+    response.cookies.set('smp_locale', locale, { path: '/', maxAge: 365 * 24 * 60 * 60 });
+    response.headers.set('Content-Language', locale);
+    return response;
+  }
+
   const isApiRoute = pathname.startsWith('/api/');
 
   // Emergency maintenance mode — redirect all non-exempt traffic
