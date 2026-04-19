@@ -19,16 +19,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const core = LAST_UPDATED.core;
   const legal = LAST_UPDATED.legal;
 
-  // TODO(i18n-paths): hreflang alternates were removed because the current
-  // i18n system reads locale from localStorage / navigator.language, not from
-  // a `?lang=` query param. Announcing `?lang=ko` alternates would mislead
-  // search engines — Google would crawl the alternate URLs expecting Korean
-  // content and get English. Add hreflang back once path-based i18n
-  // (e.g., `/ko/...`, `/ja/...`) is implemented, at which point each
-  // SupportedLocale's URL should be the path-prefixed version.
-  // Reference: SUPPORTED_LOCALES is imported to keep this dependency live
-  // and remind us to revisit when path-based routing lands.
-  void SUPPORTED_LOCALES;
+  /**
+   * Build an hreflang alternates map for a given path.
+   * English uses no locale prefix; all other locales use /{loc}{path}.
+   * x-default always points to the canonical English URL.
+   */
+  function hreflangMap(path: string): Record<string, string> {
+    const m: Record<string, string> = {};
+    for (const loc of SUPPORTED_LOCALES) {
+      m[loc] = loc === 'en' ? `${baseUrl}${path}` : `${baseUrl}/${loc}${path}`;
+    }
+    m['x-default'] = `${baseUrl}${path}`;
+    return m;
+  }
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -36,17 +39,78 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: core,
       changeFrequency: 'weekly',
       priority: 1.0,
+      alternates: { languages: hreflangMap('/') },
     },
-    { url: `${baseUrl}/pricing`, lastModified: core, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/guides`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${baseUrl}/templates`, lastModified: core, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/leaderboard`, lastModified: core, changeFrequency: 'daily', priority: 0.7 },
-    { url: `${baseUrl}/challenge`, lastModified: core, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${baseUrl}/compare`, lastModified: core, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${baseUrl}/changelog`, lastModified: core, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/launch`, lastModified: core, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/harness`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${baseUrl}/builder`, lastModified: core, changeFrequency: 'weekly', priority: 0.9 },
+    {
+      url: `${baseUrl}/pricing`,
+      lastModified: core,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+      alternates: { languages: hreflangMap('/pricing') },
+    },
+    {
+      url: `${baseUrl}/guides`,
+      lastModified: core,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: { languages: hreflangMap('/guides') },
+    },
+    {
+      url: `${baseUrl}/templates`,
+      lastModified: core,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+      alternates: { languages: hreflangMap('/templates') },
+    },
+    {
+      url: `${baseUrl}/leaderboard`,
+      lastModified: core,
+      changeFrequency: 'daily',
+      priority: 0.7,
+      alternates: { languages: hreflangMap('/leaderboard') },
+    },
+    {
+      url: `${baseUrl}/challenge`,
+      lastModified: core,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+      alternates: { languages: hreflangMap('/challenge') },
+    },
+    {
+      url: `${baseUrl}/compare`,
+      lastModified: core,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+      alternates: { languages: hreflangMap('/compare') },
+    },
+    {
+      url: `${baseUrl}/changelog`,
+      lastModified: core,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+      alternates: { languages: hreflangMap('/changelog') },
+    },
+    {
+      url: `${baseUrl}/launch`,
+      lastModified: core,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+      alternates: { languages: hreflangMap('/launch') },
+    },
+    {
+      url: `${baseUrl}/harness`,
+      lastModified: core,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: { languages: hreflangMap('/harness') },
+    },
+    {
+      url: `${baseUrl}/builder`,
+      lastModified: core,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: { languages: hreflangMap('/builder') },
+    },
     { url: `${baseUrl}/privacy`, lastModified: legal, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/terms`, lastModified: legal, changeFrequency: 'yearly', priority: 0.3 },
   ];
@@ -56,16 +120,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: LAST_UPDATED.guides,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
+    alternates: { languages: hreflangMap(`/guides/${guide.slug}`) },
   }));
 
-  // Alternate language URLs for key pages
-  const langs = ['ko', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'de', 'pt', 'hi'];
-  const i18nPages: MetadataRoute.Sitemap = langs.map((lang) => ({
-    url: `${baseUrl}?lang=${lang}`,
-    lastModified: core,
-    changeFrequency: 'weekly' as const,
-    priority: 0.6,
-  }));
-
-  return [...staticPages, ...guidePages, ...i18nPages];
+  return [...staticPages, ...guidePages];
 }
