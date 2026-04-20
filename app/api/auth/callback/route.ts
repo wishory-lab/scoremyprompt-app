@@ -1,5 +1,6 @@
-import { getSupabaseClient } from '@/app/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
 import { logger } from '@/app/lib/logger';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // Open Redirect prevention — only allow relative paths or known origins
@@ -19,7 +20,7 @@ function getSafeRedirect(raw: string | null): string {
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+  const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
   const error = searchParams.get('error');
   const errorDescription = searchParams.get('error_description');
@@ -27,55 +28,48 @@ export async function GET(request: Request) {
 
   if (error) {
     logger.error('OAuth error', { error, errorDescription: errorDescription || undefined });
-    return NextResponse.redirect(new URL(`/?error=${encodeURIComponent(error)}`, request.url));
+    return NextResponse.redirect(new URL(`/?error=${encodeURIComponent(error)}`, origin));
   }
 
   if (!code) {
     logger.warn('No authorization code provided to callback');
-    return NextResponse.redirect(new URL('/?error=no_code', request.url));
+    return NextResponse.redirect(new URL('/?error=no_code', origin));
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    logger.error('Supabase not configured');
+    return NextResponse.redirect(new URL('/?error=config_error', origin));
   }
 
   try {
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-      throw new Error('Supabase not configured');
-    }
+    const cookieStore = cookies();
 
-    const { data, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        },
+      },
+    });
+
+    const { error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (sessionError) {
       logger.error('Failed to exchange code for session', { error: sessionError.message });
-      return NextResponse.redirect(new URL('/?error=session_error', request.url));
+      return NextResponse.redirect(new URL('/?error=session_error', origin));
     }
 
-    if (!data?.session) {
-      logger.warn('No session created after code exchange');
-      return NextResponse.redirect(new URL('/?error=no_session', request.url));
-    }
-
-    const response = NextResponse.redirect(new URL(redirectTo, request.url), { status: 302 });
-
-    const cookieOptions = {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: 'lax' as const,
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-    };
-
-    const { access_token, refresh_token } = data.session;
-
-    if (access_token) {
-      response.cookies.set('sb-access-token', access_token, cookieOptions);
-    }
-
-    if (refresh_token) {
-      response.cookies.set('sb-refresh-token', refresh_token, cookieOptions);
-    }
-
-    return response;
+    return NextResponse.redirect(new URL(redirectTo, origin));
   } catch (err) {
     logger.error('Callback handler error', { error: String(err) });
-    return NextResponse.redirect(new URL('/?error=callback_error', request.url));
+    return NextResponse.redirect(new URL('/?error=callback_error', origin));
   }
 }

@@ -24,7 +24,7 @@ export async function signInWithMagicLink(
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: process.env.NEXT_PUBLIC_APP_URL || '',
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || ''}/api/auth/callback`,
       },
     });
     return { error: error ? error.message : null };
@@ -43,7 +43,7 @@ export async function signInWithGoogle(
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_APP_URL || '',
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || ''}/api/auth/callback`,
       },
     });
     return { error: error ? error.message : null };
