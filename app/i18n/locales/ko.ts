@@ -22,6 +22,7 @@ const ko: PartialLocale = {
   hero: {
     title: '더 나은 프롬프트를 작성하세요.',
     titleHighlight: '더 나은 AI 결과',
+    titleEnd: '를 얻으세요.',
     subtitle: '프롬프트를 붙여넣으세요. 개선 방안과 함께 즉시 점수를 받으세요.',
     subtitleLine2: '무료, 가입 불필요.',
   },
@@ -35,10 +36,24 @@ const ko: PartialLocale = {
   form: {
     jobRoleLabel: '직무',
     promptLabel: '프롬프트',
+    promptPlaceholder: 'AI 프롬프트를 붙여넣고 무료 점수와 개선 팁을 받으세요...',
     minChars: '최소 10자',
     scoreFree: '무료로 점수 받기',
     analyzing: 'AI 분석 중...',
     frameworkHint: '6가지 차원: 정확성 · 역할 · 출력 형식 · 미션 컨텍스트 · 구조 · 맞춤화',
+    waitMessage: '{seconds}초 대기 중...',
+    leftToday: '오늘 {count}회 남음',
+  },
+
+  // ─── Job Roles ──────────────────────────────────
+  jobRoles: {
+    Marketing: '마케팅',
+    Design: '디자인',
+    Product: '기획',
+    Finance: '재무',
+    Freelance: '프리랜서',
+    Engineering: '개발',
+    Other: '기타',
   },
 
   examples: {
@@ -213,6 +228,42 @@ const ko: PartialLocale = {
     title: '더 나은 프롬프트를 작성할 준비가 되셨나요?',
     subtitle: 'ScoreMyPrompt로 AI 활용 능력을 향상시키는 수천 명의 전문가와 함께하세요.',
     button: '프롬프트 채점하기 — 무료',
+  },
+
+  // ─── Demo ────────────────────────────────────────
+  demo: {
+    title: '직접 확인해 보세요',
+    subtitle: '예시를 클릭하면 PROMPT 점수가 어떻게 작동하는지 볼 수 있습니다',
+    beginner: '초급',
+    intermediate: '중급',
+    advanced: '고급',
+    analysisResult: '분석 결과',
+    promptDimensions: 'PROMPT 차원',
+    tryYourOwn: '내 프롬프트 분석하기',
+    wantToAnalyze: '내 프롬프트를 분석해 보시겠어요?',
+    clickExample: '위의 예시를 클릭하거나 위로 스크롤하여 직접 분석해 보세요',
+    grade: '등급 {grade}',
+  },
+
+  // ─── Waitlist / Newsletter ──────────────────────
+  waitlist: {
+    title: '매주 AI 활용 능력을 높이세요',
+    subtitle: '5,000명 이상의 전문가와 함께하세요. 주간 최고 프롬프트, 새 AI 도구, 실용적인 팁을 보내드립니다.',
+    subscribing: '구독 중...',
+    subscribe: '구독하기',
+    noSpam: '스팸 없음. 언제든 구독 취소 가능.',
+    successTitle: '구독 완료!',
+    successDesc: '이번 주 최고 프롬프트를 확인하고 AI 활용 능력을 향상시켜 보세요.',
+    watchEmail: '다음 이메일에서 확인하세요:',
+    weeklyTips: '매주 월요일 새로운 프롬프트 레시피와 팁',
+    joinCommunity: '커뮤니티 참여',
+    subscribers: '구독자',
+    weeklyPrompts: '주간 프롬프트',
+    spamFree: '스팸 없음',
+    emailEmpty: '이메일 주소를 입력해 주세요',
+    emailInvalid: '유효한 이메일 주소를 입력해 주세요',
+    subscribeFailed: '구독에 실패했습니다. 다시 시도해 주세요.',
+    genericError: '문제가 발생했습니다. 다시 시도해 주세요.',
   },
 
   // ─── Leaderboard ──────────────────────────────────

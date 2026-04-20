@@ -21,8 +21,9 @@ const en = {
 
   // ─── Hero ────────────────────────────────────────
   hero: {
-    title: 'Write better prompts.',
+    title: 'Write better prompts. Get',
     titleHighlight: 'better AI results',
+    titleEnd: '.',
     subtitle: 'Paste your prompt. Get an instant score with actionable fixes.',
     subtitleLine2: 'Free, no signup required.',
   },
@@ -38,10 +39,24 @@ const en = {
   form: {
     jobRoleLabel: 'Your Job Role',
     promptLabel: 'Your Prompt',
+    promptPlaceholder: 'Paste your AI prompt here to get a free score with improvement tips...',
     minChars: 'Min 10 characters',
     scoreFree: 'Score My Prompt — Free',
     analyzing: 'Analyzing with AI...',
     frameworkHint: 'Scored on 6 dimensions: Precision · Role · Output Format · Mission Context · Structure · Tailoring',
+    waitMessage: 'Please wait {seconds}s...',
+    leftToday: '{count} left today',
+  },
+
+  // ─── Job Roles ──────────────────────────────────
+  jobRoles: {
+    Marketing: 'Marketing',
+    Design: 'Design',
+    Product: 'Product',
+    Finance: 'Finance',
+    Freelance: 'Freelance',
+    Engineering: 'Engineering',
+    Other: 'Other',
   },
 
   // ─── Examples ────────────────────────────────────
@@ -226,6 +241,42 @@ const en = {
     title: 'Ready to write better prompts?',
     subtitle: 'Join thousands of professionals who improve their AI skills with ScoreMyPrompt.',
     button: 'Score My Prompt — It\'s Free',
+  },
+
+  // ─── Demo ────────────────────────────────────────
+  demo: {
+    title: 'See It In Action',
+    subtitle: 'Click any example to see how PROMPT Score works',
+    beginner: 'Beginner',
+    intermediate: 'Intermediate',
+    advanced: 'Advanced',
+    analysisResult: 'Analysis Result',
+    promptDimensions: 'PROMPT Dimensions',
+    tryYourOwn: 'Try Your Own Prompt',
+    wantToAnalyze: 'Want to analyze your own prompt?',
+    clickExample: 'Click an example above, or scroll up to analyze your own prompt',
+    grade: 'Grade {grade}',
+  },
+
+  // ─── Waitlist / Newsletter ──────────────────────
+  waitlist: {
+    title: 'Get smarter with AI every week',
+    subtitle: 'Join 5,000+ professionals. We send the week\'s top prompts, new AI tools, and practical tips.',
+    subscribing: 'Subscribing...',
+    subscribe: 'Subscribe',
+    noSpam: 'No spam. Unsubscribe anytime.',
+    successTitle: 'You\'re in!',
+    successDesc: 'Check your inbox for this week\'s top prompts and start improving your AI skills.',
+    watchEmail: 'Watch for emails from',
+    weeklyTips: 'New prompt recipes and tips every Monday',
+    joinCommunity: 'Join our community',
+    subscribers: 'subscribers',
+    weeklyPrompts: 'weekly prompts',
+    spamFree: 'spam-free',
+    emailEmpty: 'Please enter your email address',
+    emailInvalid: 'Please enter a valid email address',
+    subscribeFailed: 'Failed to subscribe. Please try again.',
+    genericError: 'Something went wrong. Please try again.',
   },
 
   // ─── Leaderboard ──────────────────────────────────

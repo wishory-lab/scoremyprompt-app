@@ -25,18 +25,18 @@ interface ExamplePrompt {
   label: string;
 }
 
-const EXAMPLE_PROMPTS: ExamplePrompt[] = [
+const EXAMPLE_PROMPTS_DATA = [
   {
     text: 'You are a senior growth marketer. Create a comprehensive go-to-market strategy for a new SaaS product targeting small businesses (10-50 employees). Include: target persona analysis, positioning statement, pricing strategy, and a 90-day launch plan with KPIs. Format as a structured document with executive summary.',
-    label: 'Marketing Strategy',
+    labelKey: 'marketingStrategy' as const,
   },
   {
     text: 'As a senior UX designer, design a mobile app interface for a meditation platform. Provide: user flow for onboarding (3 screens), home dashboard wireframe description, guided meditation selection with filters, and progress tracking dashboard. Follow iOS HIG guidelines. Output as detailed wireframe specifications.',
-    label: 'Product Design',
+    labelKey: 'productDesign' as const,
   },
   {
     text: 'Act as a CFO advisor. Analyze our quarterly financial performance: Revenue $2.4M (+12% QoQ), COGS 45%, OpEx $1.1M. Provide recommendations for improving cash flow and profitability. Consider seasonal trends in Q4. Output: executive summary, 5 key findings, and 3 actionable recommendations with expected impact.',
-    label: 'Finance Analysis',
+    labelKey: 'financeAnalysis' as const,
   },
 ];
 
@@ -87,11 +87,11 @@ export default function HomeClient() {
 
   const handleAnalyze = async () => {
     if (!prompt.trim()) {
-      setError(VALIDATION.PROMPT_EMPTY);
+      setError(t.validation.promptEmpty);
       return;
     }
     if (prompt.trim().length < 10) {
-      setError(VALIDATION.PROMPT_TOO_SHORT);
+      setError(t.validation.promptTooShort);
       return;
     }
 
@@ -123,20 +123,20 @@ export default function HomeClient() {
         const body = await response.json().catch(() => ({}));
         const retryAfter = body.retryAfter || 60;
         setRetryCountdown(Math.min(retryAfter, 300));
-        setError(`Too many requests. Please wait ${retryAfter} seconds and try again.`);
+        setError(t.errors.rateLimit);
         return;
       }
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error || ERRORS.ANALYZE_FAILED);
+        throw new Error(errData.error || t.errors.analyzeFailed);
       }
 
       const data = await response.json();
       sessionStorage.setItem('promptResult', JSON.stringify(data));
       router.push('/result');
     } catch (err) {
-      setError(err instanceof Error ? err.message : ERRORS.ANALYZE_GENERIC);
+      setError(err instanceof Error ? err.message : t.errors.analyzeGeneric);
       console.error('Analysis error:', err);
     } finally {
       setLoading(false);
@@ -146,9 +146,9 @@ export default function HomeClient() {
   const handleExampleClick = (exampleText: string) => {
     setPrompt(exampleText);
     setError('');
-    const example = EXAMPLE_PROMPTS.find(e => e.text === exampleText);
+    const example = EXAMPLE_PROMPTS_DATA.find(e => e.text === exampleText);
     if (example) {
-      trackDemoClick({ exampleId: example.label.toLowerCase().replace(/\s+/g, '-'), difficulty: 'example' });
+      trackDemoClick({ exampleId: example.labelKey.toLowerCase().replace(/\s+/g, '-'), difficulty: 'example' });
     }
     document.getElementById('analyze')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
@@ -161,7 +161,7 @@ export default function HomeClient() {
           <h2 className="text-fluid-hero font-bold mb-6">
             {t.hero.title}{' '}
             <br className="hidden sm:block" />
-            Get <span className="text-gradient">{t.hero.titleHighlight}</span>.
+            <span className="text-gradient">{t.hero.titleHighlight}</span>{t.hero.titleEnd}
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
             {t.hero.subtitle}
@@ -206,7 +206,7 @@ export default function HomeClient() {
                       : 'bg-dark border border-border text-gray-400 hover:border-primary'
                   }`}
                 >
-                  {role}
+                  {(t.jobRoles as Record<string, string>)[role] || role}
                 </button>
               ))}
             </div>
@@ -215,7 +215,7 @@ export default function HomeClient() {
           {/* Prompt Textarea */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-300 mb-3">
-              Your Prompt
+              {t.form.promptLabel}
             </label>
             <textarea
               id="analyze"
@@ -224,14 +224,14 @@ export default function HomeClient() {
                 setPrompt(e.target.value);
                 setError('');
               }}
-              placeholder={PLACEHOLDERS.PROMPT_INPUT}
+              placeholder={t.form.promptPlaceholder}
               className="input-field min-h-[200px] text-base resize-none"
               maxLength={5000}
               aria-describedby="prompt-hint prompt-error"
             />
             <div className="flex justify-between mt-2">
               <p id="prompt-hint" className="text-xs text-gray-400">
-                {HINTS.PROMPT_MIN_CHARS}
+                {t.form.minChars}
               </p>
               <p className={`text-xs ${prompt.length > 4500 ? 'text-amber-400' : 'text-gray-400'}`}>
                 {prompt.length} / 5,000
@@ -268,7 +268,7 @@ export default function HomeClient() {
                 {t.form.analyzing}
               </span>
             ) : retryCountdown > 0 ? (
-              `Please wait ${retryCountdown}s...`
+              t.form.waitMessage.replace('{seconds}', String(retryCountdown))
             ) : (
               t.form.scoreFree
             )}
@@ -281,7 +281,7 @@ export default function HomeClient() {
             </p>
             {rateLimitRemaining !== null && rateLimitRemaining <= 5 && (
               <p className={`text-xs shrink-0 ml-3 ${rateLimitRemaining <= 2 ? 'text-amber-400' : 'text-gray-500'}`}>
-                {rateLimitRemaining} left today
+                {t.form.leftToday.replace('{count}', String(rateLimitRemaining))}
               </p>
             )}
           </div>
@@ -297,16 +297,16 @@ export default function HomeClient() {
         {/* Example Prompts */}
         <div className="mb-16">
           <h3 className="text-lg font-semibold text-white mb-4">
-            Example Prompts
+            {t.examples.title}
           </h3>
           <div className="grid sm:grid-cols-3 gap-4 stagger-children">
-            {EXAMPLE_PROMPTS.map((example, index) => (
+            {EXAMPLE_PROMPTS_DATA.map((example, index) => (
               <button
                 key={index}
                 onClick={() => handleExampleClick(example.text)}
                 className="card hover:border-primary hover:bg-slate-800/50 transition-all duration-200 text-left"
               >
-                <p className="font-medium text-white mb-2">{example.label}</p>
+                <p className="font-medium text-white mb-2">{(t.examples as Record<string, string>)[example.labelKey] || example.labelKey}</p>
                 <p className="text-sm text-gray-400 line-clamp-3">
                   {example.text}
                 </p>
