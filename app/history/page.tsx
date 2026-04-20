@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../components/AuthProvider';
+import { useTranslation } from '@/app/i18n';
 import EmptyState from '../components/EmptyState';
 import Skeleton from '../components/Skeleton';
 import type { Grade, DimensionMeta } from '@/app/types';
@@ -89,6 +90,7 @@ const GRADES = ['All', 'S', 'A', 'B', 'C', 'D'];
 export default function HistoryPage() {
   const router = useRouter();
   const { user, supabase, loading: authLoading, setShowAuth, setAuthMessage } = useAuth();
+  const t = useTranslation();
   const [analyses, setAnalyses] = useState<HistoryAnalysis[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [jobRoleFilter, setJobRoleFilter] = useState<string>('All');
@@ -195,9 +197,9 @@ export default function HistoryPage() {
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark pt-14">
       <section id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="flex items-center justify-between mb-12">
-          <h2 className="text-4xl font-bold text-white">Analysis History</h2>
+          <h2 className="text-4xl font-bold text-white">{t.history.title}</h2>
           {total > 0 && (
-            <span className="text-sm text-gray-400">{total} analyses</span>
+            <span className="text-sm text-gray-400">{t.history.totalAnalyses.replace('{total}', String(total))}</span>
           )}
         </div>
 
@@ -206,7 +208,7 @@ export default function HistoryPage() {
           <div className="grid sm:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Job Role
+                {t.history.jobRole}
               </label>
               <select
                 value={jobRoleFilter}
@@ -223,7 +225,7 @@ export default function HistoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Grade
+                {t.history.grade}
               </label>
               <select
                 value={gradeFilter}
@@ -240,17 +242,17 @@ export default function HistoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Sort By
+                {t.history.sortBy}
               </label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
                 className="w-full bg-dark border border-border rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary transition-colors"
               >
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="highest">Highest Score</option>
-                <option value="lowest">Lowest Score</option>
+                <option value="newest">{t.history.newest}</option>
+                <option value="oldest">{t.history.oldest}</option>
+                <option value="highest">{t.history.highestScore}</option>
+                <option value="lowest">{t.history.lowestScore}</option>
               </select>
             </div>
           </div>
@@ -340,7 +342,7 @@ export default function HistoryPage() {
                               color: GRADE_CONFIG[analysis.grade].color,
                             }}
                           >
-                            Grade {analysis.grade}
+                            {t.history.gradeLabel.replace('{grade}', analysis.grade)}
                           </span>
                           <span className="inline-block px-2 py-1 rounded text-xs bg-slate-800 text-gray-400">
                             {analysis.jobRole}
@@ -362,7 +364,7 @@ export default function HistoryPage() {
                   {expandedId === analysis.id && analysis.dimensions && (
                     <div className="mt-6 pt-6 border-t border-border animate-fade-in">
                       <div className="mb-6">
-                        <h4 className="text-sm font-bold text-white mb-4">PROMPT Dimensions</h4>
+                        <h4 className="text-sm font-bold text-white mb-4">{t.history.promptDimensions}</h4>
                         <div className="grid sm:grid-cols-2 gap-x-6">
                           {(Object.keys(DIMENSION_META) as DimensionKey[]).map((key) => (
                             analysis.dimensions[key] ? (
@@ -373,7 +375,7 @@ export default function HistoryPage() {
                       </div>
 
                       <button className="btn-secondary w-full text-sm font-medium">
-                        Re-analyze
+                        {t.history.reAnalyze}
                       </button>
                     </div>
                   )}
@@ -388,7 +390,7 @@ export default function HistoryPage() {
                   onClick={handleLoadMore}
                   className="btn-secondary font-semibold px-8 py-3"
                 >
-                  Load More
+                  {t.history.loadMore}
                 </button>
               </div>
             )}

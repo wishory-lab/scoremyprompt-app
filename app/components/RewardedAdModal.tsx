@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/app/i18n';
 import { AD_WATCH_SECONDS } from '../constants';
 
 interface RewardedAdModalProps {
@@ -23,6 +24,7 @@ export default function RewardedAdModal({
   onRewardGranted,
   authToken,
 }: RewardedAdModalProps) {
+  const t = useTranslation();
   const [countdown, setCountdown] = useState(AD_WATCH_SECONDS);
   const [canClose, setCanClose] = useState(false);
   const [isGranting, setIsGranting] = useState(false);
@@ -104,7 +106,7 @@ export default function RewardedAdModal({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-white/80">Watch ad for +1 analysis</span>
+            <span className="text-sm font-medium text-white/80">{t.rewardedAd.watchTitle}</span>
           </div>
           {!canClose && (
             <span className="flex items-center gap-1.5 text-xs text-white/50">
@@ -126,9 +128,9 @@ export default function RewardedAdModal({
               {/* Fallback if ad doesn't load */}
               <div className="text-center">
                 <div className="text-3xl mb-2">&#x1F680;</div>
-                <p className="text-white/40 text-sm">Loading ad...</p>
+                <p className="text-white/40 text-sm">{t.rewardedAd.loadingAd}</p>
                 <p className="text-white/20 text-xs mt-1">
-                  Support SMP by watching this ad
+                  {t.rewardedAd.supportMessage}
                 </p>
               </div>
             </div>
@@ -156,11 +158,11 @@ export default function RewardedAdModal({
               disabled={isGranting}
               className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:opacity-50"
             >
-              {isGranting ? 'Granting credit...' : 'Claim +1 Analysis Credit'}
+              {isGranting ? t.rewardedAd.granting : t.rewardedAd.claimCredit}
             </button>
           ) : (
             <div className="w-full py-3 rounded-xl text-center text-white/40 bg-white/5 border border-white/10">
-              Wait {countdown}s to claim credit
+              {t.rewardedAd.waitClaim.replace('{countdown}', String(countdown))}
             </div>
           )}
 
@@ -168,7 +170,7 @@ export default function RewardedAdModal({
             onClick={onClose}
             className="text-xs text-white/30 hover:text-white/50 transition-colors text-center py-1"
           >
-            {canClose ? 'Skip reward' : 'Cancel'}
+            {canClose ? t.rewardedAd.skipReward : t.rewardedAd.cancel}
           </button>
         </div>
       </div>

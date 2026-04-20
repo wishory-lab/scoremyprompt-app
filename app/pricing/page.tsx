@@ -2,49 +2,51 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/app/i18n';
 import { FAQ_ITEMS } from './data';
 import Footer from '../components/Footer';
 
-const PRICING_PLANS = {
-  free: {
-    name: 'Free',
-    price: '$0',
-    period: '/forever',
-    cta: 'Score My First Prompt',
-    features: [
-      { text: 'Score up to 10 prompts a day', included: true },
-      { text: 'See all 6 PROMPT dimensions', included: true },
-      { text: 'Compare with peers on the leaderboard', included: true },
-      { text: 'Share your score on social media', included: true },
-      { text: 'Ads shown between sections', included: false },
-      { text: 'No saved history', included: false },
-      { text: 'No AI rewrite suggestions', included: false },
-    ],
-  },
-  pro: {
-    name: 'Pro',
-    price: '$9.99',
-    period: '/month',
-    badge: 'Most Popular',
-    trial: '7-day free trial',
-    cta: 'Start Free Trial',
-    highlight: true,
-    features: [
-      { text: 'Unlimited scoring — never hit a daily cap', included: true },
-      { text: 'AI rewrites your prompt for a higher score', included: true },
-      { text: 'Track progress and revisit past analyses', included: true },
-      { text: 'Score 5 prompts at once with Bulk mode', included: true },
-      { text: 'Clean, distraction-free experience', included: true },
-      { text: 'Export polished HTML reports for clients', included: true },
-      { text: 'Priority support when you need help', included: true },
-      { text: 'API access (coming Q2 2026)', included: false },
-    ],
-  },
-};
-
 export default function PricingPage() {
   const router = useRouter();
+  const t = useTranslation();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const PRICING_PLANS = {
+    free: {
+      name: t.pricingDetail.freeName,
+      price: t.pricingDetail.freePrice,
+      period: t.pricingDetail.freePeriod,
+      cta: t.pricingDetail.freeCta,
+      features: [
+        { text: t.pricingDetail.freeFeature1, included: true },
+        { text: t.pricingDetail.freeFeature2, included: true },
+        { text: t.pricingDetail.freeFeature3, included: true },
+        { text: t.pricingDetail.freeFeature4, included: true },
+        { text: t.pricingDetail.freeFeature5, included: false },
+        { text: t.pricingDetail.freeFeature6, included: false },
+        { text: t.pricingDetail.freeFeature7, included: false },
+      ],
+    },
+    pro: {
+      name: t.pricingDetail.proName,
+      price: t.pricingDetail.proPrice,
+      period: t.pricingDetail.proPeriod,
+      badge: t.pricingDetail.proBadge,
+      trial: t.pricingDetail.proTrial,
+      cta: t.pricingDetail.proCta,
+      highlight: true,
+      features: [
+        { text: t.pricingDetail.proFeature1, included: true },
+        { text: t.pricingDetail.proFeature2, included: true },
+        { text: t.pricingDetail.proFeature3, included: true },
+        { text: t.pricingDetail.proFeature4, included: true },
+        { text: t.pricingDetail.proFeature5, included: true },
+        { text: t.pricingDetail.proFeature6, included: true },
+        { text: t.pricingDetail.proFeature7, included: true },
+        { text: t.pricingDetail.proFeature8, included: false },
+      ],
+    },
+  };
 
   const handleFreePlan = () => {
     router.push('/');
@@ -83,10 +85,10 @@ export default function PricingPage() {
           </div>
           <div className="flex items-center gap-4">
             <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-              Home
+              {t.pricingDetail.home}
             </a>
             <a href="https://x.com/scoremyprompt" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-white transition-colors">
-              Community →
+              {t.pricingDetail.community}
             </a>
           </div>
         </div>
@@ -96,10 +98,10 @@ export default function PricingPage() {
         {/* Hero */}
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-            Simple <span className="text-gradient">Pricing</span>
+            {t.pricingDetail.heroTitle} <span className="text-gradient">{t.pricingDetail.heroTitleHighlight}</span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
-            Choose the perfect plan for your prompt engineering needs. No hidden fees, cancel anytime.
+            {t.pricingDetail.heroSubtitle}
           </p>
         </div>
 
@@ -196,7 +198,7 @@ export default function PricingPage() {
         {/* FAQ Section */}
         <div className="max-w-3xl mx-auto">
           <h3 className="text-3xl font-bold text-white text-center mb-12">
-            Frequently Asked Questions
+            {t.pricingDetail.faqTitle}
           </h3>
 
           <div className="space-y-4">

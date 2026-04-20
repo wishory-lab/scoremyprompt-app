@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from '@/app/i18n';
 
 declare global {
   interface Window {
@@ -17,6 +18,7 @@ interface AdBannerProps {
 }
 
 export default function AdBanner({ slot = 'leaderboard', className = '', isPro = false }: AdBannerProps) {
+  const t = useTranslation();
   const [isClient, setIsClient] = useState(false);
 
   const adSlots = {
@@ -83,7 +85,7 @@ export default function AdBanner({ slot = 'leaderboard', className = '', isPro =
         href="/pricing"
         className="mt-3 text-xs text-gray-500 hover:text-gray-400 transition-colors"
       >
-        Remove ads → Go Pro
+        {t.ad.removeAds}
       </a>
     </div>
   );

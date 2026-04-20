@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../components/AuthProvider';
+import { useTranslation } from '@/app/i18n';
 import EmptyState from '../components/EmptyState';
 import Skeleton from '../components/Skeleton';
 import type { Grade } from '@/app/types';
@@ -58,6 +59,7 @@ function getBarColor(score: number): string {
 export default function DashboardPage() {
   const router = useRouter();
   const { user, supabase, tier, loading: authLoading, setShowAuth, setAuthMessage } = useAuth();
+  const t = useTranslation();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -156,13 +158,13 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark pt-14">
       <section id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <h2 className="text-4xl font-bold text-white mb-12">Your Dashboard</h2>
+        <h2 className="text-4xl font-bold text-white mb-12">{t.dashboard.title}</h2>
 
         {error && (
           <div className="card mb-8 border-red-500/30 bg-red-500/5 text-center">
             <p className="text-red-400 text-sm">{error}</p>
             <button onClick={fetchDashboard} className="btn-secondary mt-3 text-sm">
-              Try Again
+              {t.dashboard.tryAgain}
             </button>
           </div>
         )}
@@ -211,12 +213,12 @@ export default function DashboardPage() {
             {/* Stats Grid */}
             <div className="grid sm:grid-cols-4 gap-4 mb-12">
               <div className="card">
-                <p className="text-gray-400 text-sm mb-2">Total Analyses</p>
+                <p className="text-gray-400 text-sm mb-2">{t.dashboard.totalAnalyses}</p>
                 <p className="text-3xl font-bold text-white">{stats.totalAnalyses}</p>
               </div>
 
               <div className="card">
-                <p className="text-gray-400 text-sm mb-2">Best Score</p>
+                <p className="text-gray-400 text-sm mb-2">{t.dashboard.bestScore}</p>
                 <div className="flex items-baseline gap-2">
                   <p className="text-3xl font-bold text-white">{stats.bestScore.value}</p>
                   <span
@@ -232,12 +234,12 @@ export default function DashboardPage() {
               </div>
 
               <div className="card">
-                <p className="text-gray-400 text-sm mb-2">Average Score</p>
+                <p className="text-gray-400 text-sm mb-2">{t.dashboard.averageScore}</p>
                 <p className="text-3xl font-bold text-white">{stats.averageScore}</p>
               </div>
 
               <div className="card">
-                <p className="text-gray-400 text-sm mb-2">Most Used Role</p>
+                <p className="text-gray-400 text-sm mb-2">{t.dashboard.mostUsedRole}</p>
                 <p className="text-3xl font-bold text-white">{stats.mostUsedRole}</p>
               </div>
             </div>
@@ -245,7 +247,7 @@ export default function DashboardPage() {
             {/* Score Trend Section */}
             {trendData.length > 0 && (
               <div className="card mb-12">
-                <h3 className="text-xl font-bold text-white mb-6">Score Trend (Last 14 Days)</h3>
+                <h3 className="text-xl font-bold text-white mb-6">{t.dashboard.scoreTrend}</h3>
                 <div className="h-64 flex items-end gap-1.5 px-2 pb-2 pt-6 bg-slate-800/50 rounded-lg border border-border relative">
                   <div className="absolute left-2 top-2 bottom-8 flex flex-col justify-between text-xs text-gray-400 w-6">
                     <span>100</span>
@@ -281,9 +283,9 @@ export default function DashboardPage() {
             {recentAnalyses.length > 0 && (
               <div className="card mb-12">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-white">Recent Analyses</h3>
+                  <h3 className="text-xl font-bold text-white">{t.dashboard.recentAnalyses}</h3>
                   <a href="/history" className="text-sm text-primary hover:text-accent transition-colors">
-                    View all →
+                    {t.dashboard.viewAll}
                   </a>
                 </div>
 
@@ -346,34 +348,34 @@ export default function DashboardPage() {
         {/* Pro Section or Upgrade CTA */}
         {isPro ? (
           <div className="card bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 mb-12">
-            <h3 className="text-xl font-bold text-white mb-4">Pro Subscription</h3>
-            <p className="text-gray-400 mb-6 text-sm">Manage your subscription and billing settings.</p>
+            <h3 className="text-xl font-bold text-white mb-4">{t.dashboard.proSubscription}</h3>
+            <p className="text-gray-400 mb-6 text-sm">{t.dashboard.proSubscriptionDesc}</p>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handlePortal}
                 className="btn-primary font-semibold"
               >
-                Manage Subscription
+                {t.dashboard.manageSubscription}
               </button>
               <a href="/bulk" className="btn-secondary font-semibold flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                Bulk Analysis
+                {t.result.bulkAnalysis}
               </a>
             </div>
 
             <div className="mt-8 pt-8 border-t border-primary/30">
-              <h4 className="text-lg font-bold text-white mb-4">API Key</h4>
-              <p className="text-gray-400 text-sm">API access coming soon. You&apos;ll be able to integrate ScoreMyPrompt into your own apps.</p>
+              <h4 className="text-lg font-bold text-white mb-4">{t.dashboard.apiKey}</h4>
+              <p className="text-gray-400 text-sm">{t.dashboard.apiKeyDesc}</p>
             </div>
           </div>
         ) : (
           <div className="card bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 text-center py-8">
-            <h3 className="text-2xl font-bold text-white mb-3">Upgrade to Pro</h3>
+            <h3 className="text-2xl font-bold text-white mb-3">{t.dashboard.upgradeToPro}</h3>
             <p className="text-gray-400 mb-6 text-sm">
-              Get unlimited analyses, auto-rewrite suggestions, and more.
+              {t.dashboard.upgradeToProDesc}
             </p>
             <a href="/pricing" className="btn-primary inline-block">
-              View Plans
+              {t.dashboard.viewPlans}
             </a>
           </div>
         )}

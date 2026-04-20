@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from '@/app/i18n';
 
 interface UpgradeBannerProps {
   used: number;
@@ -20,6 +21,7 @@ export default function UpgradeBanner({
   onDismiss,
   onWatchAd,
 }: UpgradeBannerProps) {
+  const t = useTranslation();
   const [isVisible, setIsVisible] = useState(true);
 
   // Show when used >= limit - 1
@@ -46,16 +48,16 @@ export default function UpgradeBanner({
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-white mb-2">
               {isExhausted
-                ? 'You\'ve used all your analyses for today.'
-                : `You've used ${used} of ${limit} analyses today.`}
+                ? t.upgrade.usedAll
+                : t.upgrade.usedSome.replace('{used}', String(used)).replace('{limit}', String(limit))}
             </h3>
 
             <p className="text-gray-400 text-sm mb-4">
               {tier === 'guest'
-                ? 'Sign up free to get 10 bonus credits + earn more by watching ads!'
+                ? t.upgrade.signUpBonus
                 : showAdPrompt
-                  ? 'Watch a short ad to get 1 more analysis, or upgrade for ad-free experience.'
-                  : 'Upgrade to Premium for 33 daily analyses with zero ads.'}
+                  ? t.upgrade.watchAdGuest
+                  : t.upgrade.upgradeHint}
             </p>
 
             {/* Progress bar */}
@@ -73,7 +75,7 @@ export default function UpgradeBanner({
                   href="/auth/signup"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:opacity-90 transition-opacity duration-200 text-sm"
                 >
-                  Sign Up Free (+10 Credits)
+                  {t.upgrade.signUpFree}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -89,14 +91,14 @@ export default function UpgradeBanner({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      Watch Ad (+1 Credit)
+                      {t.upgrade.watchAd}
                     </button>
                   )}
                   <Link
                     href="/pricing"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:opacity-90 transition-opacity duration-200 text-sm"
                   >
-                    Upgrade to Premium
+                    {t.upgrade.upgradePremium}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
