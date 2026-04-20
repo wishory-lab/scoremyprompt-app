@@ -81,7 +81,7 @@ export function reportWebVitals(): void {
       const lastEntry = entries[entries.length - 1] as PerformanceEntry & { startTime: number };
       if (lastEntry) {
         const entry = createEntry('LCP', lastEntry.startTime);
-        capturePerf('web_vital', entry);
+        capturePerf('web_vital', entry as Record<string, unknown>);
         checkBudget('LCP', lastEntry.startTime);
         _collectedVitals.LCP = lastEntry.startTime;
       }
@@ -95,7 +95,7 @@ export function reportWebVitals(): void {
       for (const entry of list.getEntries()) {
         if (entry.name === 'first-contentful-paint') {
           const e = createEntry('FCP', entry.startTime);
-          capturePerf('web_vital', e);
+          capturePerf('web_vital', e as Record<string, unknown>);
           checkBudget('FCP', entry.startTime);
           _collectedVitals.FCP = entry.startTime;
         }
@@ -120,7 +120,7 @@ export function reportWebVitals(): void {
     // Report CLS on page hide
     const reportCLS = () => {
       const entry = createEntry('CLS', clsValue);
-      capturePerf('web_vital', entry);
+      capturePerf('web_vital', entry as Record<string, unknown>);
       checkBudget('CLS', clsValue);
       _collectedVitals.CLS = clsValue;
     };
@@ -145,7 +145,7 @@ export function reportWebVitals(): void {
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden' && worstINP > 0) {
         const entry = createEntry('INP', worstINP);
-        capturePerf('web_vital', entry);
+        capturePerf('web_vital', entry as Record<string, unknown>);
         checkBudget('INP', worstINP);
         _collectedVitals.INP = worstINP;
       }
@@ -160,7 +160,7 @@ export function reportWebVitals(): void {
         const ttfb = navEntry.responseStart - navEntry.requestStart;
         if (ttfb >= 0) {
           const e = createEntry('TTFB', ttfb);
-          capturePerf('web_vital', e);
+          capturePerf('web_vital', e as Record<string, unknown>);
           checkBudget('TTFB', ttfb);
           _collectedVitals.TTFB = ttfb;
         }
