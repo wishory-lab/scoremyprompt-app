@@ -4,7 +4,7 @@ import { logger } from '@/app/lib/logger';
 import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 
 export async function POST(request: Request) {
-  const rl = rateLimit(request, LIMITS.SUBMIT);
+  const rl = await rateLimit(request, LIMITS.SUBMIT);
   if (!rl.ok) return rl.response;
 
   try {

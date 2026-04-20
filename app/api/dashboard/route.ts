@@ -51,7 +51,7 @@ function getGradeFromScore(score: number): Grade {
 }
 
 export async function GET(request: Request) {
-  const rl = rateLimit(request, LIMITS.READ);
+  const rl = await rateLimit(request, LIMITS.READ);
   if (!rl.ok) return rl.response;
 
   try {

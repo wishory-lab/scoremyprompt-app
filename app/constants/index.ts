@@ -25,11 +25,34 @@ export const DIMENSION_META: Record<string, DimensionMeta> = {
 
 export const JOB_ROLES: JobRole[] = ['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other'];
 
+/**
+ * SMP Credit System
+ * ─────────────────────────────────────────────
+ * Guest (비로그인):     2회/일 — 광고 없음, 회원가입 유도
+ * Free  (무료 회원):    3회/일 기본 + 광고 시청으로 추가 획득 (무제한)
+ *                       회원가입 시 보너스 10크레딧 지급
+ * Premium (월 구독):    33회/일 (기본3 + 프리미엄30) — 광고 없음
+ * ─────────────────────────────────────────────
+ */
 export const TIER_LIMITS: Record<string, number> = {
-  guest: 3,
-  free: 10,
-  pro: Infinity,
+  guest: 2,
+  free: 3,
+  premium: 33,
 };
+
+/** Bonus credits given on sign-up */
+export const SIGNUP_BONUS_CREDITS = 10;
+
+/** Max ad-rewarded credits per day for free users */
+export const MAX_AD_CREDITS_PER_DAY = 30;
+
+/** Seconds user must watch the ad before closing */
+export const AD_WATCH_SECONDS = 15;
+
+/** Premium pricing in USD */
+export const PREMIUM_PRICE_USD = 4.99;
+export const PREMIUM_INTRO_PRICE_USD = 2.99;
+export const PREMIUM_INTRO_MONTHS = 3;
 
 export const JOB_ROLE_LABELS: Record<string, string> = {
   Marketing: 'Marketing',

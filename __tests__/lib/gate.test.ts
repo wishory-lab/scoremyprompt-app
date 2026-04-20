@@ -104,11 +104,17 @@ describe('checkGate', () => {
     expect(result.message).toBe('Service unavailable');
   });
 
-  it('returns unlimited for pro tier', async () => {
+  it('returns high limit for premium tier', async () => {
     const supabase = createMockSupabase();
-    const result = await checkGate(supabase, 'user1', 'pro');
+    (supabase.from as jest.Mock).mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({ data: { grace_period_end: null, analyses_today: 0 }, error: null }),
+        }),
+      }),
+    });
+    const result = await checkGate(supabase, 'user1', 'premium');
     expect(result.allowed).toBe(true);
-    expect(result.remaining).toBe(Infinity);
   });
 
   it('guest: allows within limit (3/day)', async () => {

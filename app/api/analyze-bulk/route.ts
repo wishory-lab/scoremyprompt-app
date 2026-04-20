@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       .from('user_profiles').select('tier').eq('id', user.id).single();
 
     if (profileError || !userProfile) throw new AppError('User profile not found', 'PROFILE_NOT_FOUND', 404);
-    if (userProfile.tier !== 'pro') throw new AppError('Pro subscription required for bulk analysis', 'PRO_REQUIRED', 403);
+    if (userProfile.tier !== 'premium' && userProfile.tier !== 'pro') throw new AppError('Premium subscription required for bulk analysis', 'PREMIUM_REQUIRED', 403);
     if (!checkBulkRateLimit(user.id)) throw new AppError('Rate limit exceeded. Max 10 bulk requests per hour.', 'RATE_LIMIT', 429);
 
     const body = await request.json();

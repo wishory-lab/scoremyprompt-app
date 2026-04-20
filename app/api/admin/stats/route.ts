@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
  *   { success, data: { analyses, users, revenue, performance } }
  */
 export async function GET(request: Request) {
-  const rl = rateLimit(request, LIMITS.ADMIN);
+  const rl = await rateLimit(request, LIMITS.ADMIN);
   if (!rl.ok) return rl.response;
 
   // Auth check

@@ -147,7 +147,7 @@ export default function DashboardPage() {
     );
   }
 
-  const isPro = tier === 'pro';
+  const isPro = tier === 'premium' || tier === 'pro';
   const stats = data?.stats;
   const trendData = data?.trend || [];
   const recentAnalyses = data?.recent || [];

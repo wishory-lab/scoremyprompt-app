@@ -42,3 +42,5 @@ infrastructure/n8n/.env
 
 # Docs (not tracked)
 *.docx
+
+.vercel

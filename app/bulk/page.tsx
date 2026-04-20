@@ -37,7 +37,7 @@ export default function BulkAnalysisPage() {
   const [results, setResults] = useState<BulkResult[] | null>(null);
   const [error, setError] = useState('');
 
-  const isPro = tier === 'pro';
+  const isPro = tier === 'premium' || tier === 'pro';
 
   const addPrompt = () => {
     if (prompts.length < 5) {

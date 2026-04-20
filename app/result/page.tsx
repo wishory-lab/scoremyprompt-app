@@ -49,7 +49,7 @@ export default function ResultPage() {
   const [exporting, setExporting] = useState(false);
   const [challenger, setChallenger] = useState<{ name: string; score: number; grade: string } | null>(null);
   const isGuest = !user;
-  const isPro = tier === 'pro';
+  const isPro = tier === 'premium' || tier === 'pro';
   const { shouldShow: showProfile, dismiss: dismissProfile } = useProfilePrompt();
 
   // --- Data loading ---

@@ -76,7 +76,7 @@ function extractDimensions(resultJson: Record<string, unknown> | null): Record<s
 }
 
 export async function GET(request: Request) {
-  const rl = rateLimit(request, LIMITS.READ);
+  const rl = await rateLimit(request, LIMITS.READ);
   if (!rl.ok) return rl.response;
 
   try {

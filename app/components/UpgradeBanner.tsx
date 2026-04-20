@@ -6,14 +6,24 @@ import Link from 'next/link';
 interface UpgradeBannerProps {
   used: number;
   limit: number;
+  tier?: string;
+  showAdPrompt?: boolean;
   onDismiss?: () => void;
+  onWatchAd?: () => void;
 }
 
-export default function UpgradeBanner({ used, limit, onDismiss }: UpgradeBannerProps) {
+export default function UpgradeBanner({
+  used,
+  limit,
+  tier = 'free',
+  showAdPrompt = false,
+  onDismiss,
+  onWatchAd,
+}: UpgradeBannerProps) {
   const [isVisible, setIsVisible] = useState(true);
 
-  // Show when used >= limit - 2 (e.g., 8/10 for free tier)
-  const shouldShow = used >= limit - 2;
+  // Show when used >= limit - 1
+  const shouldShow = used >= limit - 1;
 
   const handleDismiss = () => {
     setIsVisible(false);
@@ -25,23 +35,27 @@ export default function UpgradeBanner({ used, limit, onDismiss }: UpgradeBannerP
   }
 
   const progressPercent = (used / limit) * 100;
+  const isExhausted = used >= limit;
 
   return (
     <div className="card bg-gradient-to-r from-primary/5 via-surface to-accent/5 border-primary/60 relative overflow-hidden mb-6">
-      {/* Gradient border effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-20 pointer-events-none" />
 
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            {/* Main message */}
             <h3 className="text-lg font-semibold text-white mb-2">
-              You've used {used} of {limit} free analyses today.
+              {isExhausted
+                ? 'You\'ve used all your analyses for today.'
+                : `You've used ${used} of ${limit} analyses today.`}
             </h3>
 
-            {/* Subtext */}
             <p className="text-gray-400 text-sm mb-4">
-              Upgrade to Pro for unlimited analyses, auto-rewrite, and more.
+              {tier === 'guest'
+                ? 'Sign up free to get 10 bonus credits + earn more by watching ads!'
+                : showAdPrompt
+                  ? 'Watch a short ad to get 1 more analysis, or upgrade for ad-free experience.'
+                  : 'Upgrade to Premium for 33 daily analyses with zero ads.'}
             </p>
 
             {/* Progress bar */}
@@ -52,26 +66,44 @@ export default function UpgradeBanner({ used, limit, onDismiss }: UpgradeBannerP
               />
             </div>
 
-            {/* CTA Button */}
-            <Link
-              href="/pricing"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:opacity-90 transition-opacity duration-200 text-sm"
-            >
-              Upgrade to Pro
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
-            </Link>
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap gap-3">
+              {tier === 'guest' ? (
+                <Link
+                  href="/auth/signup"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:opacity-90 transition-opacity duration-200 text-sm"
+                >
+                  Sign Up Free (+10 Credits)
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              ) : (
+                <>
+                  {showAdPrompt && onWatchAd && (
+                    <button
+                      onClick={onWatchAd}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 text-white font-medium rounded-lg hover:bg-white/15 transition-colors duration-200 text-sm"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Watch Ad (+1 Credit)
+                    </button>
+                  )}
+                  <Link
+                    href="/pricing"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:opacity-90 transition-opacity duration-200 text-sm"
+                  >
+                    Upgrade to Premium
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Dismiss button */}
@@ -80,18 +112,8 @@ export default function UpgradeBanner({ used, limit, onDismiss }: UpgradeBannerP
             className="flex-shrink-0 text-gray-400 hover:text-gray-300 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 -mt-2 rounded-lg"
             aria-label="Dismiss upgrade banner"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>

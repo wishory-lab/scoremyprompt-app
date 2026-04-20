@@ -35,16 +35,23 @@ export interface AnalysisResult {
   shareId?: string;
 }
 
-export type Tier = 'guest' | 'free' | 'pro';
+/** 'pro' is legacy — kept for backward compatibility with existing DB records */
+export type Tier = 'guest' | 'free' | 'premium' | 'pro';
 
 export interface UserProfile {
   id: string;
   email?: string;
   tier: Tier;
   stripe_customer_id?: string;
+  stripe_subscription_id?: string;
   analyses_today: number;
   last_analysis_date?: string;
   best_score: number;
+  /** One-time bonus credits (e.g., 10 on sign-up) */
+  bonus_credits: number;
+  /** Credits earned from watching rewarded ads today */
+  ad_credits_today: number;
+  grace_period_end?: string | null;
 }
 
 export interface GateCheckResult {
@@ -52,6 +59,10 @@ export interface GateCheckResult {
   remaining: number;
   limit: number;
   message: string;
+  /** If true, user should be shown a rewarded ad to continue */
+  showAdPrompt?: boolean;
+  /** How many ad-credits used today */
+  adCreditsUsed?: number;
 }
 
 export type JobRole = 'Marketing' | 'Design' | 'Product' | 'Finance' | 'Freelance' | 'Engineering' | 'Other';

@@ -51,7 +51,7 @@ interface AnalysisRow {
 const DEFAULT_DIM: DimensionData = { score: 0, maxScore: 0, feedback: 'N/A' };
 
 export async function POST(request: Request) {
-  const rl = rateLimit(request, LIMITS.EXPORT);
+  const rl = await rateLimit(request, LIMITS.EXPORT);
   if (!rl.ok) return rl.response;
 
   try {
@@ -87,8 +87,8 @@ export async function POST(request: Request) {
       return notFoundResponse('User profile not found');
     }
 
-    if (userProfile.tier !== 'pro') {
-      return forbiddenResponse('Pro subscription required for exports');
+    if (userProfile.tier !== 'premium' && userProfile.tier !== 'pro') {
+      return forbiddenResponse('Premium subscription required for exports');
     }
 
     // Parse & validate request body

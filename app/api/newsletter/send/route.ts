@@ -27,7 +27,7 @@ function validateAuth(request: Request): void {
 }
 
 export async function POST(request: Request) {
-  const rl = rateLimit(request, LIMITS.ADMIN);
+  const rl = await rateLimit(request, LIMITS.ADMIN);
   if (!rl.ok) return rl.response;
 
   try {

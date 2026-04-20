@@ -138,8 +138,8 @@ export default function Header() {
                     <div className="px-4 py-3 border-b border-border">
                       <p className="text-sm font-medium text-white truncate">{user.email}</p>
                       <p className="text-xs text-gray-400 mt-0.5">
-                        {tier === 'pro' ? (
-                          <span className="text-primary font-medium">Pro Plan</span>
+                        {(tier === 'premium' || tier === 'pro') ? (
+                          <span className="text-primary font-medium">Premium Plan</span>
                         ) : (
                           'Free Plan'
                         )}
@@ -153,10 +153,10 @@ export default function Header() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       History
                     </Link>
-                    {tier !== 'pro' && (
+                    {tier !== 'premium' && tier !== 'pro' && (
                       <Link href="/pricing" className="flex items-center gap-3 px-4 py-2.5 text-sm text-amber-400 hover:text-amber-300 hover:bg-white/5 transition-colors">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-                        Upgrade to Pro
+                        Upgrade to Premium
                       </Link>
                     )}
                     <div className="border-t border-border mt-1 pt-1">
@@ -238,7 +238,7 @@ export default function Header() {
                 <div className="px-4 py-2">
                   <p className="text-sm font-medium text-white truncate">{user.email}</p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {tier === 'pro' ? <span className="text-primary font-medium">Pro Plan</span> : 'Free Plan'}
+                    {(tier === 'premium' || tier === 'pro') ? <span className="text-primary font-medium">Premium Plan</span> : 'Free Plan'}
                   </p>
                 </div>
                 <Link href="/dashboard" className="px-4 py-3 text-base text-gray-400 hover:text-white rounded-xl hover:bg-white/5 transition-colors flex items-center gap-3">

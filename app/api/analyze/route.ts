@@ -2,90 +2,19 @@ import { z } from 'zod';
 import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { PROMPT_SCORE_SYSTEM } from '@/app/constants/system-prompt';
-import { JOB_ROLE_LABELS, ROLE_BENCHMARKS } from '@/app/constants';
+import { JOB_ROLE_LABELS, ROLE_BENCHMARKS, TIER_LIMITS } from '@/app/constants';
 import { AppError, errorResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
 import { sanitizeInput, containsScriptPattern } from '@/app/lib/sanitize';
-import type { AnalysisResult, Grade } from '@/app/types';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
+import { checkGate, consumeCredit, hashIP } from '@/app/lib/gate';
+import type { AnalysisResult, Grade, Tier } from '@/app/types';
 
 // ─── Request validation ───
 const AnalyzeRequestSchema = z.object({
   prompt: z.string().min(10, 'Prompt must be at least 10 characters long').max(5000, 'Prompt must be under 5,000 characters'),
   jobRole: z.enum(['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other']),
 });
-
-// ─── Rate limiting ───
-// In-memory fallback for dev (not shared across Vercel instances)
-const rateLimitMap = new Map<string, { windowStart: number; count: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000;
-const RATE_LIMIT_MAX = 5;
-const DAILY_LIMIT = 20; // Supabase-based daily limit per IP
-
-interface RateLimitResult {
-  allowed: boolean;
-  remaining: number;
-  limit: number;
-  resetAt: number; // Unix timestamp (seconds) when window/day resets
-}
-
-function checkMemoryRateLimit(ip: string): RateLimitResult {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW) {
-    rateLimitMap.set(ip, { windowStart: now, count: 1 });
-    return { allowed: true, remaining: RATE_LIMIT_MAX - 1, limit: RATE_LIMIT_MAX, resetAt: Math.ceil((now + RATE_LIMIT_WINDOW) / 1000) };
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
-    const resetAt = Math.ceil((entry.windowStart + RATE_LIMIT_WINDOW) / 1000);
-    return { allowed: false, remaining: 0, limit: RATE_LIMIT_MAX, resetAt };
-  }
-
-  entry.count++;
-  const resetAt = Math.ceil((entry.windowStart + RATE_LIMIT_WINDOW) / 1000);
-  return { allowed: true, remaining: RATE_LIMIT_MAX - entry.count, limit: RATE_LIMIT_MAX, resetAt };
-}
-
-async function checkRateLimit(ip: string): Promise<RateLimitResult> {
-  const supabase = getSupabaseAdmin();
-  if (!supabase) return checkMemoryRateLimit(ip);
-
-  try {
-    const ipHash = crypto.createHash('sha256').update(ip).digest('hex').substring(0, 16);
-    const today = new Date().toISOString().split('T')[0];
-
-    const { count, error } = await supabase
-      .from('analyses')
-      .select('*', { count: 'exact', head: true })
-      .eq('ip_hash', ipHash)
-      .gte('created_at', `${today}T00:00:00Z`);
-
-    if (error) {
-      logger.warn('Rate limit query error, falling back to memory', { error: error.message });
-      return checkMemoryRateLimit(ip);
-    }
-
-    const used = count || 0;
-    // Reset at midnight UTC
-    const tomorrow = new Date();
-    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-    tomorrow.setUTCHours(0, 0, 0, 0);
-    const resetAt = Math.ceil(tomorrow.getTime() / 1000);
-
-    return { allowed: used < DAILY_LIMIT, remaining: Math.max(0, DAILY_LIMIT - used), limit: DAILY_LIMIT, resetAt };
-  } catch {
-    return checkMemoryRateLimit(ip);
-  }
-}
-
-/** Attach rate-limit info headers to a Response */
-function withRateLimitHeaders(response: Response, rl: RateLimitResult): Response {
-  response.headers.set('X-RateLimit-Limit', String(rl.limit));
-  response.headers.set('X-RateLimit-Remaining', String(rl.remaining));
-  response.headers.set('X-RateLimit-Reset', String(rl.resetAt));
-  return response;
-}
 
 // ─── Generate short share ID ───
 function generateShareId(): string {
@@ -192,19 +121,44 @@ export async function POST(request: Request) {
       }
     }
 
-    // ─── Rate Limiting ───
+    // ─── Burst Rate Limiting (Redis/memory-backed) ───
+    const rl = await rateLimit(request, LIMITS.ANALYZE);
+    if (!rl.ok) return rl.response;
+
+    // ─── Credit-based Gate Check ───
     const ip =
       request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       request.headers.get('x-real-ip') ||
       'unknown';
 
-    const rateLimit = await checkRateLimit(ip);
-    if (!rateLimit.allowed) {
-      const errResp = Response.json(
-        { error: 'Too many requests. Please wait a moment and try again.', code: 'RATE_LIMIT', retryAfter: rateLimit.resetAt - Math.ceil(Date.now() / 1000) },
+    const supabaseForGate = getSupabaseAdmin();
+    let userTier: Tier = 'guest';
+
+    if (userId && supabaseForGate) {
+      const { data: profile } = await supabaseForGate
+        .from('user_profiles')
+        .select('tier')
+        .eq('id', userId)
+        .single();
+      userTier = (profile?.tier as Tier) || 'free';
+      // Handle legacy 'pro' tier
+      if (userTier === ('pro' as Tier)) userTier = 'premium';
+    }
+
+    const ipHash = hashIP(ip);
+    const gateResult = await checkGate(supabaseForGate, userId || null, userTier, { ipHash });
+
+    if (!gateResult.allowed) {
+      return Response.json(
+        {
+          error: gateResult.message,
+          code: gateResult.showAdPrompt ? 'AD_PROMPT' : 'DAILY_LIMIT',
+          showAdPrompt: gateResult.showAdPrompt || false,
+          remaining: 0,
+          limit: gateResult.limit,
+        },
         { status: 429 },
       );
-      return withRateLimitHeaders(errResp, rateLimit);
     }
 
     // ─── Claude API Call ───
@@ -313,11 +267,22 @@ export async function POST(request: Request) {
       outputTokens: usage.outputTokens,
     });
 
-    return withRateLimitHeaders(Response.json(enrichedResult, { status: 200 }), rateLimit);
+    // ─── Consume credit after successful analysis ───
+    if (userId && supabaseForGate) {
+      await consumeCredit(supabaseForGate, userId, userTier);
+    }
+
+    return Response.json(enrichedResult, {
+      status: 200,
+      headers: {
+        'X-Credits-Remaining': String(gateResult.remaining - 1),
+        'X-Credits-Limit': String(gateResult.limit),
+      },
+    });
   } catch (error) {
     const durationMs = Date.now() - startTime;
     if (error instanceof AppError) {
-      logger.warn('Analysis failed', { durationMs, errorCode: error.code, status: error.statusCode });
+      logger.warn('Analysis failed', { durationMs, errorCode: error.code, status: error.status });
       return errorResponse(error);
     }
     logger.error('Analysis error', { error: String(error), durationMs });

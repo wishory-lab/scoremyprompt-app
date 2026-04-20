@@ -45,7 +45,7 @@ function generateDisplayName(jobRole: string, rank: number): string {
 const VALID_ROLES = new Set(['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other']);
 
 export async function GET(request: Request) {
-  const rl = rateLimit(request, LIMITS.READ);
+  const rl = await rateLimit(request, LIMITS.READ);
   if (!rl.ok) return rl.response;
 
   try {
