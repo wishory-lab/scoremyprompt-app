@@ -78,13 +78,16 @@ export default function BuilderClient() {
         }
         throw new Error(body.error ?? 'Failed to generate');
       }
-      const data = (await res.json()) as { id: string };
+      const data = (await res.json()) as { id: string; selfScore?: { total: number; tier: string } };
       trackBuilderCompleted({
         tier: effectiveTier,
         role: answers.role,
         goalCount: answers.goals.length,
       });
-      router.push(`/builder/result/${data.id}`);
+      const resultUrl = data.selfScore
+        ? `/builder/result/${data.id}?score=${data.selfScore.total}&tier=${encodeURIComponent(data.selfScore.tier)}`
+        : `/builder/result/${data.id}`;
+      router.push(resultUrl);
     } catch (err) {
       setError((err as Error).message);
       setSubmitting(false);

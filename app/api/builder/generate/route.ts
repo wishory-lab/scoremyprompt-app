@@ -19,6 +19,8 @@ import {
   type BuilderFileMap,
   type BuilderGenerateResponse,
 } from '@/app/types/builder';
+import { HARNES_SYSTEM_PROMPT } from '@/app/constants/harness-system-prompt';
+import { HarnessClaudeOutputSchema, computeTotal, computeTier } from '@/app/types/harness';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -247,6 +249,40 @@ export async function POST(req: Request): Promise<Response> {
     // 9. Refresh quota for response
     const finalQuota = await getQuota(user.id, user.tier);
 
+    // 10. Self-score: run HARNES evaluator on the generated CLAUDE.md (optional, best-effort)
+    let selfScore: { total: number; tier: string } | undefined;
+    const claudeMdContent = files['CLAUDE.md'];
+    if (claudeMdContent && apiKey) {
+      try {
+        const scoreRes = await fetch(ANTHROPIC_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+          },
+          signal: AbortSignal.timeout(10_000),
+          body: JSON.stringify({
+            model: ANTHROPIC_MODEL,
+            max_tokens: 800,
+            system: HARNES_SYSTEM_PROMPT,
+            messages: [{ role: 'user', content: `INPUT:\n\n${claudeMdContent}\n\nReturn ONLY JSON.` }],
+          }),
+        });
+        if (scoreRes.ok) {
+          const scoreJson = (await scoreRes.json()) as { content?: { text?: string }[] };
+          const raw = (scoreJson.content?.[0]?.text ?? '').replace(/^```json\s*|```\s*$/g, '').trim();
+          const parsed = HarnessClaudeOutputSchema.safeParse(JSON.parse(raw));
+          if (parsed.success) {
+            const total = computeTotal(parsed.data.scores);
+            selfScore = { total, tier: computeTier(total) };
+          }
+        }
+      } catch {
+        // Self-score is optional; don't fail the build if it errors
+      }
+    }
+
     const response: BuilderGenerateResponse = {
       id,
       files,
@@ -257,6 +293,7 @@ export async function POST(req: Request): Promise<Response> {
         bonusFromShare: finalQuota.bonusFromShare,
         limit: finalQuota.limit,
       },
+      selfScore,
     };
     return Response.json(response, { headers: rl.response.headers });
   } catch (err) {

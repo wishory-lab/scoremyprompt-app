@@ -15,7 +15,12 @@ interface LoadedBuild {
   downloadUrl: string;
 }
 
-export default function BuilderResultClient({ id }: { id: string }) {
+interface SelfScore {
+  total: number;
+  tier: string;
+}
+
+export default function BuilderResultClient({ id, selfScore }: { id: string; selfScore?: SelfScore }) {
   const t = useTranslation();
   const { user, supabase, setShowAuth } = useAuth();
   const [build, setBuild] = useState<LoadedBuild | null>(null);
@@ -178,6 +183,16 @@ export default function BuilderResultClient({ id }: { id: string }) {
             {t.builder.result.expiresNotice.replace('{min}', String(expiresMin))}
           </p>
         </header>
+
+        {selfScore && (
+          <div className="mb-6 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/30 px-4 py-2">
+              <span className="text-2xl font-bold text-white">{selfScore.total}</span>
+              <span className="text-sm text-gray-300">/ 100 HARNES Score</span>
+              <span className="text-xs text-primary font-semibold">{selfScore.tier}</span>
+            </div>
+          </div>
+        )}
 
         {/* Download CTA stack */}
         <div className="space-y-3 mb-8">

@@ -45,6 +45,10 @@ export const BuilderGenerateResponseSchema = z.object({
     bonusFromShare: z.number().int().nonnegative(),
     limit: z.number().int().nonnegative(),  // 1 for Free, effectively Infinity (1000) for Pro
   }),
+  selfScore: z.object({
+    total: z.number().int().min(0).max(100),
+    tier: z.string(),
+  }).optional(),
 });
 export type BuilderGenerateResponse = z.infer<typeof BuilderGenerateResponseSchema>;
 

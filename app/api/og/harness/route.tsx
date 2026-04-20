@@ -32,7 +32,7 @@ export async function GET(req: Request): Promise<Response> {
     }
   }
 
-  return new ImageResponse(
+  const imageRes = new ImageResponse(
     (
       <div
         style={{
@@ -55,4 +55,12 @@ export async function GET(req: Request): Promise<Response> {
     ),
     { ...imageSize },
   );
+  // Clone with cache headers for CDN
+  return new Response(imageRes.body, {
+    status: 200,
+    headers: {
+      ...Object.fromEntries(imageRes.headers.entries()),
+      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+    },
+  });
 }
