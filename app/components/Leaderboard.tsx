@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '../i18n';
 import type { LeaderboardEntry } from '../types';
 
-const JOB_ROLE_FILTERS = ['All', 'Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering'];
+const JOB_ROLE_FILTER_KEYS = ['All', 'Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering'];
 
 const AVATAR_COLORS = [
   'bg-blue-500', 'bg-purple-500', 'bg-pink-500', 'bg-green-500',
@@ -26,18 +27,19 @@ function getAvatarColor(index: number) {
   return AVATAR_COLORS[index % AVATAR_COLORS.length];
 }
 
-const ViewRecipeTooltip = () => (
-  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 border border-gray-700 rounded text-xs text-gray-300 whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-    Coming soon
-  </div>
-);
-
 export default function Leaderboard() {
+  const t = useTranslation();
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [animatedRanks, setAnimatedRanks] = useState<Set<number>>(new Set());
+
+  // Map filter keys to display labels
+  const getFilterLabel = (key: string) => {
+    if (key === 'All') return t.leaderboard.all;
+    return key; // Job role names stay as-is (Marketing, Design, etc.)
+  };
 
   const fetchLeaderboard = useCallback(async (role: string) => {
     setLoading(true);
@@ -45,17 +47,17 @@ export default function Leaderboard() {
     try {
       const params = role && role !== 'All' ? `?role=${encodeURIComponent(role)}` : '';
       const res = await fetch(`/api/leaderboard${params}`);
-      if (!res.ok) throw new Error('Failed to load leaderboard');
+      if (!res.ok) throw new Error(t.leaderboard.loadFailed);
       const data = await res.json();
       setEntries(data.entries || []);
     } catch (err) {
       console.error('Leaderboard fetch error:', err);
-      setError('Could not load leaderboard. Please try again later.');
+      setError(t.leaderboard.loadFailedDesc);
       setEntries([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchLeaderboard(selectedFilter);
@@ -97,26 +99,26 @@ export default function Leaderboard() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-10">
           <div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-              Weekly Leaderboard
+              {t.leaderboard.title}
             </h2>
             <p className="text-gray-400 text-sm">
-              Top prompt scores this week
+              {t.leaderboard.subtitle}
             </p>
           </div>
           <div className="bg-surface border border-border rounded-lg p-4">
-            <p className="text-xs text-gray-400 mb-1">Your best score</p>
+            <p className="text-xs text-gray-400 mb-1">{t.leaderboard.yourBestScore}</p>
             <p className="text-2xl font-bold text-gray-400">--</p>
             <p className="text-xs text-gray-400 mt-1">
               <a href="#" className="text-primary hover:underline">
-                Sign in to see your ranking
+                {t.leaderboard.signInRanking}
               </a>
             </p>
           </div>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-2 mb-8 pb-4 border-b border-border" role="tablist" aria-label="Filter by job role">
-          {JOB_ROLE_FILTERS.map((filter) => (
+        <div className="flex flex-wrap gap-2 mb-8 pb-4 border-b border-border" role="tablist">
+          {JOB_ROLE_FILTER_KEYS.map((filter) => (
             <button
               key={filter}
               role="tab"
@@ -128,17 +130,17 @@ export default function Leaderboard() {
                   : 'bg-surface border border-border text-gray-400 hover:border-primary'
               }`}
             >
-              {filter}
+              {getFilterLabel(filter)}
             </button>
           ))}
         </div>
 
         {/* Loading State */}
         <div aria-live="polite" aria-atomic="true" className="sr-only">
-          {loading ? 'Loading leaderboard...' : `${entries.length} entries loaded`}
+          {loading ? t.leaderboard.loading : `${entries.length}`}
         </div>
         {loading && (
-          <div className="space-y-3" aria-busy="true" aria-label="Loading leaderboard">
+          <div className="space-y-3" aria-busy="true">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="card animate-pulse">
                 <div className="flex items-center gap-4">
@@ -163,7 +165,7 @@ export default function Leaderboard() {
               onClick={() => fetchLeaderboard(selectedFilter)}
               className="btn-primary text-sm"
             >
-              Retry
+              {t.leaderboard.retry}
             </button>
           </div>
         )}
@@ -171,9 +173,9 @@ export default function Leaderboard() {
         {/* Empty State */}
         {!loading && !error && entries.length === 0 && (
           <div className="card text-center py-12">
-            <p className="text-gray-400 mb-2">No entries found{selectedFilter !== 'All' ? ` for ${selectedFilter}` : ''}.</p>
+            <p className="text-gray-400 mb-2">{t.leaderboard.noEntries}</p>
             <p className="text-sm text-gray-400">
-              Be the first to submit a prompt and claim the top spot!
+              {t.leaderboard.noEntriesDesc}
             </p>
           </div>
         )}
@@ -241,11 +243,13 @@ export default function Leaderboard() {
                       <button
                         disabled
                         className="btn-secondary w-full sm:w-auto opacity-50 cursor-not-allowed text-sm"
-                        title="Coming soon"
+                        title={t.leaderboard.comingSoon}
                       >
-                        View Recipe
+                        {t.leaderboard.viewRecipe}
                       </button>
-                      <ViewRecipeTooltip />
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 border border-gray-700 rounded text-xs text-gray-300 whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                        {t.leaderboard.comingSoon}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -257,16 +261,16 @@ export default function Leaderboard() {
         {/* Footer CTA */}
         <div className="mt-12 card bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 text-center">
           <p className="text-gray-300 mb-4">
-            Join the community of prompt engineers sharing their best work
+            {t.leaderboard.communityTitle}
           </p>
           <p className="text-sm text-gray-400">
-            Want to see your prompts on the leaderboard?
+            {t.leaderboard.communitySubtitle}
           </p>
           <a
             href="#"
             className="text-primary hover:text-accent transition-colors mt-2 inline-block text-sm font-medium"
           >
-            Start analyzing your prompts →
+            {t.leaderboard.startAnalyzing} →
           </a>
         </div>
       </div>

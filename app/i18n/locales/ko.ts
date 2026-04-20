@@ -215,6 +215,31 @@ const ko: PartialLocale = {
     button: '프롬프트 채점하기 — 무료',
   },
 
+  // ─── Leaderboard ──────────────────────────────────
+  leaderboard: {
+    title: '주간 리더보드',
+    subtitle: '이번 주 최고 프롬프트 점수',
+    yourBestScore: '내 최고 점수',
+    signInRanking: '로그인하여 순위를 확인하세요',
+    loading: '리더보드 로딩 중...',
+    loadFailed: '리더보드를 불러오지 못했습니다',
+    loadFailedDesc: '리더보드를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.',
+    retry: '다시 시도',
+    noEntries: '아직 항목이 없습니다.',
+    noEntriesDesc: '첫 번째로 프롬프트를 제출하고 1위를 차지하세요!',
+    viewRecipe: '레시피 보기',
+    comingSoon: '곧 공개',
+    communityTitle: '최고의 프롬프트를 공유하는 커뮤니티에 참여하세요',
+    communitySubtitle: '리더보드에 이름을 올리고 싶으신가요?',
+    startAnalyzing: '프롬프트 분석 시작하기',
+    pageTitle: '프롬프트 리더보드',
+    pageSubtitle: '커뮤니티와 프롬프트 실력을 비교해 보세요. 최고 점수자는 배지와 인정을 받습니다.',
+    ctaTitle: '여기에 이름을 올리고 싶으신가요?',
+    ctaSubtitle: '프롬프트를 채점하고 리더보드에 참여하세요. 무료, 가입 불필요.',
+    ctaButton: '프롬프트 채점하기',
+    all: '전체',
+  },
+
   // ─── Footer ───────────────────────────────────────
   footer: {
     privacy: '개인정보처리방침',

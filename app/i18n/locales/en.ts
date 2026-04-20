@@ -228,6 +228,31 @@ const en = {
     button: 'Score My Prompt — It\'s Free',
   },
 
+  // ─── Leaderboard ──────────────────────────────────
+  leaderboard: {
+    title: 'Weekly Leaderboard',
+    subtitle: 'Top prompt scores this week',
+    yourBestScore: 'Your best score',
+    signInRanking: 'Sign in to see your ranking',
+    loading: 'Loading leaderboard...',
+    loadFailed: 'Failed to load leaderboard',
+    loadFailedDesc: 'Could not load leaderboard. Please try again later.',
+    retry: 'Retry',
+    noEntries: 'No entries found.',
+    noEntriesDesc: 'Be the first to submit a prompt and claim the top spot!',
+    viewRecipe: 'View Recipe',
+    comingSoon: 'Coming soon',
+    communityTitle: 'Join the community of prompt engineers sharing their best work',
+    communitySubtitle: 'Want to see your prompts on the leaderboard?',
+    startAnalyzing: 'Start analyzing your prompts',
+    pageTitle: 'Prompt Leaderboard',
+    pageSubtitle: 'See how your prompt skills compare with the community. Top scorers earn badges and recognition.',
+    ctaTitle: 'Want to see your name here?',
+    ctaSubtitle: 'Score your prompt and join the leaderboard. It\'s free — no signup required.',
+    ctaButton: 'Score My Prompt',
+    all: 'All',
+  },
+
   // ─── Footer ───────────────────────────────────────
   footer: {
     privacy: 'Privacy',
