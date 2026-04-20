@@ -75,4 +75,30 @@ describe('middleware', () => {
       }
     });
   });
+
+  describe('i18n locale extraction', () => {
+    it('rewrites /ko/pricing to /pricing with locale cookie', () => {
+      const res = middleware(makeRequest('/ko/pricing'));
+      // NextResponse.rewrite returns a response with x-middleware-rewrite header
+      expect(res.headers.get('Content-Language')).toBe('ko');
+      const cookies = res.cookies.getAll();
+      const localeCookie = cookies.find((c) => c.name === 'smp_locale');
+      expect(localeCookie?.value).toBe('ko');
+    });
+
+    it('passes through /pricing without locale prefix', () => {
+      const res = middleware(makeRequest('/pricing'));
+      expect(res.headers.get('Content-Language')).toBeNull();
+    });
+
+    it('rewrites /ja/ to / with ja locale', () => {
+      const res = middleware(makeRequest('/ja/'));
+      expect(res.headers.get('Content-Language')).toBe('ja');
+    });
+
+    it('preserves query params on rewrite', () => {
+      const res = middleware(makeRequest('/ko/pricing?reason=builder_quota'));
+      expect(res.headers.get('Content-Language')).toBe('ko');
+    });
+  });
 });
