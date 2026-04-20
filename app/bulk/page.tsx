@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslation } from '@/app/i18n';
 import { useAuth } from '../components/AuthProvider';
 import type { Grade, JobRole } from '../types';
 import Footer from '../components/Footer';
@@ -31,6 +32,7 @@ const GRADE_COLORS: Record<string, string> = {
 export default function BulkAnalysisPage() {
   const router = useRouter();
   const { user, tier, supabase, loading: authLoading, setShowAuth, setAuthMessage } = useAuth();
+  const t = useTranslation();
   const [prompts, setPrompts] = useState<string[]>(['']);
   const [jobRole, setJobRole] = useState<JobRole>('Marketing');
   const [loading, setLoading] = useState(false);
@@ -107,16 +109,16 @@ export default function BulkAnalysisPage() {
       <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
         <Nav />
         <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Bulk Analysis</h2>
-          <p className="text-gray-400 mb-8">Sign in to analyze multiple prompts at once.</p>
+          <h2 className="text-3xl font-bold text-white mb-4">{t.bulk.title}</h2>
+          <p className="text-gray-400 mb-8">{t.bulkDetail.signInMessage}</p>
           <button
             onClick={() => {
-              setAuthMessage('Sign in to use Bulk Analysis.');
+              setAuthMessage(t.bulkDetail.signInMessage);
               setShowAuth(true);
             }}
             className="btn-primary"
           >
-            Sign In
+            {t.bulkDetail.signIn}
           </button>
         </section>
       </main>
@@ -131,11 +133,11 @@ export default function BulkAnalysisPage() {
         <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <div className="card bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 py-12">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-6 text-primary" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            <h2 className="text-3xl font-bold text-white mb-3">Bulk Analysis</h2>
-            <p className="text-gray-400 mb-2 text-sm">Analyze up to 5 prompts at once.</p>
-            <p className="text-gray-400 mb-8 text-sm">This feature requires a Pro subscription.</p>
+            <h2 className="text-3xl font-bold text-white mb-3">{t.bulk.title}</h2>
+            <p className="text-gray-400 mb-2 text-sm">{t.bulkDetail.subtitle}</p>
+            <p className="text-gray-400 mb-8 text-sm">{t.bulkDetail.proRequired}</p>
             <Link href="/pricing" className="btn-primary inline-block">
-              Upgrade to Pro
+              {t.bulkDetail.upgradeToPro}
             </Link>
           </div>
         </section>
@@ -150,15 +152,15 @@ export default function BulkAnalysisPage() {
       <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-white">Bulk Analysis</h2>
-            <p className="text-gray-400 text-sm mt-1">Analyze up to 5 prompts at once</p>
+            <h2 className="text-3xl font-bold text-white">{t.bulk.title}</h2>
+            <p className="text-gray-400 text-sm mt-1">{t.bulkDetail.subtitle}</p>
           </div>
           <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded font-medium">PRO</span>
         </div>
 
         {/* Job Role Selection */}
         <div className="card mb-6">
-          <label className="block text-sm font-medium text-gray-300 mb-2">Job Role</label>
+          <label className="block text-sm font-medium text-gray-300 mb-2">{t.history.jobRole}</label>
           <select
             value={jobRole}
             onChange={(e) => setJobRole(e.target.value as JobRole)}
@@ -176,7 +178,7 @@ export default function BulkAnalysisPage() {
             <div key={index} className="card">
               <div className="flex items-center justify-between mb-2">
                 <label className="text-sm font-medium text-gray-300">
-                  Prompt {index + 1}
+                  {t.bulkDetail.promptN.replace('{n}', String(index + 1))}
                 </label>
                 {prompts.length > 1 && (
                   <button
@@ -184,14 +186,14 @@ export default function BulkAnalysisPage() {
                     className="text-xs text-gray-500 hover:text-red-400 transition-colors"
                     aria-label={`Remove prompt ${index + 1}`}
                   >
-                    Remove
+                    {t.bulkDetail.remove}
                   </button>
                 )}
               </div>
               <textarea
                 value={prompt}
                 onChange={(e) => updatePrompt(index, e.target.value)}
-                placeholder="Enter your prompt here (minimum 10 characters)..."
+                placeholder={t.bulkDetail.placeholder}
                 className="w-full bg-dark border border-border rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary transition-colors resize-none"
                 rows={4}
               />
@@ -207,7 +209,7 @@ export default function BulkAnalysisPage() {
               onClick={addPrompt}
               className="btn-secondary text-sm flex items-center gap-1"
             >
-              <span className="text-lg leading-none">+</span> Add Prompt
+              {t.bulkDetail.addPrompt}
             </button>
           )}
           <button
@@ -218,10 +220,10 @@ export default function BulkAnalysisPage() {
             {loading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                Analyzing {prompts.filter((p) => p.trim().length >= 10).length} prompts...
+                {t.bulkDetail.analyzing.replace('{count}', String(prompts.filter((p) => p.trim().length >= 10).length))}
               </>
             ) : (
-              `Analyze ${prompts.filter((p) => p.trim().length >= 10).length || ''} Prompt${prompts.filter((p) => p.trim().length >= 10).length !== 1 ? 's' : ''}`
+              t.bulkDetail.analyzeCount.replace('{count}', String(prompts.filter((p) => p.trim().length >= 10).length || 0))
             )}
           </button>
         </div>
@@ -236,7 +238,7 @@ export default function BulkAnalysisPage() {
         {/* Results */}
         {results && (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-white">Results</h3>
+            <h3 className="text-xl font-bold text-white">{t.bulkDetail.results}</h3>
             {results.map((result, index) => {
               const color = GRADE_COLORS[result.grade] || '#6b7280';
               return (
@@ -266,12 +268,12 @@ export default function BulkAnalysisPage() {
                     {/* Content */}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-white font-medium text-sm">Prompt {index + 1}</span>
+                        <span className="text-white font-medium text-sm">{t.bulkDetail.promptN.replace('{n}', String(index + 1))}</span>
                         <span
                           className="text-xs font-bold px-2 py-0.5 rounded"
                           style={{ backgroundColor: color + '22', color }}
                         >
-                          Grade {result.grade}
+                          {t.history.gradeLabel.replace('{grade}', result.grade)}
                         </span>
                       </div>
                       <p className="text-gray-400 text-xs line-clamp-2">
@@ -285,7 +287,7 @@ export default function BulkAnalysisPage() {
                     <div className="mt-4 pt-4 border-t border-border grid sm:grid-cols-2 gap-4">
                       {result.strengths && result.strengths.length > 0 && (
                         <div>
-                          <p className="text-xs font-bold text-green-400 mb-2">Strengths</p>
+                          <p className="text-xs font-bold text-green-400 mb-2">{t.bulkDetail.strengths}</p>
                           <ul className="space-y-1">
                             {result.strengths.slice(0, 2).map((s, i) => (
                               <li key={i} className="text-xs text-gray-400 flex items-start gap-1">
@@ -297,7 +299,7 @@ export default function BulkAnalysisPage() {
                       )}
                       {result.improvements && result.improvements.length > 0 && (
                         <div>
-                          <p className="text-xs font-bold text-blue-400 mb-2">Improvements</p>
+                          <p className="text-xs font-bold text-blue-400 mb-2">{t.bulkDetail.improvements}</p>
                           <ul className="space-y-1">
                             {result.improvements.slice(0, 2).map((imp, i) => (
                               <li key={i} className="text-xs text-gray-400 flex items-start gap-1">

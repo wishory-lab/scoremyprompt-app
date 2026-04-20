@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from '@/app/i18n';
 import type { Grade, AnalysisResult, DimensionScore, DimensionScores, DimensionMeta, JobRole } from '@/app/types';
 import Footer from '../components/Footer';
 import PromptQualityIndicator from '../components/PromptQualityIndicator';
@@ -108,6 +109,7 @@ const ScoreCircle = ({ score, grade, size = 120 }: ScoreCircleProps) => {
 };
 
 export default function ComparePage() {
+  const t = useTranslation();
   const [prompt1, setPrompt1] = useState<string>('');
   const [prompt2, setPrompt2] = useState<string>('');
   const [jobRole, setJobRole] = useState<JobRole>('Marketing');
@@ -190,10 +192,10 @@ export default function ComparePage() {
           </div>
           <div className="flex items-center gap-4">
             <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-              Home
+              {t.nav.home}
             </a>
             <a href="https://x.com/scoremyprompt" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-white transition-colors">
-              Community →
+              {t.pricingDetail.community}
             </a>
           </div>
         </div>
@@ -201,16 +203,16 @@ export default function ComparePage() {
 
       <section id="main-content" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="text-center mb-12">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">Compare Prompts</h2>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">{t.compare.title}</h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Paste two prompts side-by-side to see which one scores higher
+            {t.compareDetail.heroSubtitle}
           </p>
         </div>
 
         {/* Job Role Selector */}
         <div className="card mb-8">
           <label className="block text-sm font-medium text-gray-300 mb-3">
-            Job Role (for both prompts)
+            {t.compareDetail.jobRoleLabel}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {JOB_ROLES.map((role) => (
@@ -234,7 +236,7 @@ export default function ComparePage() {
           {/* Prompt 1 */}
           <div className="card">
             <label htmlFor="prompt1" className="block text-sm font-medium text-gray-300 mb-3">
-              Prompt 1
+              {t.compareDetail.prompt1}
             </label>
             <textarea
               id="prompt1"
@@ -243,7 +245,7 @@ export default function ComparePage() {
                 setPrompt1(e.target.value);
                 setError('');
               }}
-              placeholder="Paste your first prompt here..."
+              placeholder={t.compareDetail.placeholder1}
               className="input-field min-h-40 sm:min-h-40 min-h-32 resize-none"
               maxLength={5000}
               aria-describedby="prompt1-count"
@@ -259,7 +261,7 @@ export default function ComparePage() {
           {/* Prompt 2 */}
           <div className="card">
             <label htmlFor="prompt2" className="block text-sm font-medium text-gray-300 mb-3">
-              Prompt 2
+              {t.compareDetail.prompt2}
             </label>
             <textarea
               id="prompt2"
@@ -268,7 +270,7 @@ export default function ComparePage() {
                 setPrompt2(e.target.value);
                 setError('');
               }}
-              placeholder="Paste your second prompt here..."
+              placeholder={t.compareDetail.placeholder2}
               className="input-field min-h-40 sm:min-h-40 min-h-32 resize-none"
               maxLength={5000}
               aria-describedby="prompt2-count"
@@ -299,10 +301,10 @@ export default function ComparePage() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Comparing...
+                {t.compareDetail.comparing}
               </span>
             ) : (
-              'Compare'
+              t.compareDetail.compare
             )}
           </button>
         </div>
@@ -320,7 +322,7 @@ export default function ComparePage() {
             >
               {winner === 1 && (
                 <div className="mb-4 inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold">
-                  ✓ Winner
+                  {t.compareDetail.winner}
                 </div>
               )}
 
@@ -329,18 +331,18 @@ export default function ComparePage() {
               </div>
 
               <div className="text-center mb-6 pb-6 border-b border-border">
-                <p className="text-gray-400 mb-3">Score Difference</p>
+                <p className="text-gray-400 mb-3">{t.compareDetail.scoreDifference}</p>
                 <p className="text-2xl font-bold text-white">
                   {winner === 1
-                    ? `+${delta} points`
+                    ? t.compareDetail.pointsPlus.replace('{delta}', String(delta))
                     : winner === 2
-                    ? `-${delta} points`
-                    : 'Tied'}
+                    ? t.compareDetail.pointsMinus.replace('{delta}', String(delta))
+                    : t.compareDetail.tied}
                 </p>
               </div>
 
               <div>
-                <h4 className="text-sm font-bold text-white mb-4">Dimensions</h4>
+                <h4 className="text-sm font-bold text-white mb-4">{t.compareDetail.dimensions}</h4>
                 {(Object.keys(DIMENSION_META) as DimensionKey[]).map((key) => (
                   <DimensionBar
                     key={key}
@@ -361,7 +363,7 @@ export default function ComparePage() {
             >
               {winner === 2 && (
                 <div className="mb-4 inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold">
-                  ✓ Winner
+                  {t.compareDetail.winner}
                 </div>
               )}
 
@@ -370,18 +372,18 @@ export default function ComparePage() {
               </div>
 
               <div className="text-center mb-6 pb-6 border-b border-border">
-                <p className="text-gray-400 mb-3">Score Difference</p>
+                <p className="text-gray-400 mb-3">{t.compareDetail.scoreDifference}</p>
                 <p className="text-2xl font-bold text-white">
                   {winner === 2
-                    ? `+${delta} points`
+                    ? t.compareDetail.pointsPlus.replace('{delta}', String(delta))
                     : winner === 1
-                    ? `-${delta} points`
-                    : 'Tied'}
+                    ? t.compareDetail.pointsMinus.replace('{delta}', String(delta))
+                    : t.compareDetail.tied}
                 </p>
               </div>
 
               <div>
-                <h4 className="text-sm font-bold text-white mb-4">Dimensions</h4>
+                <h4 className="text-sm font-bold text-white mb-4">{t.compareDetail.dimensions}</h4>
                 {(Object.keys(DIMENSION_META) as DimensionKey[]).map((key) => (
                   <DimensionBar
                     key={key}
@@ -396,12 +398,12 @@ export default function ComparePage() {
 
         {/* CTA */}
         <div className="card bg-gradient-to-r from-accent/20 to-primary/20 border-accent/30 text-center py-8">
-          <h4 className="text-2xl font-bold text-white mb-3">Want deeper analysis?</h4>
+          <h4 className="text-2xl font-bold text-white mb-3">{t.compareDetail.wantDeeper}</h4>
           <p className="text-gray-400 mb-6 max-w-xl mx-auto text-sm">
-            Use our full analyzer to get detailed feedback on individual prompts and rewrite suggestions.
+            {t.compareDetail.wantDeeperDesc}
           </p>
           <a href="/" className="btn-primary inline-block">
-            Try our full analyzer →
+            {t.compareDetail.tryFullAnalyzer}
           </a>
         </div>
       </section>
