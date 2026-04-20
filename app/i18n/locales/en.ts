@@ -11,12 +11,19 @@ const en = {
 
   // ─── Navigation ──────────────────────────────────
   nav: {
+    home: 'Home',
     templates: 'Templates',
     pricing: 'Pricing',
     dashboard: 'Dashboard',
+    history: 'History',
     bulk: 'Bulk',
     signIn: 'Sign In',
     signOut: 'Sign Out',
+    upgradePremium: 'Upgrade to Premium',
+    premiumPlan: 'Premium Plan',
+    freePlan: 'Free Plan',
+    articles: 'Articles',
+    changelog: 'Changelog',
   },
 
   // ─── Hero ────────────────────────────────────────
@@ -155,6 +162,12 @@ const en = {
     magicLinkHint: "No password needed. We'll send you a login link.",
     checkEmailTitle: 'Check your email!',
     checkEmailDesc: "We've sent you a login link. Click it to sign in to ScoreMyPrompt.",
+    signInTitle: 'Sign in to ScoreMyPrompt',
+    sending: 'Sending...',
+    sendMagicLink: 'Send Magic Link',
+    or: 'or',
+    continueWithGoogle: 'Continue with Google',
+    close: 'Close',
   },
 
   // ─── Exit Intent ─────────────────────────────────
@@ -310,7 +323,45 @@ const en = {
     terms: 'Terms',
     pricing: 'Pricing',
     guides: 'Guides',
+    articles: 'Articles',
+    changelog: 'Changelog',
+    security: 'Security',
     copyright: '© {year} ScoreMyPrompt. All rights reserved.',
+  },
+
+  // ─── Analysis Loading ─────────────────────────────
+  analysisLoading: {
+    step1Label: 'Reading your prompt',
+    step1Detail: 'Identifying key elements and structure',
+    step2Label: 'Analyzing 6 PROMPT dimensions',
+    step2Detail: 'Precision · Role · Output · Mission · Structure · Tailoring',
+    step3Label: 'Calculating your score',
+    step3Detail: 'Comparing against 5,000+ analyzed prompts',
+    step4Label: 'Generating personalized feedback',
+    step4Detail: 'Creating actionable improvement suggestions',
+    tip1Text: '85% of top-scoring prompts include a specific Role.',
+    tip1Category: 'Did you know?',
+    tip2Text: 'Adding output format can boost your score by 15 points.',
+    tip2Category: 'Pro tip',
+    tip3Text: 'The average prompt scores 62 points. Can you beat it?',
+    tip3Category: 'Fun fact',
+    tip4Text: 'Context-rich prompts score 2x higher on Mission Context.',
+    tip4Category: 'Pro tip',
+    tip5Text: 'Prompts with clear structure are 3x easier for AI to follow.',
+    tip5Category: 'Research',
+  },
+
+  // ─── Onboarding Tour ──────────────────────────────
+  onboarding: {
+    step1Title: 'Paste Your Prompt',
+    step1Desc: 'Drop any AI prompt here — ChatGPT, Claude, Gemini, or any LLM. We\'ll score it across 6 dimensions.',
+    step2Title: 'Pick Your Role',
+    step2Desc: 'Select your job role so we can benchmark your prompt against peers in the same field.',
+    step3Title: 'Get Your Score',
+    step3Desc: 'Hit this button and get your PROMPT Score in under 5 seconds — completely free, no signup needed.',
+    skipTour: 'Skip tour',
+    next: 'Next',
+    gotIt: 'Got it!',
   },
 } as const;
 

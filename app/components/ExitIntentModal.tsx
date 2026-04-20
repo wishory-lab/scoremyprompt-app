@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Modal from './Modal';
 import { useAuth } from './AuthProvider';
+import { useTranslation } from '@/app/i18n';
 import { trackSignupInitiated, trackExitIntentShown, trackExitIntentCTA } from '../lib/analytics';
 
 const STORAGE_KEY = 'smp_exit_intent_shown';
@@ -15,6 +16,7 @@ const DELAY_MS = 5000; // Don't trigger within first 5s
  */
 export default function ExitIntentModal() {
   const { user, setShowAuth, setAuthMessage } = useAuth();
+  const t = useTranslation();
   const [show, setShow] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -58,7 +60,7 @@ export default function ExitIntentModal() {
 
   const handleCTA = () => {
     setShow(false);
-    setAuthMessage('Create a free account to save your scores and track progress.');
+    setAuthMessage(t.auth.signInFeatures);
     setShowAuth(true);
     trackSignupInitiated({ source: 'exit_intent' });
     trackExitIntentCTA();
@@ -69,7 +71,7 @@ export default function ExitIntentModal() {
   if (!show) return null;
 
   return (
-    <Modal isOpen={show} onClose={handleDismiss} title="Before you go...">
+    <Modal isOpen={show} onClose={handleDismiss} title={t.exitIntent.title}>
       <div className="text-center px-2 py-4">
         {/* Icon */}
         <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
@@ -77,27 +79,27 @@ export default function ExitIntentModal() {
         </div>
 
         <h2 className="text-2xl font-bold text-white mb-3">
-          Wait — don&apos;t leave yet!
+          {t.exitIntent.title}
         </h2>
         <p className="text-gray-400 mb-6 max-w-sm mx-auto text-sm leading-relaxed">
-          You haven&apos;t scored a prompt yet. It takes 30 seconds and it&apos;s completely free. See how your AI skills compare with other professionals.
+          {t.exitIntent.subtitle}
         </p>
 
         {/* Stats row */}
         <div className="flex justify-center gap-6 mb-8">
           <div>
             <p className="text-xl font-bold text-primary">5,000+</p>
-            <p className="text-xs text-gray-500">Prompts scored</p>
+            <p className="text-xs text-gray-500">{t.exitIntent.promptsScored}</p>
           </div>
           <div className="w-px bg-border" />
           <div>
             <p className="text-xl font-bold text-accent">30s</p>
-            <p className="text-xs text-gray-500">Average time</p>
+            <p className="text-xs text-gray-500">{t.exitIntent.averageTime}</p>
           </div>
           <div className="w-px bg-border" />
           <div>
             <p className="text-xl font-bold text-success">Free</p>
-            <p className="text-xs text-gray-500">No card needed</p>
+            <p className="text-xs text-gray-500">{t.exitIntent.noCardNeeded}</p>
           </div>
         </div>
 
@@ -106,13 +108,13 @@ export default function ExitIntentModal() {
           onClick={handleCTA}
           className="btn-primary w-full text-base font-semibold mb-3"
         >
-          Score My Prompt — Free
+          {t.form.scoreFree}
         </button>
         <button
           onClick={handleDismiss}
           className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
         >
-          No thanks, I&apos;ll pass
+          {t.exitIntent.noThanks}
         </button>
       </div>
     </Modal>

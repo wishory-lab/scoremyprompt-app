@@ -1,38 +1,41 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from '@/app/i18n';
 
 interface TourStep {
-  target: string; // CSS selector or element ID
+  target: string;
   title: string;
   description: string;
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
-const TOUR_STEPS: TourStep[] = [
-  {
-    target: '#analyze',
-    title: 'Paste Your Prompt',
-    description: 'Drop any AI prompt here — ChatGPT, Claude, Gemini, or any LLM. We\'ll score it across 6 dimensions.',
-    position: 'top',
-  },
-  {
-    target: '[data-tour="role-selector"]',
-    title: 'Pick Your Role',
-    description: 'Select your job role so we can benchmark your prompt against peers in the same field.',
-    position: 'bottom',
-  },
-  {
-    target: '[data-tour="analyze-btn"]',
-    title: 'Get Your Score',
-    description: 'Hit this button and get your PROMPT Score in under 5 seconds — completely free, no signup needed.',
-    position: 'top',
-  },
-];
-
 const STORAGE_KEY = 'smp_tour_completed';
 
 export default function OnboardingTour() {
+  const t = useTranslation();
+
+  const TOUR_STEPS: TourStep[] = useMemo(() => [
+    {
+      target: '#analyze',
+      title: t.onboarding.step1Title,
+      description: t.onboarding.step1Desc,
+      position: 'top',
+    },
+    {
+      target: '[data-tour="role-selector"]',
+      title: t.onboarding.step2Title,
+      description: t.onboarding.step2Desc,
+      position: 'bottom',
+    },
+    {
+      target: '[data-tour="analyze-btn"]',
+      title: t.onboarding.step3Title,
+      description: t.onboarding.step3Desc,
+      position: 'top',
+    },
+  ], [t]);
+
   const [currentStep, setCurrentStep] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
@@ -41,7 +44,6 @@ export default function OnboardingTour() {
     try {
       const completed = localStorage.getItem(STORAGE_KEY);
       if (!completed) {
-        // Delay to let page render
         const timer = setTimeout(() => setIsVisible(true), 1500);
         return () => clearTimeout(timer);
       }
@@ -74,14 +76,11 @@ export default function OnboardingTour() {
         top = rect.top + scrollY + rect.height / 2;
     }
 
-    // Clamp left position
     left = Math.max(180, Math.min(left, window.innerWidth - 180));
 
     setTooltipPos({ top, left });
-
-    // Scroll element into view
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, [currentStep]);
+  }, [currentStep, TOUR_STEPS]);
 
   useEffect(() => {
     if (isVisible) {
@@ -130,7 +129,7 @@ export default function OnboardingTour() {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={`Onboarding step ${currentStep + 1} of ${TOUR_STEPS.length}: ${step.title}`}
+        aria-label={`${currentStep + 1}/${TOUR_STEPS.length}: ${step.title}`}
         className="fixed z-[61] w-80 max-w-[calc(100vw-2rem)] transition-all duration-300 ease-out"
         style={{
           top: isAbove ? tooltipPos.top : tooltipPos.top,
@@ -177,13 +176,13 @@ export default function OnboardingTour() {
               onClick={handleDismiss}
               className="text-xs text-gray-500 hover:text-gray-300 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
             >
-              Skip tour
+              {t.onboarding.skipTour}
             </button>
             <button
               onClick={handleNext}
               className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
             >
-              {isLast ? 'Got it!' : 'Next'}
+              {isLast ? t.onboarding.gotIt : t.onboarding.next}
             </button>
           </div>
         </div>

@@ -1,32 +1,35 @@
 'use client';
-import { useState, useEffect } from 'react';
-
-const STEPS = [
-  { label: 'Reading your prompt', detail: 'Identifying key elements and structure', duration: 1500, icon: '📖' },
-  { label: 'Analyzing 6 PROMPT dimensions', detail: 'Precision · Role · Output · Mission · Structure · Tailoring', duration: 3000, icon: '🔬' },
-  { label: 'Calculating your score', detail: 'Comparing against 5,000+ analyzed prompts', duration: 2000, icon: '📊' },
-  { label: 'Generating personalized feedback', detail: 'Creating actionable improvement suggestions', duration: 2000, icon: '✨' },
-];
-
-const TIPS = [
-  { text: '85% of top-scoring prompts include a specific Role.', category: 'Did you know?' },
-  { text: 'Adding output format can boost your score by 15 points.', category: 'Pro tip' },
-  { text: 'The average prompt scores 62 points. Can you beat it?', category: 'Fun fact' },
-  { text: 'Context-rich prompts score 2x higher on Mission Context.', category: 'Pro tip' },
-  { text: 'Prompts with clear structure are 3x easier for AI to follow.', category: 'Research' },
-];
+import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from '@/app/i18n';
 
 export default function AnalysisLoading() {
+  const t = useTranslation();
+
+  const STEPS = useMemo(() => [
+    { label: t.analysisLoading.step1Label, detail: t.analysisLoading.step1Detail, duration: 1500, icon: '📖' },
+    { label: t.analysisLoading.step2Label, detail: t.analysisLoading.step2Detail, duration: 3000, icon: '🔬' },
+    { label: t.analysisLoading.step3Label, detail: t.analysisLoading.step3Detail, duration: 2000, icon: '📊' },
+    { label: t.analysisLoading.step4Label, detail: t.analysisLoading.step4Detail, duration: 2000, icon: '✨' },
+  ], [t]);
+
+  const TIPS = useMemo(() => [
+    { text: t.analysisLoading.tip1Text, category: t.analysisLoading.tip1Category },
+    { text: t.analysisLoading.tip2Text, category: t.analysisLoading.tip2Category },
+    { text: t.analysisLoading.tip3Text, category: t.analysisLoading.tip3Category },
+    { text: t.analysisLoading.tip4Text, category: t.analysisLoading.tip4Category },
+    { text: t.analysisLoading.tip5Text, category: t.analysisLoading.tip5Category },
+  ], [t]);
+
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [tip] = useState(TIPS[Math.floor(Math.random() * TIPS.length)]);
+  const [tip] = useState(() => TIPS[Math.floor(Math.random() * TIPS.length)]);
 
   useEffect(() => {
     const timers = STEPS.map((s, i) =>
       setTimeout(() => setStep(i), STEPS.slice(0, i).reduce((a, b) => a + b.duration, 0))
     );
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [STEPS]);
 
   // Smooth progress bar
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function AnalysisLoading() {
       });
     }, 50);
     return () => clearInterval(interval);
-  }, []);
+  }, [STEPS]);
 
   return (
     <div className="space-y-6">

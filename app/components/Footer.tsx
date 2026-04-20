@@ -19,10 +19,10 @@ export default function Footer() {
               {t.footer.guides}
             </a>
             <a href="/guides" className="text-gray-500 hover:text-white transition-colors">
-              Articles
+              {t.footer.articles}
             </a>
             <a href="/changelog" className="text-gray-500 hover:text-white transition-colors">
-              Changelog
+              {t.footer.changelog}
             </a>
             <a href="/privacy" className="text-gray-500 hover:text-white transition-colors">
               {t.footer.privacy}
@@ -31,7 +31,7 @@ export default function Footer() {
               {t.footer.terms}
             </a>
             <a href="/security-policy" className="text-gray-500 hover:text-white transition-colors">
-              Security
+              {t.footer.security}
             </a>
             <span className="text-gray-600 hidden sm:inline">&middot;</span>
             <LanguageSwitcher />

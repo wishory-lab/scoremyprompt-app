@@ -11,12 +11,19 @@ const ko: PartialLocale = {
   },
 
   nav: {
+    home: '홈',
     templates: '템플릿',
     pricing: '요금제',
     dashboard: '대시보드',
+    history: '히스토리',
     bulk: '대량 분석',
     signIn: '로그인',
     signOut: '로그아웃',
+    upgradePremium: '프리미엄으로 업그레이드',
+    premiumPlan: '프리미엄 플랜',
+    freePlan: '무료 플랜',
+    articles: '아티클',
+    changelog: '변경 이력',
   },
 
   hero: {
@@ -144,6 +151,12 @@ const ko: PartialLocale = {
     magicLinkHint: '비밀번호 불필요. 로그인 링크를 보내드립니다.',
     checkEmailTitle: '이메일을 확인하세요!',
     checkEmailDesc: '로그인 링크를 보내드렸습니다. 링크를 클릭하여 로그인하세요.',
+    signInTitle: 'ScoreMyPrompt 로그인',
+    sending: '전송 중...',
+    sendMagicLink: '매직 링크 보내기',
+    or: '또는',
+    continueWithGoogle: 'Google로 계속하기',
+    close: '닫기',
   },
 
   exitIntent: {
@@ -297,7 +310,45 @@ const ko: PartialLocale = {
     terms: '이용약관',
     pricing: '요금제',
     guides: '가이드',
+    articles: '아티클',
+    changelog: '변경 이력',
+    security: '보안 정책',
     copyright: '© {year} ScoreMyPrompt. All rights reserved.',
+  },
+
+  // ─── Analysis Loading ─────────────────────────────
+  analysisLoading: {
+    step1Label: '프롬프트 읽는 중',
+    step1Detail: '핵심 요소와 구조 파악 중',
+    step2Label: '6가지 PROMPT 차원 분석 중',
+    step2Detail: '정확성 · 역할 · 출력 · 미션 · 구조 · 맞춤화',
+    step3Label: '점수 계산 중',
+    step3Detail: '5,000개 이상의 분석된 프롬프트와 비교 중',
+    step4Label: '맞춤 피드백 생성 중',
+    step4Detail: '실행 가능한 개선 제안 생성 중',
+    tip1Text: '상위 점수 프롬프트의 85%가 구체적인 역할(Role)을 포함합니다.',
+    tip1Category: '알고 계셨나요?',
+    tip2Text: '출력 형식을 추가하면 점수가 15점 올라갈 수 있습니다.',
+    tip2Category: '프로 팁',
+    tip3Text: '프롬프트 평균 점수는 62점입니다. 이길 수 있나요?',
+    tip3Category: '재미있는 사실',
+    tip4Text: '컨텍스트가 풍부한 프롬프트는 미션 컨텍스트 점수가 2배 높습니다.',
+    tip4Category: '프로 팁',
+    tip5Text: '구조가 명확한 프롬프트는 AI가 따르기 3배 쉽습니다.',
+    tip5Category: '리서치',
+  },
+
+  // ─── Onboarding Tour ──────────────────────────────
+  onboarding: {
+    step1Title: '프롬프트를 붙여넣으세요',
+    step1Desc: 'ChatGPT, Claude, Gemini 등 어떤 AI 프롬프트든 여기에 넣으세요. 6가지 차원으로 점수를 매겨 드립니다.',
+    step2Title: '직무를 선택하세요',
+    step2Desc: '같은 분야 전문가들과 프롬프트를 벤치마크하기 위해 직무를 선택해 주세요.',
+    step3Title: '점수를 확인하세요',
+    step3Desc: '이 버튼을 누르면 5초 이내에 PROMPT 점수를 받을 수 있습니다 — 완전 무료, 가입 불필요.',
+    skipTour: '투어 건너뛰기',
+    next: '다음',
+    gotIt: '알겠어요!',
   },
 } as const;
 
