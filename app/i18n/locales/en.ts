@@ -228,10 +228,15 @@ const en = {
   },
 } as const;
 
-// DeepString: keep structure required, but allow any string value for translations
+// DeepString: allow any string value for translations, top-level sections optional for partial locales
 type DeepString<T> = {
-  [K in keyof T]: T[K] extends string ? string : T[K] extends object ? DeepString<T[K]> : T[K];
+  [K in keyof T]?: T[K] extends string ? string : T[K] extends object ? DeepString<T[K]> : T[K];
 };
 
-export type Locale = DeepString<typeof en>;
-export default en as Locale;
+// Full locale type (en) — all sections present
+type FullLocale = {
+  [K in keyof typeof en]: (typeof en)[K] extends string ? string : { [P in keyof (typeof en)[K]]: string };
+};
+
+export type Locale = Partial<FullLocale>;
+export default en as FullLocale;
