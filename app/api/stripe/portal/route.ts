@@ -63,9 +63,4 @@ export async function POST(request: Request) {
 
     const session = await portalResponse.json();
     return Response.json({ url: session.url }, { status: 200 });
-  } catch (error) {
-    if (error instanceof AppError) return errorResponse(error);
-    logger.error('Portal error', { error: String(error) });
-    return errorResponse(error as Error);
-  }
-}
+  } c

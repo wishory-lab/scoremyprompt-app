@@ -95,10 +95,4 @@ export async function POST(request: Request) {
     }
 
     const session = await checkoutResponse.json();
-    return Response.json({ url: session.url }, { status: 200 });
-  } catch (error) {
-    if (error instanceof AppError) return errorResponse(error);
-    logger.error('Checkout error', { error: String(error) });
-    return errorResponse(error as Error);
-  }
-}
+    return Response.json({ url: session.

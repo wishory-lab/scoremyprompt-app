@@ -161,13 +161,4 @@ export async function GET(request: Request) {
 
     const response: HistoryResponse = { analyses, total, hasMore };
     return Response.json(response, {
-      status: 200,
-      headers: {
-        'Cache-Control': 'private, no-cache, no-store, must-revalidate',
-      },
-    });
-  } catch (error) {
-    logger.error('History error', { error: String(error) });
-    return Response.json({ analyses: [], total: 0, hasMore: false }, { status: 200 });
-  }
-}
+      status: 200

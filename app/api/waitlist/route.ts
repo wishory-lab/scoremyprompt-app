@@ -85,14 +85,4 @@ function getWelcomeEmailHtml(): string {
     </p>
     <div style="text-align:center">
       <a href="https://scoremyprompt.com" style="display:inline-block;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:16px">
-        Score Your First Prompt →
-      </a>
-    </div>
-  </div>
-  <p style="color:#475569;font-size:12px;text-align:center;margin:0">
-    You're receiving this because you signed up at ScoreMyPrompt.com
-  </p>
-</div>
-</body>
-</html>`;
-}
+        Score Your First Prompt

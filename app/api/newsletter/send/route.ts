@@ -121,11 +121,4 @@ export async function POST(request: Request) {
       message: `Newsletter sent to ${sentCount}/${emails.length} subscribers`,
       sent_count: sentCount,
       total_subscribers: emails.length,
-      errors: errors.length > 0 ? errors : undefined,
-    });
-  } catch (error) {
-    if (error instanceof AppError) return errorResponse(error);
-    logger.error('Newsletter send error', { error: String(error) });
-    return errorResponse(error as Error);
-  }
-}
+      errors: error

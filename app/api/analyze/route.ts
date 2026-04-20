@@ -12,7 +12,7 @@ import type { AnalysisResult, Grade, Tier } from '@/app/types';
 
 // ─── Request validation ───
 const AnalyzeRequestSchema = z.object({
-  prompt: z.string().min(10, 'Prompt must be at least 10 characters long').max(5000, 'Prompt must be under 5,000 characters'),
+  prompt: z.string().min(10, 'Prompt must be at least 10 charhacters long').max(5000, 'Prompt must be under 5,000 characters'),
   jobRole: z.enum(['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other']),
 });
 

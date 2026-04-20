@@ -14,6 +14,14 @@ export async function getUser(supabase: SupabaseClient | null): Promise<User | n
   }
 }
 
+function getCallbackUrl(): string {
+  const base =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    (typeof window !== 'undefined' ? window.location.origin : '');
+  return `${base.replace(/\/$/, '')}/api/auth/callback`;
+}
+
 export async function signInWithMagicLink(
   supabase: SupabaseClient | null,
   email: string
@@ -24,7 +32,7 @@ export async function signInWithMagicLink(
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        emailRedirectTo: getCallbackUrl(),
       },
     });
     return { error: error ? error.message : null };
@@ -43,7 +51,7 @@ export async function signInWithGoogle(
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        redirectTo: getCallbackUrl(),
       },
     });
     return { error: error ? error.message : null };

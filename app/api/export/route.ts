@@ -549,21 +549,4 @@ function generateAnalysisCSV(analysis: AnalysisRow, displayPrompt: string): stri
     ['Precision', String(dims?.precision?.score || 0), String(dims?.precision?.maxScore || 0), dims?.precision?.feedback || ''],
     ['Role', String(dims?.role?.score || 0), String(dims?.role?.maxScore || 0), dims?.role?.feedback || ''],
     ['Output Format', String(dims?.outputFormat?.score || 0), String(dims?.outputFormat?.maxScore || 0), dims?.outputFormat?.feedback || ''],
-    ['Mission Context', String(dims?.missionContext?.score || 0), String(dims?.missionContext?.maxScore || 0), dims?.missionContext?.feedback || ''],
-    ['Prompt Structure', String(dims?.promptStructure?.score || 0), String(dims?.promptStructure?.maxScore || 0), dims?.promptStructure?.feedback || ''],
-    ['Tailoring', String(dims?.tailoring?.score || 0), String(dims?.tailoring?.maxScore || 0), dims?.tailoring?.feedback || ''],
-    [],
-    ['Strengths'],
-    ...strengths.map((s: string) => [s]),
-    [],
-    ['Areas for Improvement'],
-    ...improvements.map((i: string) => [i]),
-  ];
-
-  if (rewrite) {
-    rows.push([], ['Rewrite Suggestion'], [rewrite]);
-  }
-
-  // BOM for Excel UTF-8 compatibility
-  return '\uFEFF' + rows.map((row) => row.map(escapeCsv).join(',')).join('\r\n');
-}
+    ['Mission Context', String(dims?.missionContext?.score || 0), String(dims?.missionContext?.maxScore || 0), dims?.m

@@ -118,10 +118,4 @@ export async function GET(request: Request) {
       headers: cacheHeaders.public(TTL.LEADERBOARD),
     });
   } catch (error) {
-    logger.error('Leaderboard error', { error: String(error) });
-    return Response.json({ entries: MOCK_LEADERBOARD.slice(0, 20) }, { status: 200 });
-  }
-}
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 300; // ISR: revalidate every 5 minutes
+    logger.error('Leaderb
