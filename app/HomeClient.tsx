@@ -10,7 +10,7 @@ import type { JobRole } from './types';
 import { TEMPLATES } from './templates/data';
 import { trackJobRoleSelected, trackPromptSubmitted, trackGradeStarted, trackDemoClick } from './lib/analytics';
 import { VALIDATION, ERRORS, PLACEHOLDERS, HINTS } from './constants/messages';
-import { useTranslation } from './i18n';
+import { useTranslation, useLocale } from './i18n';
 
 const AdBanner = dynamic(() => import('./components/AdBanner'), { ssr: false });
 const DemoMode = dynamic(() => import('./components/DemoMode'), { ssr: false });
@@ -47,6 +47,7 @@ export default function HomeClient() {
   const searchParams = useSearchParams();
   const { supabase } = useAuth();
   const t = useTranslation();
+  const { locale } = useLocale();
   const [prompt, setPrompt] = useState('');
   const [jobRole, setJobRole] = useState<JobRole>('Marketing');
   const [loading, setLoading] = useState(false);
@@ -111,7 +112,7 @@ export default function HomeClient() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ prompt: prompt.trim(), jobRole }),
+        body: JSON.stringify({ prompt: prompt.trim(), jobRole, locale }),
       });
 
       // Read rate-limit headers

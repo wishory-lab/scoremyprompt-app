@@ -1,6 +1,7 @@
 'use client';
 
 import ScoreCircle from '../../components/ScoreCircle';
+import { useTranslation } from '../../i18n';
 import type { Grade, AnalysisResult } from '../../types';
 
 interface ExtendedGradeConfig {
@@ -18,6 +19,11 @@ interface ScoreHeroProps {
 }
 
 export default function ScoreHero({ result, gradeConfig }: ScoreHeroProps) {
+  const t = useTranslation();
+  const percentileText = t.result.percentileText
+    .replace('{percentile}', String(result.benchmarks?.percentile || 0))
+    .replace('{role}', result.jobRole || '');
+
   return (
     <div className="text-center mb-14 animate-fade-in">
       <div className="flex justify-center mb-6">
@@ -28,9 +34,12 @@ export default function ScoreHero({ result, gradeConfig }: ScoreHeroProps) {
       </h1>
       <p className="text-gray-400 text-sm mb-3">{gradeConfig.message}</p>
       {result.benchmarks && (
-        <p className="text-gray-400 max-w-xl mx-auto">
-          Your prompt ranks in the <span className="text-primary font-semibold">top {result.benchmarks.percentile}%</span> compared to other {result.jobRole} professionals.
-        </p>
+        <p className="text-gray-400 max-w-xl mx-auto" dangerouslySetInnerHTML={{
+          __html: percentileText.replace(
+            `${result.benchmarks.percentile}%`,
+            `<span class="text-primary font-semibold">${result.benchmarks.percentile}%</span>`
+          )
+        }} />
       )}
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from '../../i18n';
 
 interface RewriteSuggestionProps {
   suggestion: string | undefined;
@@ -10,6 +11,7 @@ interface RewriteSuggestionProps {
 }
 
 export default function RewriteSuggestion({ suggestion, isPro, gradeLabel }: RewriteSuggestionProps) {
+  const t = useTranslation();
   const [showRewrite, setShowRewrite] = useState(false);
 
   if (!suggestion) return null;
@@ -18,7 +20,7 @@ export default function RewriteSuggestion({ suggestion, isPro, gradeLabel }: Rew
     <div className="card mb-12">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-white">AI Rewrite Suggestion</h2>
+          <h2 className="text-lg font-bold text-white">{t.result.aiRewriteSuggestion}</h2>
           {!isPro && (
             <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded font-medium">PRO</span>
           )}
@@ -30,7 +32,7 @@ export default function RewriteSuggestion({ suggestion, isPro, gradeLabel }: Rew
             aria-expanded={showRewrite}
             aria-label="Toggle AI rewrite suggestion"
           >
-            {showRewrite ? 'Hide' : 'Show Rewrite'}
+            {showRewrite ? t.result.hideRewrite : t.result.showRewrite}
           </button>
         )}
       </div>
@@ -47,13 +49,13 @@ export default function RewriteSuggestion({ suggestion, isPro, gradeLabel }: Rew
                 }}
                 className="mt-3 text-xs text-primary hover:text-accent transition-colors min-h-[44px]"
               >
-                Copy to clipboard
+                {t.result.copyToClipboard}
               </button>
             </div>
           )}
           {!showRewrite && (
             <p className="text-sm text-gray-400">
-              See how your prompt could be improved with AI-powered suggestions.
+              {t.result.rewriteHint}
             </p>
           )}
         </>
@@ -70,7 +72,7 @@ export default function RewriteSuggestion({ suggestion, isPro, gradeLabel }: Rew
               className="btn-primary text-sm font-semibold flex items-center gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Unlock with Pro
+              {t.result.unlockWithPro}
             </Link>
           </div>
         </div>

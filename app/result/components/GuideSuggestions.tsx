@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslation } from '../../i18n';
 import type { DimensionScores } from '../../types';
 import { DIMENSION_META as DIMENSION_META_CENTRAL } from '../../constants';
 import { GUIDES_CONTENT } from '../../guides/content';
@@ -21,6 +22,7 @@ interface GuideSuggestionsProps {
 }
 
 export default function GuideSuggestions({ dimensions }: GuideSuggestionsProps) {
+  const t = useTranslation();
   const dimEntries = DIMENSION_KEYS
     .map((key) => {
       const data = dimensions[key];
@@ -51,10 +53,10 @@ export default function GuideSuggestions({ dimensions }: GuideSuggestionsProps) 
     <div className="card mb-12 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-800/30">
       <h2 className="text-lg font-bold text-white mb-2 flex items-center">
         <span className="w-2 h-2 bg-amber-500 rounded-full mr-2" aria-hidden="true" />
-        Want to Improve?
+        {t.result.wantToImprove}
       </h2>
       <p className="text-sm text-gray-400 mb-5">
-        Based on your scores, these guides can help you strengthen your weakest dimensions.
+        {t.result.wantToImproveDesc}
       </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {guideLinks.map(({ dimension, guide }) => (
@@ -68,7 +70,7 @@ export default function GuideSuggestions({ dimensions }: GuideSuggestionsProps) 
                 {dimension.letter}
               </span>
               <span className="text-xs text-amber-400 font-medium">
-                Improve {dimension.label}
+                {t.result.improveDimension.replace('{dimension}', dimension.label)}
               </span>
             </div>
             <h3 className="text-sm font-semibold text-white group-hover:text-primary transition-colors mb-1">
@@ -78,7 +80,7 @@ export default function GuideSuggestions({ dimensions }: GuideSuggestionsProps) 
               {guide.description}
             </p>
             <span className="text-xs text-primary mt-2 inline-block group-hover:translate-x-1 transition-transform">
-              Read guide →
+              {t.result.readGuide} →
             </span>
           </Link>
         ))}

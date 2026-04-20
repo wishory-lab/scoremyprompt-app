@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useTranslation } from '../../i18n';
 import type { AnalysisResult, Grade, GradeConfig } from '../../types';
 import { trackShare } from '../../lib/analytics';
 
@@ -33,6 +34,7 @@ function getShareText(platform: SharePlatform, score: number, grade: string, gra
 }
 
 export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSectionProps) {
+  const t = useTranslation();
   const [copied, setCopied] = useState(false);
   const [challengeCopied, setChallengeCopied] = useState(false);
   const [showEmbed, setShowEmbed] = useState(false);
@@ -88,9 +90,9 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
     <>
       {/* Desktop Share */}
       <div className="hidden sm:block card mb-12 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30">
-        <h3 className="text-lg font-bold text-white mb-4">Share Your Score</h3>
+        <h3 className="text-lg font-bold text-white mb-4">{t.result.shareYourScore}</h3>
         <p className="text-gray-400 mb-6 text-sm">
-          Showcase your prompt engineering skills and compare with other professionals.
+          {t.result.shareSubtitle}
         </p>
         <div className="flex flex-wrap gap-3 mb-4">
           <button onClick={handleShareTwitter} className="btn-secondary flex items-center gap-2 text-sm" aria-label="Share on X">
@@ -107,7 +109,7 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
           </button>
           <button onClick={handleCopyLink} className="btn-secondary flex items-center gap-2 text-sm" aria-label="Copy share link">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-            {copied ? 'Copied!' : 'Copy Link'}
+            {copied ? t.result.copied : 'Copy Link'}
           </button>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -129,7 +131,7 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
             aria-label="Download score badge"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download Badge
+            {t.result.downloadBadge}
           </a>
           <button
             onClick={handleChallenge}
@@ -137,7 +139,7 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
             aria-label="Challenge a friend"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-            {challengeCopied ? 'Link Copied!' : 'Challenge a Friend'}
+            {challengeCopied ? t.result.linkCopied : t.result.challengeFriend}
           </button>
         </div>
       </div>

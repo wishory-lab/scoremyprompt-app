@@ -14,6 +14,7 @@ import type { AnalysisResult, Grade, Tier } from '@/app/types';
 const AnalyzeRequestSchema = z.object({
   prompt: z.string().min(10, 'Prompt must be at least 10 characters long').max(5000, 'Prompt must be under 5,000 characters'),
   jobRole: z.enum(['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other']),
+  locale: z.string().optional(),
 });
 
 // ─── Generate short share ID ───
@@ -104,6 +105,7 @@ export async function POST(request: Request) {
 
     const prompt = sanitizeInput(parsed.data.prompt);
     const jobRole = parsed.data.jobRole;
+    const locale = parsed.data.locale || 'en';
 
     // ─── Script injection check ───
     if (containsScriptPattern(prompt)) {
@@ -187,7 +189,7 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 1024,
-          system: PROMPT_SCORE_SYSTEM,
+          system: PROMPT_SCORE_SYSTEM + (locale !== 'en' ? `\n\nIMPORTANT: Write ALL feedback text, strengths, improvements, and rewriteSuggestion in ${locale === 'ko' ? 'Korean (한국어)' : locale}. Keep JSON keys and grade letters in English.` : ''),
           messages: [
             {
               role: 'user',
