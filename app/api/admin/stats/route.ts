@@ -157,4 +157,14 @@ export async function GET(request: Request) {
     logger.info('Admin stats fetched', { analysesTotal: stats.analyses.total });
 
     return Response.json(
-      { succ
+      { success: true, data: stats },
+      { headers: cacheHeaders.none() }
+    );
+  } catch (err) {
+    logger.error('Admin stats error', { error: String(err) });
+    return Response.json(
+      { error: 'Failed to fetch stats', code: 'INTERNAL_ERROR' },
+      { status: 500 }
+    );
+  }
+}

@@ -164,4 +164,15 @@ export async function GET(request: Request) {
       date: new Date(row.created_at).toISOString().split('T')[0],
       promptPreview: `${row.job_role || 'General'} prompt — scored ${row.overall_score || 0}/100`,
       score: row.overall_score || 0,
-      grade: (row.grade as Grade) || getGradeFromScore(row.overall_s
+      grade: (row.grade as Grade) || getGradeFromScore(row.overall_score || 0),
+    }));
+
+    return Response.json({ stats, trend, recent }, {
+      status: 200,
+      headers: cacheHeaders.none(),
+    });
+  } catch (error) {
+    logger.error('Dashboard error', { error: String(error) });
+    return Response.json(EMPTY_RESPONSE, { status: 200 });
+  }
+}
