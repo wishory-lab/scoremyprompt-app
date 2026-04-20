@@ -1,7 +1,8 @@
+import { createBrowserClient } from '@supabase/ssr';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 
-// Client-side Supabase (public, anon key)
+// Client-side Supabase using @supabase/ssr (stores PKCE verifier in cookies, not localStorage)
 let supabaseClient: SupabaseClient | null = null;
 
 export function getSupabaseClient(): SupabaseClient | null {
@@ -15,9 +16,7 @@ export function getSupabaseClient(): SupabaseClient | null {
     return null;
   }
 
-  supabaseClient = createClient(url, anonKey, {
-    auth: { flowType: 'pkce' },
-  });
+  supabaseClient = createBrowserClient(url, anonKey);
   return supabaseClient;
 }
 
