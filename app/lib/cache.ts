@@ -6,7 +6,7 @@
  *   return Response.json(data, { headers: cacheHeaders.public(300) });
  */
 
-export type CachePreset = Record<string, string>;
+type CachePreset = Record<string, string>;
 
 /** Generate cache control headers */
 export const cacheHeaders = {

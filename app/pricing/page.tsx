@@ -2,41 +2,49 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FAQ_ITEMS } from './data';
 import Footer from '../components/Footer';
-import { useTranslation } from '../i18n';
+
+const PRICING_PLANS = {
+  free: {
+    name: 'Free',
+    price: '$0',
+    period: '/forever',
+    cta: 'Score My First Prompt',
+    features: [
+      { text: 'Score up to 10 prompts a day', included: true },
+      { text: 'See all 6 PROMPT dimensions', included: true },
+      { text: 'Compare with peers on the leaderboard', included: true },
+      { text: 'Share your score on social media', included: true },
+      { text: 'Ads shown between sections', included: false },
+      { text: 'No saved history', included: false },
+      { text: 'No AI rewrite suggestions', included: false },
+    ],
+  },
+  pro: {
+    name: 'Pro',
+    price: '$9.99',
+    period: '/month',
+    badge: 'Most Popular',
+    trial: '7-day free trial',
+    cta: 'Start Free Trial',
+    highlight: true,
+    features: [
+      { text: 'Unlimited scoring — never hit a daily cap', included: true },
+      { text: 'AI rewrites your prompt for a higher score', included: true },
+      { text: 'Track progress and revisit past analyses', included: true },
+      { text: 'Score 5 prompts at once with Bulk mode', included: true },
+      { text: 'Clean, distraction-free experience', included: true },
+      { text: 'Export polished HTML reports for clients', included: true },
+      { text: 'Priority support when you need help', included: true },
+      { text: 'API access (coming Q2 2026)', included: false },
+    ],
+  },
+};
 
 export default function PricingPage() {
   const router = useRouter();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const t = useTranslation();
-
-  const freeFeatures = [
-    { text: t.pricing.freeFeature1, included: true },
-    { text: t.pricing.freeFeature2, included: true },
-    { text: t.pricing.freeFeature3, included: true },
-    { text: t.pricing.freeFeature4, included: true },
-    { text: t.pricing.freeFeature5, included: false },
-    { text: t.pricing.freeFeature6, included: false },
-    { text: t.pricing.freeFeature7, included: false },
-  ];
-
-  const proFeatures = [
-    { text: t.pricing.proFeature1, included: true },
-    { text: t.pricing.proFeature2, included: true },
-    { text: t.pricing.proFeature3, included: true },
-    { text: t.pricing.proFeature4, included: true },
-    { text: t.pricing.proFeature5, included: true },
-    { text: t.pricing.proFeature6, included: true },
-    { text: t.pricing.proFeature7, included: true },
-    { text: t.pricing.proFeature8, included: false },
-  ];
-
-  const faqItems = [
-    { question: t.pricing.faq1Q, answer: t.pricing.faq1A },
-    { question: t.pricing.faq2Q, answer: t.pricing.faq2A },
-    { question: t.pricing.faq3Q, answer: t.pricing.faq3A },
-    { question: t.pricing.faq4Q, answer: t.pricing.faq4A },
-  ];
 
   const handleFreePlan = () => {
     router.push('/');
@@ -64,6 +72,7 @@ export default function PricingPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark">
+      {/* Navigation */}
       <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -74,37 +83,41 @@ export default function PricingPage() {
           </div>
           <div className="flex items-center gap-4">
             <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-              {t.pricing.navHome}
+              Home
             </a>
             <a href="https://x.com/scoremyprompt" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-white transition-colors">
-              {t.pricing.navCommunity}
+              Community →
             </a>
           </div>
         </div>
       </nav>
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        {/* Hero */}
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-            {t.pricing.heroTitle} <span className="text-gradient">{t.pricing.heroTitleHighlight}</span>
+            Simple <span className="text-gradient">Pricing</span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
-            {t.pricing.heroSubtitle}
+            Choose the perfect plan for your prompt engineering needs. No hidden fees, cancel anytime.
           </p>
         </div>
 
+        {/* Pricing Cards */}
         <div className="grid sm:grid-cols-2 gap-8 mb-16">
+          {/* Free Plan */}
           <div className="card flex flex-col">
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-white mb-2">{t.pricing.free}</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">{PRICING_PLANS.free.name}</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-white">$0</span>
-                <span className="text-gray-400">{t.pricing.freePeriod}</span>
+                <span className="text-4xl font-bold text-white">{PRICING_PLANS.free.price}</span>
+                <span className="text-gray-400">{PRICING_PLANS.free.period}</span>
               </div>
             </div>
 
+            {/* Features */}
             <div className="space-y-3 mb-8 flex-grow">
-              {freeFeatures.map((feature, idx) => (
+              {PRICING_PLANS.free.features.map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   {feature.included ? (
                     <span className="text-green-500 text-lg">✓</span>
@@ -118,32 +131,45 @@ export default function PricingPage() {
               ))}
             </div>
 
+            {/* Button */}
             <button
               onClick={handleFreePlan}
               className="btn-secondary w-full font-semibold"
             >
-              {t.pricing.freeCta}
+              {PRICING_PLANS.free.cta}
             </button>
           </div>
 
-          <div className="card flex flex-col relative overflow-hidden border-primary bg-gradient-to-br from-primary/5 to-accent/5">
-            <div className="absolute top-0 right-0 bg-primary text-white px-4 py-1 text-xs font-bold rounded-bl-lg">
-              {t.pricing.badgeMostPopular}
-            </div>
+          {/* Pro Plan */}
+          <div
+            className={`card flex flex-col relative overflow-hidden ${
+              PRICING_PLANS.pro.highlight
+                ? 'border-primary bg-gradient-to-br from-primary/5 to-accent/5'
+                : ''
+            }`}
+          >
+            {PRICING_PLANS.pro.badge && (
+              <div className="absolute top-0 right-0 bg-primary text-white px-4 py-1 text-xs font-bold rounded-bl-lg">
+                {PRICING_PLANS.pro.badge}
+              </div>
+            )}
 
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-white mb-2">{t.pricing.pro}</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">{PRICING_PLANS.pro.name}</h3>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-bold text-white">$9.99</span>
-                <span className="text-gray-400">{t.pricing.proPeriod}</span>
+                <span className="text-4xl font-bold text-white">{PRICING_PLANS.pro.price}</span>
+                <span className="text-gray-400">{PRICING_PLANS.pro.period}</span>
               </div>
-              <span className="inline-block bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-medium">
-                {t.pricing.proTrial}
-              </span>
+              {PRICING_PLANS.pro.trial && (
+                <span className="inline-block bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-medium">
+                  {PRICING_PLANS.pro.trial}
+                </span>
+              )}
             </div>
 
+            {/* Features */}
             <div className="space-y-3 mb-8 flex-grow">
-              {proFeatures.map((feature, idx) => (
+              {PRICING_PLANS.pro.features.map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   {feature.included ? (
                     <span className="text-green-500 text-lg">✓</span>
@@ -157,23 +183,28 @@ export default function PricingPage() {
               ))}
             </div>
 
+            {/* Button */}
             <button
               onClick={handleProPlan}
               className="btn-primary w-full font-semibold"
             >
-              {t.pricing.proCta}
+              {PRICING_PLANS.pro.cta}
             </button>
           </div>
         </div>
 
+        {/* FAQ Section */}
         <div className="max-w-3xl mx-auto">
           <h3 className="text-3xl font-bold text-white text-center mb-12">
-            {t.pricing.faq}
+            Frequently Asked Questions
           </h3>
 
           <div className="space-y-4">
-            {faqItems.map((item, idx) => (
-              <div key={idx} className="card">
+            {FAQ_ITEMS.map((item, idx) => (
+              <div
+                key={idx}
+                className="card"
+              >
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"

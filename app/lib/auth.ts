@@ -14,14 +14,6 @@ export async function getUser(supabase: SupabaseClient | null): Promise<User | n
   }
 }
 
-function getRedirectUrl(): string {
-  const base =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    (typeof window !== 'undefined' ? window.location.origin : '');
-  return base.replace(/\/$/, '');
-}
-
 export async function signInWithMagicLink(
   supabase: SupabaseClient | null,
   email: string
@@ -32,7 +24,7 @@ export async function signInWithMagicLink(
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: getRedirectUrl(),
+        emailRedirectTo: process.env.NEXT_PUBLIC_APP_URL || '',
       },
     });
     return { error: error ? error.message : null };
@@ -51,7 +43,7 @@ export async function signInWithGoogle(
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: getRedirectUrl(),
+        redirectTo: process.env.NEXT_PUBLIC_APP_URL || '',
       },
     });
     return { error: error ? error.message : null };
@@ -164,4 +156,13 @@ export async function updateDailyCount(
       .single();
 
     if (updateError || !data) {
-      console.error('Failed to update daily count:', updateE
+      console.error('Failed to update daily count:', updateError);
+      return { error: updateError?.message || 'Update failed', analyses_today: 0 };
+    }
+
+    return { error: null, analyses_today: data.analyses_today };
+  } catch (err: unknown) {
+    console.error('Error updating daily count:', err);
+    return { error: err instanceof Error ? err.message : 'Failed to update count', analyses_today: 0 };
+  }
+}

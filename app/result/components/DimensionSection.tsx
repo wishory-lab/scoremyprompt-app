@@ -49,7 +49,7 @@ export default function DimensionSection({ dimensions, isGuest, onSignupClick }:
             onClick={onSignupClick}
             className="btn-primary text-sm font-semibold px-6"
           >
-            {t.result.signUpDimensions}
+            Sign up free to see all 6 dimensions
           </button>
         </div>
       )}

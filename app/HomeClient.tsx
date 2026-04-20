@@ -22,21 +22,21 @@ const Waitlist = dynamic(() => import('./components/Waitlist'), { ssr: false });
 
 interface ExamplePrompt {
   text: string;
-  labelKey: 'marketingStrategy' | 'productDesign' | 'financeAnalysis';
+  label: string;
 }
 
 const EXAMPLE_PROMPTS: ExamplePrompt[] = [
   {
     text: 'You are a senior growth marketer. Create a comprehensive go-to-market strategy for a new SaaS product targeting small businesses (10-50 employees). Include: target persona analysis, positioning statement, pricing strategy, and a 90-day launch plan with KPIs. Format as a structured document with executive summary.',
-    labelKey: 'marketingStrategy',
+    label: 'Marketing Strategy',
   },
   {
     text: 'As a senior UX designer, design a mobile app interface for a meditation platform. Provide: user flow for onboarding (3 screens), home dashboard wireframe description, guided meditation selection with filters, and progress tracking dashboard. Follow iOS HIG guidelines. Output as detailed wireframe specifications.',
-    labelKey: 'productDesign',
+    label: 'Product Design',
   },
   {
     text: 'Act as a CFO advisor. Analyze our quarterly financial performance: Revenue $2.4M (+12% QoQ), COGS 45%, OpEx $1.1M. Provide recommendations for improving cash flow and profitability. Consider seasonal trends in Q4. Output: executive summary, 5 key findings, and 3 actionable recommendations with expected impact.',
-    labelKey: 'financeAnalysis',
+    label: 'Finance Analysis',
   },
 ];
 
@@ -122,7 +122,7 @@ export default function HomeClient() {
         const body = await response.json().catch(() => ({}));
         const retryAfter = body.retryAfter || 60;
         setRetryCountdown(Math.min(retryAfter, 300));
-        setError(t.home.tooManyRequests.replace('{seconds}', String(retryAfter)));
+        setError(`Too many requests. Please wait ${retryAfter} seconds and try again.`);
         return;
       }
 
@@ -147,7 +147,7 @@ export default function HomeClient() {
     setError('');
     const example = EXAMPLE_PROMPTS.find(e => e.text === exampleText);
     if (example) {
-      trackDemoClick({ exampleId: example.labelKey.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, ''), difficulty: 'example' });
+      trackDemoClick({ exampleId: example.label.toLowerCase().replace(/\s+/g, '-'), difficulty: 'example' });
     }
     document.getElementById('analyze')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
@@ -214,7 +214,7 @@ export default function HomeClient() {
           {/* Prompt Textarea */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-300 mb-3">
-              {t.home.promptLabel}
+              Your Prompt
             </label>
             <textarea
               id="analyze"
@@ -267,7 +267,7 @@ export default function HomeClient() {
                 {t.form.analyzing}
               </span>
             ) : retryCountdown > 0 ? (
-              t.home.pleaseWaitSeconds.replace('{seconds}', String(retryCountdown))
+              `Please wait ${retryCountdown}s...`
             ) : (
               t.form.scoreFree
             )}
@@ -280,7 +280,7 @@ export default function HomeClient() {
             </p>
             {rateLimitRemaining !== null && rateLimitRemaining <= 5 && (
               <p className={`text-xs shrink-0 ml-3 ${rateLimitRemaining <= 2 ? 'text-amber-400' : 'text-gray-500'}`}>
-                {t.home.leftToday.replace('{count}', String(rateLimitRemaining))}
+                {rateLimitRemaining} left today
               </p>
             )}
           </div>
@@ -296,7 +296,7 @@ export default function HomeClient() {
         {/* Example Prompts */}
         <div className="mb-16">
           <h3 className="text-lg font-semibold text-white mb-4">
-            {t.home.examplesTitle}
+            Example Prompts
           </h3>
           <div className="grid sm:grid-cols-3 gap-4 stagger-children">
             {EXAMPLE_PROMPTS.map((example, index) => (
@@ -305,7 +305,7 @@ export default function HomeClient() {
                 onClick={() => handleExampleClick(example.text)}
                 className="card hover:border-primary hover:bg-slate-800/50 transition-all duration-200 text-left"
               >
-                <p className="font-medium text-white mb-2">{t.examples[example.labelKey]}</p>
+                <p className="font-medium text-white mb-2">{example.label}</p>
                 <p className="text-sm text-gray-400 line-clamp-3">
                   {example.text}
                 </p>

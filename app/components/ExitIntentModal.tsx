@@ -69,7 +69,7 @@ export default function ExitIntentModal() {
   if (!show) return null;
 
   return (
-    <Modal isOpen={show} onClose={handleDismiss} title="Exit Intent">
+    <Modal onClose={handleDismiss}>
       <div className="text-center px-2 py-4">
         {/* Icon */}
         <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">

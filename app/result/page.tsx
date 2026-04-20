@@ -9,7 +9,6 @@ import type { Grade, AnalysisResult, GradeConfig } from '../types';
 import { GRADE_CONFIG as GRADE_CONFIG_CENTRAL } from '../constants';
 import { trackResultViewed, trackGradeCompleted, trackSignupInitiated, trackReturnAnalysis } from '../lib/analytics';
 import { useProfilePrompt } from '../components/ProfilePrompt';
-import { useTranslation } from '../i18n';
 
 // Sub-components (extracted from this monolith)
 import ScoreHero from './components/ScoreHero';
@@ -44,7 +43,6 @@ const GRADE_CONFIG: Record<Grade, ExtendedGradeConfig> = {
 
 export default function ResultPage() {
   const router = useRouter();
-  const t = useTranslation();
   const { user, tier, supabase, setShowAuth, setAuthMessage } = useAuth();
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -99,7 +97,7 @@ export default function ResultPage() {
   };
 
   const handleDimensionSignup = () => {
-    setAuthMessage(t.auth.signInDimensions);
+    setAuthMessage('Sign up free to unlock all 6 dimension insights.');
     setShowAuth(true);
     trackSignupInitiated({ source: 'result_dimensions' });
   };
