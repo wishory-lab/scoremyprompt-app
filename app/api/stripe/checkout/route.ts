@@ -1,8 +1,12 @@
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { AppError, errorResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 
 export async function POST(request: Request) {
+  const rl = rateLimit(request, LIMITS.SUBMIT);
+  if (!rl.ok) return rl.response;
+
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

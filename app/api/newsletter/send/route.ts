@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { AppError, errorResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'ScoreMyPrompt <newsletter@scoremyprompt.com>';
@@ -26,6 +27,9 @@ function validateAuth(request: Request): void {
 }
 
 export async function POST(request: Request) {
+  const rl = rateLimit(request, LIMITS.ADMIN);
+  if (!rl.ok) return rl.response;
+
   try {
     validateAuth(request);
 

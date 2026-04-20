@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslation } from '../../i18n';
+
 interface QuickFixProps {
   improvements: string[] | undefined;
   isPro: boolean;
@@ -7,7 +9,11 @@ interface QuickFixProps {
 }
 
 export default function QuickFix({ improvements, isPro, onNewAnalysis }: QuickFixProps) {
+  const t = useTranslation();
   if (!improvements || improvements.length === 0) return null;
+
+  const extraCount = improvements.length - 1;
+  const moreFixesText = t.result.moreFixesPro.replace('{count}', String(extraCount));
 
   return (
     <div className="card mb-8 bg-gradient-to-r from-amber-900/20 to-orange-900/20 border-amber-700/30 animate-fade-in">
@@ -16,19 +22,19 @@ export default function QuickFix({ improvements, isPro, onNewAnalysis }: QuickFi
           <span className="text-amber-400 text-lg" aria-hidden="true">&#9889;</span>
         </div>
         <div className="flex-1">
-          <h2 className="text-lg font-bold text-white mb-1">Quick Fix</h2>
-          <p className="text-sm text-amber-200/80 mb-3">The #1 thing you can do right now to improve your score:</p>
+          <h2 className="text-lg font-bold text-white mb-1">{t.result.quickFix}</h2>
+          <p className="text-sm text-amber-200/80 mb-3">{t.result.quickFixSubtitle}</p>
           <p className="text-gray-200 text-sm leading-relaxed">{improvements[0]}</p>
           <div className="mt-4 flex items-center gap-3">
             <button
               onClick={onNewAnalysis}
               className="text-sm font-semibold text-amber-400 hover:text-amber-300 transition-colors min-h-[44px]"
             >
-              Fix it &amp; re-score &rarr;
+              {t.result.fixAndRescore} &rarr;
             </button>
             {!isPro && improvements.length > 1 && (
               <span className="text-xs text-gray-500">
-                +{improvements.length - 1} more fixes with full analysis
+                {moreFixesText}
               </span>
             )}
           </div>

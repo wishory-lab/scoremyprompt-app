@@ -1,6 +1,7 @@
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { cacheHeaders } from '@/app/lib/cache';
 import { logger } from '@/app/lib/logger';
+import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,9 @@ export const dynamic = 'force-dynamic';
  *   { success, data: { analyses, users, revenue, performance } }
  */
 export async function GET(request: Request) {
+  const rl = rateLimit(request, LIMITS.ADMIN);
+  if (!rl.ok) return rl.response;
+
   // Auth check
   const adminSecret = process.env.ADMIN_SECRET;
   if (!adminSecret) {
