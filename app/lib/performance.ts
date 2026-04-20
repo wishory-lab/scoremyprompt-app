@@ -26,6 +26,7 @@ interface PerfEntry {
   rating?: string;
   page: string;
   timestamp: string;
+  [key: string]: unknown;
 }
 
 // ─── PostHog capture helper ───

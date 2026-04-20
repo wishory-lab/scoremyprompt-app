@@ -10,7 +10,7 @@ interface ShareCardProps {
   gradeLabel: string;
   jobRole: string;
   percentile: number;
-  dimensions: Record<string, { score: number }>;
+  dimensions: { [key: string]: { score: number; maxScore?: number; feedback?: string } };
 }
 
 const DIM_LABELS: Record<string, string> = {

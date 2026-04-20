@@ -4,6 +4,7 @@ import ScoreCircle from '../../components/ScoreCircle';
 import type { Grade, AnalysisResult } from '../../types';
 
 interface ExtendedGradeConfig {
+  min: number;
   color: string;
   label: string;
   emoji: string;
