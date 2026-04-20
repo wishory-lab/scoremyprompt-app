@@ -228,5 +228,10 @@ const en = {
   },
 } as const;
 
-export type Locale = typeof en;
-export default en;
+// DeepString: keep structure required, but allow any string value for translations
+type DeepString<T> = {
+  [K in keyof T]: T[K] extends string ? string : T[K] extends object ? DeepString<T[K]> : T[K];
+};
+
+export type Locale = DeepString<typeof en>;
+export default en as Locale;
