@@ -33,8 +33,7 @@ const LocaleContext = createContext<LocaleContextValue>({
 const STORAGE_KEY = 'smp_locale';
 
 // Lazy-load locale files to avoid bundling all locales upfront
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const localeLoaders: Record<SupportedLocale, () => Promise<{ default: any }>> = {
+const localeLoaders: Record<SupportedLocale, () => Promise<{ default: PartialLocale }>> = {
   en: () => Promise.resolve({ default: en }),
   ko: () => import('./locales/ko'),
   ja: () => import('./locales/ja'),
