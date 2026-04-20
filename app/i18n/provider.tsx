@@ -1,8 +1,22 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import en, { type Locale } from './locales/en';
+import en, { type Locale, type PartialLocale } from './locales/en';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, mapBrowserLocale, type SupportedLocale } from './config';
+
+// Deep merge partial locale with en fallback
+function mergeLocale(partial: PartialLocale): Locale {
+  const result = { ...en } as Record<string, unknown>;
+  for (const key of Object.keys(partial)) {
+    const val = (partial as Record<string, unknown>)[key];
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      result[key] = { ...(en as Record<string, unknown>)[key] as object, ...val as object };
+    } else if (val !== undefined) {
+      result[key] = val;
+    }
+  }
+  return result as Locale;
+}
 
 interface LocaleContextValue {
   locale: SupportedLocale;
@@ -19,7 +33,8 @@ const LocaleContext = createContext<LocaleContextValue>({
 const STORAGE_KEY = 'smp_locale';
 
 // Lazy-load locale files to avoid bundling all locales upfront
-const localeLoaders: Record<SupportedLocale, () => Promise<{ default: Locale }>> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const localeLoaders: Record<SupportedLocale, () => Promise<{ default: any }>> = {
   en: () => Promise.resolve({ default: en }),
   ko: () => import('./locales/ko'),
   ja: () => import('./locales/ja'),
@@ -48,7 +63,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       const initial = stored && SUPPORTED_LOCALES.includes(stored) ? stored : detectBrowserLocale();
       if (initial !== DEFAULT_LOCALE) {
         setLocaleState(initial);
-        localeLoaders[initial]().then((mod) => setMessages(mod.default));
+        localeLoaders[initial]().then((mod) => setMessages(mergeLocale(mod.default)));
       }
     } catch { /* SSR or private browsing */ }
   }, []);
@@ -56,7 +71,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const setLocale = useCallback((newLocale: SupportedLocale) => {
     setLocaleState(newLocale);
     try { localStorage.setItem(STORAGE_KEY, newLocale); } catch {}
-    localeLoaders[newLocale]().then((mod) => setMessages(mod.default));
+    localeLoaders[newLocale]().then((mod) => setMessages(mergeLocale(mod.default)));
     // Update html lang attribute
     if (typeof document !== 'undefined') {
       document.documentElement.lang = newLocale;

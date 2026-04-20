@@ -1,9 +1,9 @@
 /**
  * Portuguese locale — Arquivo de tradução em português
  */
-import type { Locale } from './en';
+import type { PartialLocale } from './en';
 
-const pt: Locale = {
+const pt: PartialLocale = {
   common: {
     appName: 'ScoreMyPrompt',
     tagline: 'Avalie seu prompt de IA em 30 segundos',

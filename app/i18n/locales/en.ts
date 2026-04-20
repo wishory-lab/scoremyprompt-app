@@ -228,15 +228,15 @@ const en = {
   },
 } as const;
 
-// DeepString: allow any string value for translations, top-level sections optional for partial locales
-type DeepString<T> = {
-  [K in keyof T]?: T[K] extends string ? string : T[K] extends object ? DeepString<T[K]> : T[K];
-};
-
-// Full locale type (en) — all sections present
+// Full locale: all sections required (used by components via t.hero.title etc.)
 type FullLocale = {
   [K in keyof typeof en]: (typeof en)[K] extends string ? string : { [P in keyof (typeof en)[K]]: string };
 };
 
-export type Locale = Partial<FullLocale>;
-export default en as FullLocale;
+// Partial locale: sections optional (used by translation files that may not translate everything)
+export type PartialLocale = {
+  [K in keyof typeof en]?: (typeof en)[K] extends string ? string : { [P in keyof (typeof en)[K]]?: string };
+};
+
+export type Locale = FullLocale;
+export default en as Locale;
