@@ -274,7 +274,7 @@ const en = {
   // ─── Waitlist / Newsletter ──────────────────────
   waitlist: {
     title: 'Get smarter with AI every week',
-    subtitle: 'Join 5,000+ professionals. We send the week\'s top prompts, new AI tools, and practical tips.',
+    subtitle: 'We send the week\'s top prompts, new AI tools, and practical tips.',
     subscribing: 'Subscribing...',
     subscribe: 'Subscribe',
     noSpam: 'No spam. Unsubscribe anytime.',
@@ -336,7 +336,7 @@ const en = {
     step2Label: 'Analyzing 6 PROMPT dimensions',
     step2Detail: 'Precision · Role · Output · Mission · Structure · Tailoring',
     step3Label: 'Calculating your score',
-    step3Detail: 'Comparing against 5,000+ analyzed prompts',
+    step3Detail: 'Calculating percentile and grade',
     step4Label: 'Generating personalized feedback',
     step4Detail: 'Creating actionable improvement suggestions',
     tip1Text: '85% of top-scoring prompts include a specific Role.',

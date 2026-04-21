@@ -170,22 +170,94 @@ export default function HomeClient() {
           </p>
         </div>
 
-        {/* Social Proof - Above the fold */}
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mb-12 animate-fade-in">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-gradient">5,000+</span>
-            <span className="text-sm text-gray-400">{t.socialProof.promptsScored}</span>
+        {/* 6 AI Dimensions - 3D Hexagonal Visual */}
+        <div className="mb-12 animate-fade-in">
+          <div className="relative mx-auto" style={{ width: '320px', height: '260px' }}>
+            {/* Center hub */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary via-accent to-primary shadow-lg shadow-primary/30 flex flex-col items-center justify-center border border-white/20">
+                <span className="text-2xl font-black text-white tracking-tight leading-none">6</span>
+                <span className="text-[10px] font-medium text-white/80 mt-0.5">{t.socialProof.aiDimensions}</span>
+              </div>
+            </div>
+            {/* Connecting lines (SVG) */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Lines from center to each node */}
+              <line x1="160" y1="130" x2="160" y2="28" stroke="url(#lineGrad)" strokeWidth="1.5" opacity="0.4" />
+              <line x1="160" y1="130" x2="268" y2="68" stroke="url(#lineGrad)" strokeWidth="1.5" opacity="0.4" />
+              <line x1="160" y1="130" x2="268" y2="192" stroke="url(#lineGrad)" strokeWidth="1.5" opacity="0.4" />
+              <line x1="160" y1="130" x2="160" y2="232" stroke="url(#lineGrad)" strokeWidth="1.5" opacity="0.4" />
+              <line x1="160" y1="130" x2="52" y2="192" stroke="url(#lineGrad)" strokeWidth="1.5" opacity="0.4" />
+              <line x1="160" y1="130" x2="52" y2="68" stroke="url(#lineGrad)" strokeWidth="1.5" opacity="0.4" />
+              {/* Hexagon outline */}
+              <polygon points="160,28 268,68 268,192 160,232 52,192 52,68" stroke="url(#hexGrad)" strokeWidth="1" fill="none" opacity="0.2" />
+              <defs>
+                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#6366f1" />
+                  <stop offset="100%" stopColor="#a855f7" />
+                </linearGradient>
+                <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#6366f1" />
+                  <stop offset="100%" stopColor="#a855f7" />
+                </linearGradient>
+              </defs>
+            </svg>
+            {/* P — Precision (top) */}
+            <div className="absolute left-1/2 -translate-x-1/2" style={{ top: '4px' }}>
+              <div className="flex flex-col items-center group cursor-default">
+                <div className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 group-hover:shadow-emerald-500/30 transition-all duration-300">
+                  <span className="text-base font-bold text-emerald-400">P</span>
+                </div>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '정확성' : 'Precision'}</span>
+              </div>
+            </div>
+            {/* R — Role (top-right) */}
+            <div className="absolute" style={{ right: '16px', top: '44px' }}>
+              <div className="flex flex-col items-center group cursor-default">
+                <div className="w-11 h-11 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shadow-md shadow-blue-500/10 group-hover:scale-110 group-hover:shadow-blue-500/30 transition-all duration-300">
+                  <span className="text-base font-bold text-blue-400">R</span>
+                </div>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '역할' : 'Role'}</span>
+              </div>
+            </div>
+            {/* O — Output Format (bottom-right) */}
+            <div className="absolute" style={{ right: '16px', bottom: '44px' }}>
+              <div className="flex flex-col items-center group cursor-default">
+                <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shadow-md shadow-amber-500/10 group-hover:scale-110 group-hover:shadow-amber-500/30 transition-all duration-300">
+                  <span className="text-base font-bold text-amber-400">O</span>
+                </div>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '출력 형식' : 'Output'}</span>
+              </div>
+            </div>
+            {/* M — Mission Context (bottom) */}
+            <div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: '4px' }}>
+              <div className="flex flex-col items-center group cursor-default">
+                <div className="w-11 h-11 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shadow-md shadow-rose-500/10 group-hover:scale-110 group-hover:shadow-rose-500/30 transition-all duration-300">
+                  <span className="text-base font-bold text-rose-400">M</span>
+                </div>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '미션' : 'Mission'}</span>
+              </div>
+            </div>
+            {/* P — Prompt Structure (bottom-left) */}
+            <div className="absolute" style={{ left: '16px', bottom: '44px' }}>
+              <div className="flex flex-col items-center group cursor-default">
+                <div className="w-11 h-11 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center shadow-md shadow-violet-500/10 group-hover:scale-110 group-hover:shadow-violet-500/30 transition-all duration-300">
+                  <span className="text-base font-bold text-violet-400">P</span>
+                </div>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '구조' : 'Structure'}</span>
+              </div>
+            </div>
+            {/* T — Tailoring (top-left) */}
+            <div className="absolute" style={{ left: '16px', top: '44px' }}>
+              <div className="flex flex-col items-center group cursor-default">
+                <div className="w-11 h-11 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center shadow-md shadow-cyan-500/10 group-hover:scale-110 group-hover:shadow-cyan-500/30 transition-all duration-300">
+                  <span className="text-base font-bold text-cyan-400">T</span>
+                </div>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '맞춤화' : 'Tailoring'}</span>
+              </div>
+            </div>
           </div>
-          <div className="hidden sm:block w-px h-6 bg-border" />
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-gradient">92%</span>
-            <span className="text-sm text-gray-400">{t.socialProof.findItHelpful}</span>
-          </div>
-          <div className="hidden sm:block w-px h-6 bg-border" />
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-gradient">6</span>
-            <span className="text-sm text-gray-400">{t.socialProof.aiDimensions}</span>
-          </div>
+          <p className="text-center text-xs text-gray-500 mt-2">{t.form.frameworkHint}</p>
         </div>
 
         {/* Analysis Form */}

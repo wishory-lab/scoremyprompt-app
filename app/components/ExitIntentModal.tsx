@@ -88,8 +88,8 @@ export default function ExitIntentModal() {
         {/* Stats row */}
         <div className="flex justify-center gap-6 mb-8">
           <div>
-            <p className="text-xl font-bold text-primary">5,000+</p>
-            <p className="text-xs text-gray-500">{t.exitIntent.promptsScored}</p>
+            <p className="text-xl font-bold text-primary">6</p>
+            <p className="text-xs text-gray-500">{t.socialProof.aiDimensions}</p>
           </div>
           <div className="w-px bg-border" />
           <div>

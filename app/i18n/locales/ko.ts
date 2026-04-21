@@ -261,7 +261,7 @@ const ko: PartialLocale = {
   // ─── Waitlist / Newsletter ──────────────────────
   waitlist: {
     title: '매주 AI 활용 능력을 높이세요',
-    subtitle: '5,000명 이상의 전문가와 함께하세요. 주간 최고 프롬프트, 새 AI 도구, 실용적인 팁을 보내드립니다.',
+    subtitle: '주간 최고 프롬프트, 새 AI 도구, 실용적인 팁을 보내드립니다.',
     subscribing: '구독 중...',
     subscribe: '구독하기',
     noSpam: '스팸 없음. 언제든 구독 취소 가능.',
@@ -323,7 +323,7 @@ const ko: PartialLocale = {
     step2Label: '6가지 PROMPT 차원 분석 중',
     step2Detail: '정확성 · 역할 · 출력 · 미션 · 구조 · 맞춤화',
     step3Label: '점수 계산 중',
-    step3Detail: '5,000개 이상의 분석된 프롬프트와 비교 중',
+    step3Detail: '백분위 및 등급 산출 중',
     step4Label: '맞춤 피드백 생성 중',
     step4Detail: '실행 가능한 개선 제안 생성 중',
     tip1Text: '상위 점수 프롬프트의 85%가 구체적인 역할(Role)을 포함합니다.',

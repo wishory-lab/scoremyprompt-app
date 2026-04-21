@@ -81,7 +81,7 @@ export default function EmptyState({
       )}
       {/* Social Proof */}
       <p className="text-xs text-gray-500 mt-2">
-        Join 5,000+ professionals who&apos;ve scored their prompts
+        AI 프롬프트를 분석하고 점수를 확인해 보세요
       </p>
     </div>
   );
