@@ -28,22 +28,22 @@ interface DemoExample {
 }
 
 const DIMENSION_META: Record<string, DemoDimensionMeta> = {
-  precision: { label: 'Precision', letter: 'P', maxScore: 20 },
-  role: { label: 'Role', letter: 'R', maxScore: 15 },
-  outputFormat: { label: 'Output Format', letter: 'O', maxScore: 15 },
-  missionContext: { label: 'Mission Context', letter: 'M', maxScore: 20 },
-  promptStructure: { label: 'Structure', letter: 'P', maxScore: 15 },
-  tailoring: { label: 'Tailoring', letter: 'T', maxScore: 15 },
+  precision: { label: '정확성', letter: 'P', maxScore: 20 },
+  role: { label: '역할', letter: 'R', maxScore: 15 },
+  outputFormat: { label: '출력 형식', letter: 'O', maxScore: 15 },
+  missionContext: { label: '미션 컨텍스트', letter: 'M', maxScore: 20 },
+  promptStructure: { label: '구조', letter: 'P', maxScore: 15 },
+  tailoring: { label: '맞춤화', letter: 'T', maxScore: 15 },
 };
 
 const DEMO_EXAMPLES: DemoExample[] = [
   {
     id: 'beginner',
-    text: 'Write me an email about our product',
+    text: '우리 제품에 대한 이메일 써줘',
     difficultyKey: 'beginner',
     score: 22,
     grade: 'D',
-    description: 'Missing role, context, format, and clear objectives',
+    description: '역할, 컨텍스트, 출력 형식, 명확한 목표가 모두 빠져 있음',
     dimensions: {
       precision: { score: 5, maxScore: 20 },
       role: { score: 0, maxScore: 15 },
@@ -55,11 +55,11 @@ const DEMO_EXAMPLES: DemoExample[] = [
   },
   {
     id: 'intermediate',
-    text: 'Create a marketing email campaign for our Q1 product launch. Target audience: small business owners. Include subject line, body copy, and CTA. Format: email template.',
+    text: '1분기 신제품 출시를 위한 마케팅 이메일 캠페인을 만들어줘. 대상: 소규모 사업자. 제목, 본문 카피, CTA 포함. 형식: 이메일 템플릿.',
     difficultyKey: 'intermediate',
     score: 65,
     grade: 'B',
-    description: 'Good structure and format hints, but missing role assignment and deeper context',
+    description: '구조와 형식은 좋지만, 역할 지정과 깊은 컨텍스트가 부족함',
     dimensions: {
       precision: { score: 14, maxScore: 20 },
       role: { score: 5, maxScore: 15 },
@@ -71,11 +71,11 @@ const DEMO_EXAMPLES: DemoExample[] = [
   },
   {
     id: 'advanced',
-    text: 'You are a conversion-focused B2B copywriter with 10 years in SaaS. Write a professional email marketing campaign for our project management tool launch. Target: CTOs and VPs of Engineering at tech companies (50-200 employees). Goals: 25% open rate, 5% CTR. Include: compelling subject line under 50 chars, persuasive body emphasizing ROI and time-saving, clear CTA with urgency, mobile-friendly HTML template. Tone: professional but approachable.',
+    text: '당신은 SaaS 분야에서 10년 경력의 전환율 중심 B2B 카피라이터입니다. 프로젝트 관리 도구 출시를 위한 전문 이메일 마케팅 캠페인을 작성하세요. 대상: 기술 기업(직원 50~200명) CTO 및 엔지니어링 VP. 목표: 오픈율 25%, CTR 5%. 포함 사항: 50자 이내 매력적인 제목, ROI와 시간 절약을 강조하는 설득력 있는 본문, 긴급성을 담은 CTA, 모바일 친화적 HTML 템플릿. 톤: 전문적이면서 친근하게.',
     difficultyKey: 'advanced',
     score: 91,
     grade: 'S',
-    description: 'Expert-level: clear role, specific context, measurable goals, detailed format requirements',
+    description: '전문가급: 명확한 역할, 구체적 컨텍스트, 측정 가능한 목표, 상세한 형식 요구',
     dimensions: {
       precision: { score: 18, maxScore: 20 },
       role: { score: 14, maxScore: 15 },

@@ -208,7 +208,7 @@ export default function HomeClient() {
                 <div className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 group-hover:shadow-emerald-500/30 transition-all duration-300">
                   <span className="text-base font-bold text-emerald-400">P</span>
                 </div>
-                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '정확성' : 'Precision'}</span>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">정확성</span>
               </div>
             </div>
             {/* R — Role (top-right) */}
@@ -217,7 +217,7 @@ export default function HomeClient() {
                 <div className="w-11 h-11 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shadow-md shadow-blue-500/10 group-hover:scale-110 group-hover:shadow-blue-500/30 transition-all duration-300">
                   <span className="text-base font-bold text-blue-400">R</span>
                 </div>
-                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '역할' : 'Role'}</span>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">역할</span>
               </div>
             </div>
             {/* O — Output Format (bottom-right) */}
@@ -226,7 +226,7 @@ export default function HomeClient() {
                 <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shadow-md shadow-amber-500/10 group-hover:scale-110 group-hover:shadow-amber-500/30 transition-all duration-300">
                   <span className="text-base font-bold text-amber-400">O</span>
                 </div>
-                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '출력 형식' : 'Output'}</span>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">출력 형식</span>
               </div>
             </div>
             {/* M — Mission Context (bottom) */}
@@ -235,7 +235,7 @@ export default function HomeClient() {
                 <div className="w-11 h-11 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shadow-md shadow-rose-500/10 group-hover:scale-110 group-hover:shadow-rose-500/30 transition-all duration-300">
                   <span className="text-base font-bold text-rose-400">M</span>
                 </div>
-                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '미션' : 'Mission'}</span>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">미션</span>
               </div>
             </div>
             {/* P — Prompt Structure (bottom-left) */}
@@ -244,7 +244,7 @@ export default function HomeClient() {
                 <div className="w-11 h-11 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center shadow-md shadow-violet-500/10 group-hover:scale-110 group-hover:shadow-violet-500/30 transition-all duration-300">
                   <span className="text-base font-bold text-violet-400">P</span>
                 </div>
-                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '구조' : 'Structure'}</span>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">구조</span>
               </div>
             </div>
             {/* T — Tailoring (top-left) */}
@@ -253,7 +253,7 @@ export default function HomeClient() {
                 <div className="w-11 h-11 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center shadow-md shadow-cyan-500/10 group-hover:scale-110 group-hover:shadow-cyan-500/30 transition-all duration-300">
                   <span className="text-base font-bold text-cyan-400">T</span>
                 </div>
-                <span className="text-[10px] text-gray-400 mt-1 font-medium">{t.form.frameworkHint ? '맞춤화' : 'Tailoring'}</span>
+                <span className="text-[10px] text-gray-400 mt-1 font-medium">맞춤화</span>
               </div>
             </div>
           </div>
