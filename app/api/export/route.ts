@@ -76,21 +76,6 @@ export async function POST(request: Request) {
       return unauthorizedResponse('Invalid auth token');
     }
 
-    // Check user tier (must be Pro)
-    const { data: userProfile, error: profileError } = await supabase
-      .from('user_profiles')
-      .select('tier')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError || !userProfile) {
-      return notFoundResponse('User profile not found');
-    }
-
-    if (userProfile.tier !== 'premium' && userProfile.tier !== 'pro') {
-      return forbiddenResponse('Premium subscription required for exports');
-    }
-
     // Parse & validate request body
     const body = await request.json();
     const parsed = ExportSchema.safeParse(body);
