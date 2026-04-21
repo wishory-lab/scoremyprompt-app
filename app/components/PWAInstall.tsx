@@ -112,13 +112,13 @@ export default function PWAInstall() {
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-white">Update Available</p>
-            <p className="text-xs text-gray-400 mt-0.5">A new version of ScoreMyPrompt is ready</p>
+            <p className="text-sm font-semibold text-white">업데이트 가능</p>
+            <p className="text-xs text-gray-400 mt-0.5">ScoreMyPrompt 새 버전이 준비되었습니다</p>
             <button
               onClick={handleUpdate}
               className="text-xs font-semibold px-3 py-1.5 mt-3 bg-primary text-white rounded-md hover:opacity-90 transition-opacity"
             >
-              Update now
+              지금 업데이트
             </button>
           </div>
           <button
@@ -142,20 +142,20 @@ export default function PWAInstall() {
           <span className="text-white font-bold text-sm">S</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-white">Install ScoreMyPrompt</p>
-          <p className="text-xs text-gray-400 mt-0.5">Add to your home screen for quick access</p>
+          <p className="text-sm font-semibold text-white">ScoreMyPrompt 설치</p>
+          <p className="text-xs text-gray-400 mt-0.5">홈 화면에 추가하여 빠르게 접근하세요</p>
           <div className="flex gap-2 mt-3">
             <button
               onClick={handleInstall}
               className="text-xs font-semibold px-3 py-1.5 bg-primary text-white rounded-md hover:opacity-90 transition-opacity"
             >
-              Install
+              설치
             </button>
             <button
               onClick={handleDismiss}
               className="text-xs text-gray-500 hover:text-gray-300 transition-colors px-2"
             >
-              Not now
+              나중에
             </button>
           </div>
         </div>

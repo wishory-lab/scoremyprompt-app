@@ -1,5 +1,5 @@
 /**
- * 스킬 5: Marketing Prompt Template Library
+ * 스킬 5: 마케팅 프롬프트 템플릿 라이브러리
  * 카테고리별 검증된 프롬프트 템플릿 라이브러리
  */
 
@@ -37,16 +37,16 @@ export type TemplateCategory =
   | 'brand_voice';
 
 export const TEMPLATE_CATEGORIES: Record<TemplateCategory, { label: string; icon: string; description: string }> = {
-  seo: { label: 'SEO & Search', icon: '🔍', description: 'Search engine optimization and keyword strategy' },
-  content_marketing: { label: 'Content Marketing', icon: '📝', description: 'Blog posts, articles, and thought leadership' },
-  social_media: { label: 'Social Media', icon: '📱', description: 'Posts, captions, and social campaigns' },
-  email_campaign: { label: 'Email Campaigns', icon: '📧', description: 'Newsletters, drip campaigns, and outreach' },
-  product_copy: { label: 'Product Copy', icon: '🏷️', description: 'Product descriptions, landing pages, CTAs' },
-  ux_writing: { label: 'UX Writing', icon: '✏️', description: 'Microcopy, error messages, onboarding flows' },
-  data_analysis: { label: 'Data Analysis', icon: '📊', description: 'Reports, insights, and data interpretation' },
-  strategy: { label: 'Strategy & Planning', icon: '🎯', description: 'Go-to-market, competitive analysis, roadmaps' },
-  customer_research: { label: 'Customer Research', icon: '🔬', description: 'Surveys, personas, user interviews' },
-  brand_voice: { label: 'Brand Voice', icon: '🎙️', description: 'Tone guides, brand messaging, style' },
+  seo: { label: 'SEO & 검색', icon: '🔍', description: '검색 엔진 최적화와 키워드 전략' },
+  content_marketing: { label: '콘텐츠 마케팅', icon: '📝', description: '블로그 포스트, 아티클, 사고 리더십' },
+  social_media: { label: '소셜 미디어', icon: '📱', description: '포스트, 캡션, 소셜 캠페인' },
+  email_campaign: { label: '이메일 캠페인', icon: '📧', description: '뉴스레터, 드립 캠페인, 아웃리치' },
+  product_copy: { label: '제품 카피', icon: '🏷️', description: '제품 설명, 랜딩 페이지, CTA' },
+  ux_writing: { label: 'UX 라이팅', icon: '✏️', description: '마이크로카피, 에러 메시지, 온보딩 플로우' },
+  data_analysis: { label: '데이터 분석', icon: '📊', description: '보고서, 인사이트, 데이터 해석' },
+  strategy: { label: '전략 & 기획', icon: '🎯', description: 'GTM 전략, 경쟁 분석, 로드맵' },
+  customer_research: { label: '고객 리서치', icon: '🔬', description: '설문조사, 페르소나, 사용자 인터뷰' },
+  brand_voice: { label: '브랜드 보이스', icon: '🎙️', description: '톤 가이드, 브랜드 메시지, 스타일' },
 };
 
 export const PROMPT_TEMPLATES: PromptTemplate[] = [
@@ -54,329 +54,329 @@ export const PROMPT_TEMPLATES: PromptTemplate[] = [
   {
     id: 'seo-keyword-cluster',
     category: 'seo',
-    title: 'SEO Keyword Cluster Strategy',
-    description: 'Generate a comprehensive keyword cluster strategy with search intent mapping',
-    template: `You are an SEO specialist with 10+ years of experience in {{industry}}.
+    title: 'SEO 키워드 클러스터 전략',
+    description: '검색 의도 매핑이 포함된 포괄적 키워드 클러스터 전략을 생성합니다',
+    template: `당신은 {{industry}} 분야에서 10년 이상 경력의 SEO 전문가입니다.
 
-TASK: Create a keyword cluster strategy for "{{target_keyword}}" targeting {{target_audience}}.
+과제: {{target_audience}}를 타겟으로 "{{target_keyword}}"에 대한 키워드 클러스터 전략을 만들어 주세요.
 
-REQUIREMENTS:
-1. Primary keyword cluster (5-7 keywords) with monthly search volume estimates
-2. Long-tail variations (10-15 keywords) grouped by search intent:
-   - Informational (how-to, what-is)
-   - Commercial (best, review, comparison)
-   - Transactional (buy, pricing, free trial)
-3. Content gap analysis: topics competitors cover that we don't
-4. Recommended content types for each cluster (blog, landing page, FAQ)
+요구사항:
+1. 주요 키워드 클러스터(5-7개 키워드) — 예상 월간 검색량 포함
+2. 롱테일 변형(10-15개 키워드)을 검색 의도별로 그룹화:
+   - 정보형 (방법, ~란 무엇)
+   - 상업형 (최고, 리뷰, 비교)
+   - 거래형 (구매, 가격, 무료 체험)
+3. 콘텐츠 갭 분석: 경쟁사가 다루지만 우리가 다루지 않는 주제
+4. 각 클러스터에 적합한 콘텐츠 유형 추천 (블로그, 랜딩 페이지, FAQ)
 
-OUTPUT FORMAT: Structured table with columns: Keyword | Search Volume | Difficulty | Intent | Content Type | Priority
+출력 형식: 구조화된 테이블 — 열: 키워드 | 검색량 | 난이도 | 의도 | 콘텐츠 유형 | 우선순위
 
-CONSTRAINTS:
-- Focus on keywords with difficulty score under 60
-- Prioritize keywords with clear commercial intent
-- Include at least 3 question-based keywords for featured snippets`,
+제약:
+- 난이도 60 이하 키워드에 집중
+- 명확한 상업적 의도가 있는 키워드 우선
+- 추천 스니펫용 질문형 키워드 최소 3개 포함`,
     variables: [
-      { name: 'industry', placeholder: 'e.g., SaaS, e-commerce, fintech', description: 'Your industry vertical', required: true, examples: ['B2B SaaS', 'DTC e-commerce', 'Healthcare tech'] },
-      { name: 'target_keyword', placeholder: 'e.g., project management software', description: 'Main keyword to build clusters around', required: true, examples: ['AI writing tool', 'prompt engineering course'] },
-      { name: 'target_audience', placeholder: 'e.g., small business owners', description: 'Who you want to reach', required: true, examples: ['marketing managers', 'startup founders', 'freelance designers'] },
+      { name: 'industry', placeholder: '예: SaaS, 이커머스, 핀테크', description: '업종', required: true, examples: ['B2B SaaS', 'DTC 이커머스', '헬스케어 테크'] },
+      { name: 'target_keyword', placeholder: '예: 프로젝트 관리 소프트웨어', description: '클러스터 기반 메인 키워드', required: true, examples: ['AI 글쓰기 도구', '프롬프트 엔지니어링 강좌'] },
+      { name: 'target_audience', placeholder: '예: 소규모 사업자', description: '도달하려는 대상', required: true, examples: ['마케팅 매니저', '스타트업 창업자', '프리랜서 디자이너'] },
     ],
     difficulty: 'advanced',
     expectedScore: 92,
     usageCount: 3420,
-    tags: ['seo', 'keywords', 'content-strategy', 'search-intent'],
+    tags: ['seo', '키워드', '콘텐츠 전략', '검색 의도'],
   },
 
-  // ─── Content Marketing ───
+  // ─── 콘텐츠 마케팅 ───
   {
     id: 'content-thought-leadership',
     category: 'content_marketing',
-    title: 'Thought Leadership Article',
-    description: 'Create a compelling thought leadership piece that positions your brand as an industry expert',
-    template: `You are a senior content strategist writing for {{company_name}}, a {{company_description}}.
+    title: '사고 리더십 아티클',
+    description: '브랜드를 업계 전문가로 포지셔닝하는 매력적인 사고 리더십 글을 작성합니다',
+    template: `당신은 {{company_description}}인 {{company_name}}의 시니어 콘텐츠 전략가입니다.
 
-TASK: Write a thought leadership article about "{{topic}}" for {{target_publication}}.
+과제: {{target_publication}}에 "{{topic}}"에 대한 사고 리더십 아티클을 작성해 주세요.
 
-AUDIENCE: {{audience_description}}
+대상 독자: {{audience_description}}
 
-STRUCTURE:
-1. Hook: Start with a provocative insight or contrarian take (2-3 sentences)
-2. Problem Statement: Why this matters now (1 paragraph)
-3. Core Argument: Your unique perspective with 3 supporting points
-4. Evidence: Include references to industry data, trends, or case studies
-5. Actionable Takeaway: What readers should do next (3-5 bullet points)
-6. Closing: Forward-looking statement that reinforces your expertise
+구조:
+1. 훅: 도발적 인사이트나 반대 의견으로 시작 (2-3문장)
+2. 문제 제기: 왜 지금 중요한지 (1단락)
+3. 핵심 주장: 3가지 근거가 있는 독자적 관점
+4. 증거: 업계 데이터, 트렌드, 사례 연구 참조
+5. 실행 가능한 시사점: 독자가 다음에 해야 할 것 (3-5개 항목)
+6. 마무리: 전문성을 강화하는 미래 지향적 선언
 
-TONE: {{tone}} — authoritative but accessible, avoid jargon unless industry-standard
-WORD COUNT: {{word_count}} words
-FORMAT: Markdown with H2/H3 headers
+톤: {{tone}} — 권위 있지만 접근 가능, 업계 표준이 아닌 한 전문 용어 피하기
+글자 수: {{word_count}}자
+형식: H2/H3 헤더가 있는 마크다운
 
-CONSTRAINTS:
-- No generic AI-sounding phrases ("In today's fast-paced world...")
-- Include 2-3 specific data points or statistics
-- Every claim must be substantiated
-- End with a clear, memorable one-liner`,
+제약:
+- AI스러운 일반적 표현 금지 ("빠르게 변화하는 오늘날의 세계에서...")
+- 구체적 데이터 포인트나 통계 2-3개 포함
+- 모든 주장은 근거가 있어야 함
+- 명확하고 기억에 남는 한 줄로 마무리`,
     variables: [
-      { name: 'company_name', placeholder: 'e.g., Acme Corp', description: 'Your company name', required: true, examples: ['ScoreMyPrompt', 'TechFlow'] },
-      { name: 'company_description', placeholder: 'e.g., AI-powered productivity platform', description: 'Brief company description', required: true, examples: ['AI prompt evaluation SaaS'] },
-      { name: 'topic', placeholder: 'e.g., The future of AI in marketing', description: 'Article topic', required: true, examples: ['Why prompt engineering is the new literacy'] },
-      { name: 'target_publication', placeholder: 'e.g., TechCrunch, LinkedIn', description: 'Where it will be published', required: false, examples: ['Medium', 'company blog', 'HBR'] },
-      { name: 'audience_description', placeholder: 'e.g., CMOs and marketing directors', description: 'Who will read this', required: true, examples: ['Tech-savvy marketers', 'C-suite executives'] },
-      { name: 'tone', placeholder: 'e.g., Professional yet conversational', description: 'Writing tone', required: false, examples: ['Bold and opinionated', 'Data-driven and analytical'] },
-      { name: 'word_count', placeholder: 'e.g., 1500', description: 'Target word count', required: false, examples: ['1200', '2000', '800'] },
+      { name: 'company_name', placeholder: '예: 에이코프', description: '회사명', required: true, examples: ['ScoreMyPrompt', 'TechFlow'] },
+      { name: 'company_description', placeholder: '예: AI 기반 생산성 플랫폼', description: '간략한 회사 설명', required: true, examples: ['AI 프롬프트 평가 SaaS'] },
+      { name: 'topic', placeholder: '예: 마케팅에서 AI의 미래', description: '아티클 주제', required: true, examples: ['프롬프트 엔지니어링이 새로운 리터러시인 이유'] },
+      { name: 'target_publication', placeholder: '예: TechCrunch, LinkedIn', description: '게재할 곳', required: false, examples: ['Medium', '회사 블로그', 'HBR'] },
+      { name: 'audience_description', placeholder: '예: CMO와 마케팅 디렉터', description: '읽을 사람', required: true, examples: ['테크에 밝은 마케터', 'C-레벨 임원'] },
+      { name: 'tone', placeholder: '예: 전문적이지만 대화체', description: '글의 톤', required: false, examples: ['대담하고 주관적', '데이터 중심의 분석적'] },
+      { name: 'word_count', placeholder: '예: 1500', description: '목표 글자 수', required: false, examples: ['1200', '2000', '800'] },
     ],
     difficulty: 'advanced',
     expectedScore: 95,
     usageCount: 2890,
-    tags: ['content', 'thought-leadership', 'blog', 'brand-authority'],
+    tags: ['콘텐츠', '사고 리더십', '블로그', '브랜드 권위'],
   },
 
-  // ─── Social Media ───
+  // ─── 소셜 미디어 ───
   {
     id: 'social-campaign-series',
     category: 'social_media',
-    title: 'Social Media Campaign Series',
-    description: 'Generate a week-long social media campaign with platform-specific content',
-    template: `You are a social media strategist managing {{brand_name}}'s presence across platforms.
+    title: '소셜 미디어 캠페인 시리즈',
+    description: '플랫폼별 콘텐츠가 포함된 1주일 소셜 미디어 캠페인을 생성합니다',
+    template: `당신은 {{brand_name}}의 크로스 플랫폼 소셜 미디어 전략가입니다.
 
-TASK: Create a 7-day social media campaign for {{campaign_goal}}.
+과제: {{campaign_goal}}을 위한 7일 소셜 미디어 캠페인을 만들어 주세요.
 
-CAMPAIGN DETAILS:
-- Product/Service: {{product}}
-- Target Audience: {{audience}}
-- Key Message: {{key_message}}
-- Campaign Hashtag: {{hashtag}}
+캠페인 상세:
+- 제품/서비스: {{product}}
+- 타겟 오디언스: {{audience}}
+- 핵심 메시지: {{key_message}}
+- 캠페인 해시태그: {{hashtag}}
 
-DELIVERABLES (for each day):
-1. LinkedIn post (professional tone, 150-200 words, include a hook question)
-2. Twitter/X thread (5-7 tweets, each under 280 chars, numbered)
-3. Instagram caption (casual tone, 100-150 words, include 5-10 relevant hashtags)
+산출물 (매일):
+1. LinkedIn 포스트 (전문적 톤, 150-200자, 훅 질문 포함)
+2. Twitter/X 스레드 (5-7개 트윗, 각 280자 이내, 번호 부여)
+3. Instagram 캡션 (캐주얼 톤, 100-150자, 관련 해시태그 5-10개 포함)
 
-REQUIREMENTS:
-- Day 1: Awareness — introduce the problem
-- Day 2-3: Education — share insights and data
-- Day 4: Social proof — customer stories or testimonials
-- Day 5: Behind the scenes — show your process
-- Day 6: Engagement — poll, question, or challenge
-- Day 7: CTA — drive to conversion
+요구사항:
+- 1일차: 인지도 — 문제 소개
+- 2-3일차: 교육 — 인사이트와 데이터 공유
+- 4일차: 소셜 프루프 — 고객 사례나 후기
+- 5일차: 비하인드 — 과정 보여주기
+- 6일차: 참여 — 설문, 질문, 챌린지
+- 7일차: CTA — 전환 유도
 
-FORMAT: Organize by day, then by platform. Include emoji suggestions and best posting times (EST).
+형식: 일별 정리, 그 안에 플랫폼별. 이모지 제안과 최적 발행 시간(KST) 포함.
 
-CONSTRAINTS:
-- No clickbait or misleading claims
-- Each post should stand alone but connect to the campaign narrative
-- Include at least one data point per day`,
+제약:
+- 클릭베이트나 허위 주장 금지
+- 각 포스트는 독립적이면서 캠페인 내러티브와 연결
+- 매일 최소 하나의 데이터 포인트 포함`,
     variables: [
-      { name: 'brand_name', placeholder: 'e.g., ScoreMyPrompt', description: 'Your brand', required: true, examples: ['ScoreMyPrompt'] },
-      { name: 'campaign_goal', placeholder: 'e.g., product launch awareness', description: 'What you want to achieve', required: true, examples: ['new feature launch', 'brand awareness', 'lead generation'] },
-      { name: 'product', placeholder: 'e.g., AI prompt grading tool', description: 'What you are promoting', required: true, examples: ['AI prompt evaluation platform'] },
-      { name: 'audience', placeholder: 'e.g., marketing professionals', description: 'Target audience', required: true, examples: ['AI enthusiasts', 'prompt engineers', 'content creators'] },
-      { name: 'key_message', placeholder: 'e.g., Write better prompts, get better results', description: 'Core campaign message', required: true, examples: ['Grade your prompts in 30 seconds'] },
-      { name: 'hashtag', placeholder: 'e.g., #ScoreMyPrompt', description: 'Campaign hashtag', required: true, examples: ['#PromptScore', '#BetterPrompts'] },
+      { name: 'brand_name', placeholder: '예: ScoreMyPrompt', description: '브랜드명', required: true, examples: ['ScoreMyPrompt'] },
+      { name: 'campaign_goal', placeholder: '예: 제품 출시 인지도', description: '달성하고자 하는 것', required: true, examples: ['새 기능 출시', '브랜드 인지도', '리드 생성'] },
+      { name: 'product', placeholder: '예: AI 프롬프트 채점 도구', description: '홍보할 것', required: true, examples: ['AI 프롬프트 평가 플랫폼'] },
+      { name: 'audience', placeholder: '예: 마케팅 전문가', description: '타겟 오디언스', required: true, examples: ['AI 열정가', '프롬프트 엔지니어', '콘텐츠 크리에이터'] },
+      { name: 'key_message', placeholder: '예: 더 나은 프롬프트, 더 나은 결과', description: '핵심 캠페인 메시지', required: true, examples: ['30초 만에 프롬프트를 채점하세요'] },
+      { name: 'hashtag', placeholder: '예: #ScoreMyPrompt', description: '캠페인 해시태그', required: true, examples: ['#PromptScore', '#더나은프롬프트'] },
     ],
     difficulty: 'intermediate',
     expectedScore: 90,
     usageCount: 4150,
-    tags: ['social-media', 'campaign', 'multi-platform', 'content-calendar'],
+    tags: ['소셜 미디어', '캠페인', '멀티 플랫폼', '콘텐츠 캘린더'],
   },
 
-  // ─── Email Campaign ───
+  // ─── 이메일 캠페인 ───
   {
     id: 'email-drip-sequence',
     category: 'email_campaign',
-    title: 'Email Drip Campaign Sequence',
-    description: 'Create a 5-email onboarding sequence that converts free users to paid',
-    template: `You are an email marketing specialist for {{company_name}}, a {{product_description}}.
+    title: '이메일 드립 캠페인 시퀀스',
+    description: '무료 사용자를 유료로 전환시키는 5통 온보딩 시퀀스를 생성합니다',
+    template: `당신은 {{product_description}}인 {{company_name}}의 이메일 마케팅 전문가입니다.
 
-TASK: Design a 5-email drip campaign to convert free trial users to paying customers.
+과제: 무료 체험 사용자를 유료 고객으로 전환하는 5통 이메일 드립 캠페인을 설계해 주세요.
 
-USER CONTEXT:
-- Just signed up for free trial of {{product}}
-- Key pain point: {{pain_point}}
-- Competitor alternatives: {{competitors}}
+사용자 맥락:
+- {{product}} 무료 체험에 방금 가입
+- 핵심 페인 포인트: {{pain_point}}
+- 경쟁 대안: {{competitors}}
 
-EMAIL SEQUENCE:
-Email 1 (Day 0 - Welcome):
-  - Subject line (A/B: 2 options, under 50 chars)
-  - Preview text (under 90 chars)
-  - Body: Welcome, quick-start guide, 1 key action
-  - CTA: "Start your first {{action}}"
+이메일 시퀀스:
+이메일 1 (0일차 - 환영):
+  - 제목줄 (A/B: 2가지 옵션, 50자 이내)
+  - 미리보기 텍스트 (90자 이내)
+  - 본문: 환영, 빠른 시작 가이드, 핵심 행동 1가지
+  - CTA: "첫 {{action}} 시작하기"
 
-Email 2 (Day 2 - Quick Win):
-  - Help them achieve first success
-  - Include specific how-to steps
-  - CTA: Try advanced feature
+이메일 2 (2일차 - 빠른 성과):
+  - 첫 번째 성공 경험 도달 지원
+  - 구체적 하우투 단계 포함
+  - CTA: 고급 기능 시도
 
-Email 3 (Day 5 - Social Proof):
-  - Case study or testimonial
-  - Metrics-driven: "Users who do X see Y% improvement"
-  - CTA: See results dashboard
+이메일 3 (5일차 - 소셜 프루프):
+  - 사례 연구나 후기
+  - 지표 중심: "X를 한 사용자는 Y% 개선을 경험"
+  - CTA: 결과 대시보드 보기
 
-Email 4 (Day 8 - Unlock Value):
-  - Show premium features they're missing
-  - Compare free vs. pro capabilities
-  - CTA: Upgrade for {{offer}}
+이메일 4 (8일차 - 가치 해제):
+  - 놓치고 있는 프리미엄 기능 보여주기
+  - 무료 vs 프로 기능 비교
+  - CTA: {{offer}}으로 업그레이드
 
-Email 5 (Day 12 - Urgency):
-  - Trial ending reminder
-  - Summary of their achievements so far
-  - Limited-time offer
-  - CTA: Upgrade now
+이메일 5 (12일차 - 긴급감):
+  - 체험 종료 알림
+  - 지금까지의 성과 요약
+  - 한정 혜택 제공
+  - CTA: 지금 업그레이드
 
-FORMAT: For each email provide: Subject (2 A/B options) | Preview Text | Body (150-250 words) | CTA Button Text | Send Time Recommendation
+형식: 각 이메일에 제공: 제목(A/B 2가지) | 미리보기 텍스트 | 본문(150-250자) | CTA 버튼 텍스트 | 발송 시간 추천
 
-CONSTRAINTS:
-- Subject lines must create curiosity without clickbait
-- Each email should be self-contained (not everyone opens every email)
-- Mobile-friendly formatting (short paragraphs, clear CTA)
-- Include unsubscribe compliance note`,
+제약:
+- 제목줄은 호기심을 유발하되 클릭베이트 금지
+- 각 이메일은 독립적(모든 사람이 모든 이메일을 열지 않음)
+- 모바일 친화적 포맷(짧은 단락, 명확한 CTA)
+- 구독 취소 규정 준수 안내 포함`,
     variables: [
-      { name: 'company_name', placeholder: 'e.g., ScoreMyPrompt', description: 'Company name', required: true, examples: ['ScoreMyPrompt'] },
-      { name: 'product_description', placeholder: 'e.g., AI prompt evaluation tool', description: 'Brief product description', required: true, examples: ['AI-powered prompt grading platform'] },
-      { name: 'product', placeholder: 'e.g., prompt scoring', description: 'Product name', required: true, examples: ['ScoreMyPrompt Pro'] },
-      { name: 'pain_point', placeholder: 'e.g., getting generic AI outputs', description: 'Main user pain point', required: true, examples: ['wasting time on ineffective prompts'] },
-      { name: 'competitors', placeholder: 'e.g., PromptPerfect, ChatGPT tips blogs', description: 'Main alternatives', required: true, examples: ['manual prompt testing', 'prompt engineering courses'] },
-      { name: 'action', placeholder: 'e.g., prompt analysis', description: 'Key product action', required: true, examples: ['prompt scoring', 'AI evaluation'] },
-      { name: 'offer', placeholder: 'e.g., 30% off annual plan', description: 'Upgrade incentive', required: false, examples: ['20% off first month', 'extended trial'] },
+      { name: 'company_name', placeholder: '예: ScoreMyPrompt', description: '회사명', required: true, examples: ['ScoreMyPrompt'] },
+      { name: 'product_description', placeholder: '예: AI 프롬프트 평가 도구', description: '간략한 제품 설명', required: true, examples: ['AI 기반 프롬프트 채점 플랫폼'] },
+      { name: 'product', placeholder: '예: 프롬프트 채점', description: '제품명', required: true, examples: ['ScoreMyPrompt 프로'] },
+      { name: 'pain_point', placeholder: '예: 일반적인 AI 출력 받기', description: '주요 사용자 페인 포인트', required: true, examples: ['비효과적 프롬프트에 시간 낭비'] },
+      { name: 'competitors', placeholder: '예: PromptPerfect, ChatGPT 팁 블로그', description: '주요 대안', required: true, examples: ['수동 프롬프트 테스트', '프롬프트 엔지니어링 강좌'] },
+      { name: 'action', placeholder: '예: 프롬프트 분석', description: '핵심 제품 행동', required: true, examples: ['프롬프트 채점', 'AI 평가'] },
+      { name: 'offer', placeholder: '예: 연간 플랜 30% 할인', description: '업그레이드 인센티브', required: false, examples: ['첫 달 20% 할인', '체험 연장'] },
     ],
     difficulty: 'advanced',
     expectedScore: 94,
     usageCount: 2340,
-    tags: ['email', 'drip-campaign', 'conversion', 'onboarding', 'saas'],
+    tags: ['이메일', '드립 캠페인', '전환', '온보딩', 'saas'],
   },
 
-  // ─── UX Writing ───
+  // ─── UX 라이팅 ───
   {
     id: 'ux-microcopy-system',
     category: 'ux_writing',
-    title: 'UX Microcopy System',
-    description: 'Generate consistent microcopy for your product including errors, empty states, and CTAs',
-    template: `You are a UX writer at {{company_name}} creating microcopy for {{product_type}}.
+    title: 'UX 마이크로카피 시스템',
+    description: '에러, 빈 상태, CTA를 포함한 일관된 제품 마이크로카피를 생성합니다',
+    template: `당신은 {{product_type}}인 {{company_name}}의 UX 라이터입니다.
 
-BRAND VOICE: {{brand_voice}}
-AUDIENCE: {{audience}}
+브랜드 보이스: {{brand_voice}}
+대상: {{audience}}
 
-TASK: Create a comprehensive microcopy guide for the following UI states:
+과제: 다음 UI 상태에 대한 포괄적 마이크로카피 가이드를 만들어 주세요:
 
-1. EMPTY STATES (5 variations):
-   - First-time user (no data)
-   - Search with no results
-   - Filtered view with no matches
-   - Error loading content
-   - Feature not available on current plan
+1. 빈 상태 (5가지 변형):
+   - 첫 사용자 (데이터 없음)
+   - 결과 없는 검색
+   - 일치하지 않는 필터 뷰
+   - 콘텐츠 로딩 에러
+   - 현재 플랜에서 사용 불가 기능
 
-2. ERROR MESSAGES (5 types):
-   - Form validation error
-   - Network/connection error
-   - Server error (500)
-   - Permission denied
-   - Rate limit exceeded
+2. 에러 메시지 (5가지 유형):
+   - 폼 유효성 검사 에러
+   - 네트워크/연결 에러
+   - 서버 에러 (500)
+   - 권한 거부
+   - 요청 횟수 제한 초과
 
-3. SUCCESS MESSAGES (4 types):
-   - Action completed
-   - Item saved/created
-   - Settings updated
-   - Upgrade successful
+3. 성공 메시지 (4가지 유형):
+   - 행동 완료
+   - 항목 저장/생성됨
+   - 설정 업데이트됨
+   - 업그레이드 성공
 
-4. CTA BUTTONS (6 variations):
-   - Primary action
-   - Secondary action
-   - Destructive action
-   - Upgrade prompt
-   - Share/invite
-   - Learn more
+4. CTA 버튼 (6가지 변형):
+   - 주요 행동
+   - 보조 행동
+   - 삭제 행동
+   - 업그레이드 유도
+   - 공유/초대
+   - 더 알아보기
 
-5. TOOLTIPS & ONBOARDING (4 steps):
-   - Feature introduction
-   - First-time action guide
-   - Pro tip
-   - Keyboard shortcut hint
+5. 툴팁 & 온보딩 (4단계):
+   - 기능 소개
+   - 첫 행동 안내
+   - 프로 팁
+   - 키보드 단축키 힌트
 
-FORMAT: For each item provide:
-- Copy text (keep under 120 characters for UI elements)
-- Alternative version
-- Notes on tone/intent
+형식: 각 항목에 대해:
+- 카피 텍스트 (UI 요소는 120자 이내)
+- 대안 버전
+- 톤/의도 노트
 
-CONSTRAINTS:
-- Be helpful, not blaming ("We couldn't find that" not "You entered wrong data")
-- Use active voice
-- No technical jargon
-- Include action-oriented recovery steps in error messages
-- Consistent capitalization (sentence case for body, title case for buttons)`,
+제약:
+- 도움을 주되 비난하지 않기 ("찾을 수 없습니다"가 아닌 "검색 결과가 없습니다")
+- 능동태 사용
+- 기술 전문 용어 금지
+- 에러 메시지에 행동 지향적 복구 단계 포함
+- 일관된 대문자 사용 (본문은 문장형, 버튼은 제목형)`,
     variables: [
-      { name: 'company_name', placeholder: 'e.g., ScoreMyPrompt', description: 'Product name', required: true, examples: ['ScoreMyPrompt'] },
-      { name: 'product_type', placeholder: 'e.g., AI analytics dashboard', description: 'Type of product', required: true, examples: ['AI prompt evaluation platform', 'SaaS dashboard'] },
-      { name: 'brand_voice', placeholder: 'e.g., Friendly, expert, slightly playful', description: 'Brand voice characteristics', required: true, examples: ['Professional yet approachable', 'Technical but clear'] },
-      { name: 'audience', placeholder: 'e.g., Marketing professionals', description: 'Primary users', required: true, examples: ['Developers and marketers', 'Non-technical professionals'] },
+      { name: 'company_name', placeholder: '예: ScoreMyPrompt', description: '제품명', required: true, examples: ['ScoreMyPrompt'] },
+      { name: 'product_type', placeholder: '예: AI 분석 대시보드', description: '제품 유형', required: true, examples: ['AI 프롬프트 평가 플랫폼', 'SaaS 대시보드'] },
+      { name: 'brand_voice', placeholder: '예: 친절하고, 전문적이며, 약간 위트 있는', description: '브랜드 보이스 특성', required: true, examples: ['전문적이지만 친근한', '기술적이지만 명확한'] },
+      { name: 'audience', placeholder: '예: 마케팅 전문가', description: '주 사용자', required: true, examples: ['개발자와 마케터', '비기술 전문가'] },
     ],
     difficulty: 'intermediate',
     expectedScore: 91,
     usageCount: 1890,
-    tags: ['ux-writing', 'microcopy', 'product', 'ui-text'],
+    tags: ['ux 라이팅', '마이크로카피', '제품', 'ui 텍스트'],
   },
 
-  // ─── Strategy ───
+  // ─── 전략 ───
   {
     id: 'gtm-strategy',
     category: 'strategy',
-    title: 'Go-To-Market Strategy',
-    description: 'Create a comprehensive GTM strategy for a new product or feature launch',
-    template: `You are a VP of Growth with experience launching {{industry}} products.
+    title: 'GTM(시장 진입) 전략',
+    description: '신제품 또는 기능 출시를 위한 포괄적 GTM 전략을 생성합니다',
+    template: `당신은 {{industry}} 제품 출시 경험이 있는 VP of Growth입니다.
 
-TASK: Create a 90-day Go-To-Market strategy for {{product_name}}.
+과제: {{product_name}}을 위한 90일 시장 진입 전략을 만들어 주세요.
 
-PRODUCT: {{product_description}}
-TARGET MARKET: {{target_market}}
-PRICING: {{pricing_model}}
-COMPETITIVE ADVANTAGE: {{differentiator}}
+제품: {{product_description}}
+타겟 시장: {{target_market}}
+가격: {{pricing_model}}
+경쟁 우위: {{differentiator}}
 
-DELIVERABLES:
+산출물:
 
-1. EXECUTIVE SUMMARY (200 words max)
+1. 경영진 요약 (200자 이내)
 
-2. TARGET CUSTOMER PROFILE:
-   - Primary persona (demographics, behaviors, pain points)
-   - Secondary persona
-   - Anti-persona (who is NOT our customer)
+2. 타겟 고객 프로필:
+   - 주요 페르소나 (인구통계, 행동, 페인 포인트)
+   - 보조 페르소나
+   - 안티 페르소나 (우리 고객이 아닌 사람)
 
-3. POSITIONING:
-   - Positioning statement (classic format)
-   - Tagline options (3 variations)
-   - Key messaging pillars (3)
+3. 포지셔닝:
+   - 포지셔닝 선언문 (클래식 형식)
+   - 태그라인 옵션 (3가지)
+   - 핵심 메시지 필러 (3개)
 
-4. CHANNEL STRATEGY:
-   - Acquisition channels ranked by expected ROI
-   - For each channel: tactic, budget allocation %, timeline, KPI
+4. 채널 전략:
+   - 예상 ROI 순으로 정렬된 획득 채널
+   - 각 채널: 전술, 예산 배분 %, 타임라인, KPI
 
-5. 90-DAY MILESTONE PLAN:
-   - Days 1-30: Foundation (what to build/prepare)
-   - Days 31-60: Launch (how to create momentum)
-   - Days 61-90: Scale (how to accelerate)
+5. 90일 마일스톤 계획:
+   - 1-30일: 기반 (빌드/준비할 것)
+   - 31-60일: 런칭 (모멘텀 만드는 법)
+   - 61-90일: 스케일 (가속하는 법)
 
-6. METRICS & KPIs:
-   - North Star metric
-   - Leading indicators (5)
-   - Lagging indicators (3)
-   - Weekly/monthly targets
+6. 지표 & KPI:
+   - 핵심 지표
+   - 선행 지표 (5개)
+   - 후행 지표 (3개)
+   - 주간/월간 목표
 
-FORMAT: Structured document with clear headers and tables where appropriate.
+형식: 명확한 헤더와 적절한 테이블이 있는 구조화된 문서.
 
-CONSTRAINTS:
-- Assume startup budget (not enterprise marketing spend)
-- Focus on organic and low-cost channels first
-- Every recommendation must include expected timeline and measurable outcome
-- Be specific: "Post 3x/week on LinkedIn" not "be active on social media"`,
+제약:
+- 스타트업 예산 가정 (엔터프라이즈 마케팅 비용 아님)
+- 유기적/저비용 채널 우선
+- 모든 추천에 예상 타임라인과 측정 가능한 결과 포함
+- 구체적으로: "소셜 미디어 활용"이 아닌 "LinkedIn에 주 3회 포스팅"`,
     variables: [
-      { name: 'industry', placeholder: 'e.g., AI/SaaS', description: 'Industry vertical', required: true, examples: ['AI SaaS', 'EdTech', 'FinTech'] },
-      { name: 'product_name', placeholder: 'e.g., ScoreMyPrompt Pro', description: 'Product name', required: true, examples: ['ScoreMyPrompt'] },
-      { name: 'product_description', placeholder: 'e.g., AI-powered prompt evaluation tool', description: 'Brief product description', required: true, examples: ['AI tool that grades prompts across 6 dimensions'] },
-      { name: 'target_market', placeholder: 'e.g., Marketing teams at SMBs', description: 'Target market', required: true, examples: ['AI-savvy professionals', 'Marketing teams'] },
-      { name: 'pricing_model', placeholder: 'e.g., Freemium with $19/mo Pro tier', description: 'Pricing structure', required: true, examples: ['Free tier + $19/mo Pro'] },
-      { name: 'differentiator', placeholder: 'e.g., Only tool with 6-dimension scoring', description: 'Key competitive advantage', required: true, examples: ['Real-time multi-model prompt scoring'] },
+      { name: 'industry', placeholder: '예: AI/SaaS', description: '업종', required: true, examples: ['AI SaaS', '에듀테크', '핀테크'] },
+      { name: 'product_name', placeholder: '예: ScoreMyPrompt 프로', description: '제품명', required: true, examples: ['ScoreMyPrompt'] },
+      { name: 'product_description', placeholder: '예: AI 기반 프롬프트 평가 도구', description: '간략한 제품 설명', required: true, examples: ['6가지 차원으로 프롬프트를 채점하는 AI 도구'] },
+      { name: 'target_market', placeholder: '예: SMB 마케팅 팀', description: '타겟 시장', required: true, examples: ['AI에 능숙한 전문가', '마케팅 팀'] },
+      { name: 'pricing_model', placeholder: '예: 프리미엄 + 월 $19 프로 티어', description: '가격 구조', required: true, examples: ['무료 티어 + 월 $19 프로'] },
+      { name: 'differentiator', placeholder: '예: 유일한 6차원 채점 도구', description: '핵심 경쟁 우위', required: true, examples: ['실시간 멀티 모델 프롬프트 채점'] },
     ],
     difficulty: 'advanced',
     expectedScore: 96,
     usageCount: 5200,
-    tags: ['strategy', 'gtm', 'launch', 'marketing-plan'],
+    tags: ['전략', 'gtm', '런칭', '마케팅 계획'],
   },
 ];
 

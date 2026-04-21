@@ -65,11 +65,11 @@ export default function MaintenancePage() {
           </div>
 
           <h1 className="text-3xl font-bold text-white mb-4">
-            We&apos;ll Be Right Back
+            곧 돌아오겠습니다
           </h1>
           <p className="text-gray-400 text-base mb-8 leading-relaxed">
-            ScoreMyPrompt is undergoing scheduled maintenance to improve your experience.
-            We&apos;ll be back shortly.
+            ScoreMyPrompt가 더 나은 경험을 위해 정기 점검 중입니다.
+            곧 다시 이용하실 수 있습니다.
           </p>
 
           {/* Status card */}
@@ -77,12 +77,12 @@ export default function MaintenancePage() {
             <div className="flex items-center justify-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
               <span className="text-sm text-amber-400 font-medium">
-                Maintenance in progress
+                점검 진행 중
               </span>
             </div>
             <p className="text-gray-400 text-xs">
-              Auto-checking in{' '}
-              <span className="text-white font-mono font-semibold">{countdown}s</span>
+              자동 확인까지{' '}
+              <span className="text-white font-mono font-semibold">{countdown}초</span>
             </p>
           </div>
 
@@ -96,10 +96,10 @@ export default function MaintenancePage() {
               {checking ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Checking…
+                  확인 중…
                 </span>
               ) : (
-                'Check Now'
+                '지금 확인'
               )}
             </button>
             <a
@@ -108,7 +108,7 @@ export default function MaintenancePage() {
               rel="noopener noreferrer"
               className="px-6 py-3 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all"
             >
-              Follow Updates
+              업데이트 팔로우
             </a>
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function MaintenancePage() {
 
       {/* Minimal footer */}
       <footer className="py-6 text-center text-xs text-gray-500">
-        ScoreMyPrompt &middot; We appreciate your patience
+        ScoreMyPrompt &middot; 기다려 주셔서 감사합니다
       </footer>
     </div>
   );

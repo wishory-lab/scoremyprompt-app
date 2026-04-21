@@ -2,9 +2,10 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'ScoreMyPrompt - AI Prompt Grading Tool',
+    name: 'ScoreMyPrompt - AI 프롬프트 채점 도구',
     short_name: 'ScoreMyPrompt',
-    description: 'Score your AI prompts on 6 dimensions. Get instant feedback and improve.',
+    description: '6가지 차원으로 AI 프롬프트를 채점하세요. 즉시 피드백을 받고 개선하세요.',
+    lang: 'ko',
     start_url: '/',
     display: 'standalone',
     background_color: '#0a0f1a',

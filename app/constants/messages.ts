@@ -1,106 +1,106 @@
 /**
- * Centralized UI messages for consistent microcopy across the app.
- * All user-facing strings should be referenced from here.
+ * 앱 전체에서 일관된 마이크로카피를 위한 중앙 집중식 UI 메시지.
+ * 모든 사용자 대면 문자열은 여기에서 참조해야 합니다.
  */
 
-// ─── Validation ─────────────────────────────────────────────────────
+// ─── 유효성 검사 ─────────────────────────────────────────────────────
 export const VALIDATION = {
-  PROMPT_EMPTY: 'Please enter a prompt to analyze.',
-  PROMPT_TOO_SHORT: 'Your prompt needs to be at least 10 characters.',
-  EMAIL_EMPTY: 'Please enter your email address.',
-  EMAIL_INVALID: 'Please enter a valid email address.',
-  BOTH_PROMPTS_REQUIRED: 'Please enter both prompts.',
-  BOTH_PROMPTS_MIN_LENGTH: 'Both prompts need to be at least 10 characters.',
-  BULK_MIN_PROMPT: 'Enter at least one prompt (minimum 10 characters each).',
+  PROMPT_EMPTY: '분석할 프롬프트를 입력해 주세요.',
+  PROMPT_TOO_SHORT: '프롬프트는 최소 10자 이상이어야 합니다.',
+  EMAIL_EMPTY: '이메일 주소를 입력해 주세요.',
+  EMAIL_INVALID: '올바른 이메일 주소를 입력해 주세요.',
+  BOTH_PROMPTS_REQUIRED: '두 개의 프롬프트를 모두 입력해 주세요.',
+  BOTH_PROMPTS_MIN_LENGTH: '두 프롬프트 모두 최소 10자 이상이어야 합니다.',
+  BULK_MIN_PROMPT: '최소 하나의 프롬프트를 입력해 주세요 (각 최소 10자).',
 } as const;
 
-// ─── Errors ─────────────────────────────────────────────────────────
+// ─── 에러 ─────────────────────────────────────────────────────────
 export const ERRORS = {
-  GENERIC: 'Something went wrong. Please try again.',
-  RATE_LIMIT: 'Too many requests. Please wait a moment and try again.',
-  ANALYZE_FAILED: 'Failed to analyze prompt. Please try again.',
-  ANALYZE_GENERIC: 'An error occurred while analyzing your prompt. Please try again.',
-  COMPARE_FAILED: 'Failed to analyze prompts. Please try again.',
-  COMPARE_GENERIC: 'An error occurred while comparing prompts. Please try again.',
-  BULK_FAILED: 'Analysis failed. Please try again.',
-  BULK_GENERIC: 'An error occurred. Please try again.',
-  DASHBOARD_LOAD: 'Failed to load dashboard. Please try again.',
-  LEADERBOARD_LOAD: 'Could not load leaderboard. Please try again later.',
-  AUTH_FAILED: 'Failed to sign in. Please try again.',
-  AUTH_GOOGLE_FAILED: 'Failed to sign in with Google. Please try again.',
-  CHECKOUT_FAILED: 'Failed to initiate checkout. Please try again.',
-  PORTAL_FAILED: 'Failed to open billing portal. Please try again.',
-  SUBSCRIBE_FAILED: 'Failed to subscribe. Please try again.',
-  EXPORT_FAILED: 'Failed to export report. Please try again.',
-  SHARE_FAILED: 'Please try again.',
+  GENERIC: '문제가 발생했습니다. 다시 시도해 주세요.',
+  RATE_LIMIT: '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.',
+  ANALYZE_FAILED: '프롬프트 분석에 실패했습니다. 다시 시도해 주세요.',
+  ANALYZE_GENERIC: '프롬프트 분석 중 오류가 발생했습니다. 다시 시도해 주세요.',
+  COMPARE_FAILED: '프롬프트 분석에 실패했습니다. 다시 시도해 주세요.',
+  COMPARE_GENERIC: '프롬프트 비교 중 오류가 발생했습니다. 다시 시도해 주세요.',
+  BULK_FAILED: '분석에 실패했습니다. 다시 시도해 주세요.',
+  BULK_GENERIC: '오류가 발생했습니다. 다시 시도해 주세요.',
+  DASHBOARD_LOAD: '대시보드를 불러오지 못했습니다. 다시 시도해 주세요.',
+  LEADERBOARD_LOAD: '리더보드를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.',
+  AUTH_FAILED: '로그인에 실패했습니다. 다시 시도해 주세요.',
+  AUTH_GOOGLE_FAILED: 'Google 로그인에 실패했습니다. 다시 시도해 주세요.',
+  CHECKOUT_FAILED: '결제를 시작하지 못했습니다. 다시 시도해 주세요.',
+  PORTAL_FAILED: '결제 포털을 열지 못했습니다. 다시 시도해 주세요.',
+  SUBSCRIBE_FAILED: '구독에 실패했습니다. 다시 시도해 주세요.',
+  EXPORT_FAILED: '보고서 내보내기에 실패했습니다. 다시 시도해 주세요.',
+  SHARE_FAILED: '다시 시도해 주세요.',
 } as const;
 
-// ─── Loading States ─────────────────────────────────────────────────
+// ─── 로딩 상태 ─────────────────────────────────────────────────
 export const LOADING = {
-  ANALYZING: 'Analyzing with AI...',
-  DASHBOARD: 'Loading dashboard...',
-  DASHBOARD_DATA: 'Loading your data...',
-  HISTORY: 'Loading history...',
-  HISTORY_DATA: 'Loading analyses...',
-  CHALLENGE: 'Loading challenge...',
-  AUTH_SENDING: 'Sending...',
-  SUBSCRIBING: 'Subscribing...',
-  JOINING: 'Joining...',
-  EXPORTING: 'Exporting...',
+  ANALYZING: 'AI로 분석 중...',
+  DASHBOARD: '대시보드 로딩 중...',
+  DASHBOARD_DATA: '데이터 로딩 중...',
+  HISTORY: '히스토리 로딩 중...',
+  HISTORY_DATA: '분석 기록 로딩 중...',
+  CHALLENGE: '챌린지 로딩 중...',
+  AUTH_SENDING: '전송 중...',
+  SUBSCRIBING: '구독 중...',
+  JOINING: '참여 중...',
+  EXPORTING: '내보내는 중...',
 } as const;
 
-// ─── Empty States ───────────────────────────────────────────────────
+// ─── 빈 상태 ───────────────────────────────────────────────────
 export const EMPTY = {
-  DASHBOARD_TITLE: 'No analyses yet',
-  DASHBOARD_DESC: 'Score your first prompt to start tracking your progress.',
-  HISTORY_TITLE: 'No analyses yet',
-  HISTORY_DESC: 'Score your first prompt to start building your history.',
-  LEADERBOARD_NO_ENTRIES: (role: string) => `No entries found for ${role}.`,
-  LEADERBOARD_CTA: 'Be the first to submit a prompt and claim the top spot!',
+  DASHBOARD_TITLE: '아직 분석 기록이 없습니다',
+  DASHBOARD_DESC: '첫 번째 프롬프트를 채점하고 진행 상황을 추적해 보세요.',
+  HISTORY_TITLE: '아직 분석 기록이 없습니다',
+  HISTORY_DESC: '첫 번째 프롬프트를 채점하고 히스토리를 시작하세요.',
+  LEADERBOARD_NO_ENTRIES: (role: string) => `${role}에 대한 항목이 없습니다.`,
+  LEADERBOARD_CTA: '첫 번째로 프롬프트를 제출하고 1등을 차지하세요!',
 } as const;
 
-// ─── Auth Messages ──────────────────────────────────────────────────
+// ─── 인증 메시지 ──────────────────────────────────────────────────
 export const AUTH = {
-  SIGN_IN_FEATURES: 'Sign in to unlock all features and save your history.',
-  SIGN_IN_DIMENSIONS: 'Sign up free to unlock all 6 dimension insights.',
-  SIGN_IN_DASHBOARD: 'Sign in to view your dashboard.',
-  SIGN_IN_HISTORY: 'Sign in to view your analysis history.',
-  SIGN_IN_BULK: 'Sign in to analyze multiple prompts at once.',
-  MAGIC_LINK_HINT: "No password needed. We'll send you a login link.",
-  CHECK_EMAIL_TITLE: 'Check your email!',
-  CHECK_EMAIL_DESC: "We've sent you a login link. Click it to sign in to ScoreMyPrompt.",
-  SUBSCRIBED_SUCCESS: "You're in! Check your inbox.",
+  SIGN_IN_FEATURES: '로그인하여 모든 기능을 이용하고 히스토리를 저장하세요.',
+  SIGN_IN_DIMENSIONS: '무료 가입으로 6가지 차원 인사이트를 모두 확인하세요.',
+  SIGN_IN_DASHBOARD: '로그인하여 대시보드를 확인하세요.',
+  SIGN_IN_HISTORY: '로그인하여 분석 히스토리를 확인하세요.',
+  SIGN_IN_BULK: '로그인하여 여러 프롬프트를 한 번에 분석하세요.',
+  MAGIC_LINK_HINT: '비밀번호 불필요. 로그인 링크를 보내드립니다.',
+  CHECK_EMAIL_TITLE: '이메일을 확인하세요!',
+  CHECK_EMAIL_DESC: '로그인 링크를 보내드렸습니다. 링크를 클릭하여 ScoreMyPrompt에 로그인하세요.',
+  SUBSCRIBED_SUCCESS: '등록 완료! 받은 편지함을 확인하세요.',
 } as const;
 
-// ─── Placeholders ───────────────────────────────────────────────────
+// ─── 플레이스홀더 ───────────────────────────────────────────────────
 export const PLACEHOLDERS = {
-  PROMPT_INPUT: 'Paste your AI prompt here to get a free score with improvement tips...',
-  PROMPT_BULK: 'Enter your prompt here (minimum 10 characters)...',
-  PROMPT_COMPARE_A: 'Paste your first prompt here...',
-  PROMPT_COMPARE_B: 'Paste your second prompt here...',
+  PROMPT_INPUT: 'AI 프롬프트를 여기에 붙여넣어 무료 점수와 개선 팁을 받으세요...',
+  PROMPT_BULK: '프롬프트를 입력하세요 (최소 10자)...',
+  PROMPT_COMPARE_A: '첫 번째 프롬프트를 여기에 붙여넣으세요...',
+  PROMPT_COMPARE_B: '두 번째 프롬프트를 여기에 붙여넣으세요...',
   EMAIL: 'your@email.com',
 } as const;
 
-// ─── Hints & Helper Text ────────────────────────────────────────────
+// ─── 힌트 & 도움말 ────────────────────────────────────────────
 export const HINTS = {
-  PROMPT_MIN_CHARS: 'Min 10 characters',
-  NO_SPAM: 'No spam. Unsubscribe anytime.',
-  FREE_NO_SIGNUP: 'Free, no signup required.',
-  BULK_LIMIT: 'Analyze up to 5 prompts at once.',
-  PRO_REQUIRED_BULK: 'This feature requires a Pro subscription.',
+  PROMPT_MIN_CHARS: '최소 10자',
+  NO_SPAM: '스팸 없음. 언제든 구독 취소 가능.',
+  FREE_NO_SIGNUP: '무료, 가입 불필요.',
+  BULK_LIMIT: '한 번에 최대 5개 프롬프트 분석.',
+  PRO_REQUIRED_BULK: '이 기능은 프로 구독이 필요합니다.',
 } as const;
 
-// ─── CTA Button Labels ─────────────────────────────────────────────
+// ─── CTA 버튼 라벨 ─────────────────────────────────────────────
 export const CTA = {
-  SCORE_PROMPT_FREE: 'Score My Prompt — Free',
-  SCORE_FIRST_PROMPT: 'Score My First Prompt',
-  ANALYZE_ANOTHER: 'Analyze Another Prompt',
-  SCORE_A_PROMPT: 'Score a Prompt',
-  TRY_AGAIN: 'Try Again',
-  GO_HOME: 'Go Home',
-  SEND_MAGIC_LINK: 'Send Magic Link',
-  SUBSCRIBE: 'Subscribe',
-  START_FREE_TRIAL: 'Start Free Trial',
-  VIEW_PLANS: 'View Plans',
-  LOAD_MORE: 'Load More',
+  SCORE_PROMPT_FREE: '프롬프트 채점하기 — 무료',
+  SCORE_FIRST_PROMPT: '첫 프롬프트 채점하기',
+  ANALYZE_ANOTHER: '다른 프롬프트 분석하기',
+  SCORE_A_PROMPT: '프롬프트 채점하기',
+  TRY_AGAIN: '다시 시도',
+  GO_HOME: '홈으로',
+  SEND_MAGIC_LINK: '로그인 링크 보내기',
+  SUBSCRIBE: '구독하기',
+  START_FREE_TRIAL: '무료 체험 시작',
+  VIEW_PLANS: '요금제 보기',
+  LOAD_MORE: '더 보기',
 } as const;

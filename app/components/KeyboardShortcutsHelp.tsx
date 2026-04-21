@@ -70,7 +70,7 @@ export default function KeyboardShortcutsHelp({
       >
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-semibold text-white">
-            Keyboard Shortcuts
+            키보드 단축키
           </h2>
           <button
             onClick={onClose}

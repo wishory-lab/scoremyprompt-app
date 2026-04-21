@@ -2,8 +2,8 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '404 - Page Not Found | ScoreMyPrompt',
-  description: 'The page you are looking for does not exist.',
+  title: '404 - 페이지를 찾을 수 없습니다 | ScoreMyPrompt',
+  description: '요청하신 페이지를 찾을 수 없습니다.',
   robots: { index: false, follow: false },
 };
 
@@ -23,9 +23,9 @@ export default function NotFound() {
         </div>
 
         <div className="text-7xl font-bold text-gradient mb-4" aria-hidden="true">404</div>
-        <h1 className="text-2xl font-bold text-white mb-3">Page Not Found</h1>
+        <h1 className="text-2xl font-bold text-white mb-3">페이지를 찾을 수 없습니다</h1>
         <p className="text-gray-400 mb-8">
-          The page you&apos;re looking for might have been moved or no longer exists.
+          찾으시는 페이지가 이동되었거나 더 이상 존재하지 않습니다.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
@@ -33,21 +33,21 @@ export default function NotFound() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            Go Home
+            홈으로
           </Link>
           <Link href="/guides" className="btn-secondary inline-flex items-center justify-center gap-2">
-            Browse Guides
+            가이드 보기
           </Link>
         </div>
 
         {/* Suggested pages */}
         <div className="pt-8 border-t border-border">
-          <p className="text-sm text-gray-500 mb-4">You might be looking for:</p>
+          <p className="text-sm text-gray-500 mb-4">이런 페이지를 찾고 계신가요:</p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/templates" className="text-sm text-primary hover:text-accent transition-colors">Templates</Link>
-            <Link href="/pricing" className="text-sm text-primary hover:text-accent transition-colors">Pricing</Link>
-            <Link href="/dashboard" className="text-sm text-primary hover:text-accent transition-colors">Dashboard</Link>
-            <Link href="/guides" className="text-sm text-primary hover:text-accent transition-colors">Guides</Link>
+            <Link href="/templates" className="text-sm text-primary hover:text-accent transition-colors">템플릿</Link>
+            <Link href="/pricing" className="text-sm text-primary hover:text-accent transition-colors">요금제</Link>
+            <Link href="/dashboard" className="text-sm text-primary hover:text-accent transition-colors">대시보드</Link>
+            <Link href="/guides" className="text-sm text-primary hover:text-accent transition-colors">가이드</Link>
           </div>
         </div>
       </div>

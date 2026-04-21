@@ -13,12 +13,12 @@ export type ErrorCategory = {
 export function getErrorCategory(error: Error): ErrorCategory {
   const msg = error?.message?.toLowerCase() || '';
   if (msg.includes('network') || msg.includes('fetch'))
-    return { label: 'Network Error', hint: 'Check your internet connection and try again.', icon: 'network' };
+    return { label: '네트워크 오류', hint: '인터넷 연결을 확인하고 다시 시도해 주세요.', icon: 'network' };
   if (msg.includes('auth') || msg.includes('unauthorized') || msg.includes('401'))
-    return { label: 'Authentication Error', hint: 'You may need to sign in again.', icon: 'auth' };
+    return { label: '인증 오류', hint: '다시 로그인이 필요할 수 있습니다.', icon: 'auth' };
   if (msg.includes('not found') || msg.includes('404'))
-    return { label: 'Not Found', hint: 'The requested resource could not be found.', icon: 'notfound' };
-  return { label: 'Something went wrong', hint: 'An unexpected error occurred. Please try again.', icon: 'generic' };
+    return { label: '찾을 수 없음', hint: '요청한 리소스를 찾을 수 없습니다.', icon: 'notfound' };
+  return { label: '문제가 발생했습니다', hint: '예기치 않은 오류가 발생했습니다. 다시 시도해 주세요.', icon: 'generic' };
 }
 
 export function ErrorIcon({ type }: { type: ErrorCategory['icon'] }) {
@@ -94,11 +94,11 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         </p>
 
         {error?.digest && (
-          <p className="text-xs text-gray-600 mb-4 font-mono">Ref: {error.digest}</p>
+          <p className="text-xs text-gray-600 mb-4 font-mono">참조: {error.digest}</p>
         )}
 
         {retryCount > 0 && retryCount < MAX_RETRIES && (
-          <p className="text-xs text-gray-600 mb-4">Retry attempt {retryCount} of {MAX_RETRIES}</p>
+          <p className="text-xs text-gray-600 mb-4">재시도 {retryCount}/{MAX_RETRIES}</p>
         )}
 
         <div className="flex gap-3 justify-center">
@@ -106,10 +106,10 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {retryCount >= MAX_RETRIES ? 'Go Home' : 'Try Again'}
+            {retryCount >= MAX_RETRIES ? '홈으로' : '다시 시도'}
           </button>
           <Link href="/" className="btn-secondary inline-flex items-center gap-2">
-            Go Home
+            홈으로
           </Link>
         </div>
       </div>

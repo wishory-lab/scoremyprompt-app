@@ -10,23 +10,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'ScoreMyPrompt — Grade Your AI Prompt in 30 Seconds',
-  description: 'Get your PROMPT Score and see how you compare with professionals in your field. Free, no signup required.',
-  keywords: 'AI prompt grader, score my prompt, prompt engineering, prompt analysis, PROMPT score, ChatGPT prompt, Claude prompt, AI writing, prompt optimization, free prompt tool',
+  title: 'ScoreMyPrompt — AI 프롬프트를 30초 만에 채점하세요',
+  description: 'PROMPT 점수를 받고 같은 분야 전문가들과 비교해 보세요. 무료, 가입 불필요. 6가지 차원으로 AI 프롬프트 품질을 분석합니다.',
+  keywords: 'AI 프롬프트 채점, 프롬프트 점수, 프롬프트 엔지니어링, 프롬프트 분석, PROMPT score, ChatGPT 프롬프트, Claude 프롬프트, AI 글쓰기, 프롬프트 최적화, 무료 프롬프트 도구, ScoreMyPrompt',
   authors: [{ name: 'ScoreMyPrompt' }],
   alternates: {
-    canonical: 'https://scoremyprompt.com',
+    canonical: 'https://scoremyprompt.app',
     languages: {
-      en: 'https://scoremyprompt.com',
-      ko: 'https://scoremyprompt.com?lang=ko',
-      ja: 'https://scoremyprompt.com?lang=ja',
-      'zh-CN': 'https://scoremyprompt.com?lang=zh-CN',
-      'zh-TW': 'https://scoremyprompt.com?lang=zh-TW',
-      es: 'https://scoremyprompt.com?lang=es',
-      fr: 'https://scoremyprompt.com?lang=fr',
-      de: 'https://scoremyprompt.com?lang=de',
-      pt: 'https://scoremyprompt.com?lang=pt',
-      hi: 'https://scoremyprompt.com?lang=hi',
+      ko: 'https://scoremyprompt.app',
+      en: 'https://scoremyprompt.app?lang=en',
     },
   },
   robots: {
@@ -41,32 +33,33 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'ScoreMyPrompt — Grade Your AI Prompt in 30 Seconds',
-    description: 'Get your PROMPT Score and see how you compare with professionals in your field.',
-    url: 'https://scoremyprompt.com',
+    title: 'ScoreMyPrompt — AI 프롬프트를 30초 만에 채점하세요',
+    description: 'PROMPT 점수를 받고 같은 분야 전문가들과 비교해 보세요. 6가지 차원 분석, 무료.',
+    url: 'https://scoremyprompt.app',
     siteName: 'ScoreMyPrompt',
     type: 'website',
+    locale: 'ko_KR',
     images: [
       {
-        url: 'https://scoremyprompt.com/api/og?score=92&grade=S&gradeLabel=Exceptional&jobRole=Marketing&percentile=98&p=95&r=90&o=88&m=93&s=91&t=94',
+        url: 'https://scoremyprompt.app/api/og?score=92&grade=S&gradeLabel=Exceptional&jobRole=Marketing&percentile=98&p=95&r=90&o=88&m=93&s=91&t=94',
         width: 1200,
         height: 630,
-        alt: 'ScoreMyPrompt - AI Prompt Grading Tool',
+        alt: 'ScoreMyPrompt - AI 프롬프트 채점 도구',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ScoreMyPrompt — Grade Your AI Prompt in 30 Seconds',
-    description: 'Get your PROMPT Score and see how you compare with professionals in your field.',
+    title: 'ScoreMyPrompt — AI 프롬프트를 30초 만에 채점하세요',
+    description: 'PROMPT 점수를 받고 같은 분야 전문가들과 비교해 보세요. 6가지 차원 분석, 무료.',
     creator: '@scoremyprompt',
-    images: ['https://scoremyprompt.com/api/og?score=92&grade=S&gradeLabel=Exceptional&jobRole=Marketing&percentile=98&p=95&r=90&o=88&m=93&s=91&t=94'],
+    images: ['https://scoremyprompt.app/api/og?score=92&grade=S&gradeLabel=Exceptional&jobRole=Marketing&percentile=98&p=95&r=90&o=88&m=93&s=91&t=94'],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="ko" className={inter.variable}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -84,35 +77,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   '@type': 'Organization',
                   name: 'ScoreMyPrompt',
-                  url: 'https://scoremyprompt.com',
-                  logo: 'https://scoremyprompt.com/favicon.svg',
+                  url: 'https://scoremyprompt.app',
+                  logo: 'https://scoremyprompt.app/favicon.svg',
                   sameAs: [
                     'https://x.com/scoremyprompt',
-                    'https://linkedin.com/company/scoremyprompt',
-                    'https://youtube.com/@scoremyprompt',
-                    'https://bsky.app/profile/scoremyprompt.com',
                   ],
                 },
                 {
                   '@type': 'WebApplication',
                   name: 'ScoreMyPrompt',
-                  url: 'https://scoremyprompt.com',
-                  description: 'Free AI prompt grading tool. Get your PROMPT Score across 6 dimensions and compare with professionals.',
+                  url: 'https://scoremyprompt.app',
+                  description: '무료 AI 프롬프트 채점 도구. 6가지 차원으로 PROMPT 점수를 받고 전문가들과 비교하세요.',
                   applicationCategory: 'ProductivityApplication',
                   operatingSystem: 'Web',
+                  inLanguage: 'ko',
                   offers: [
-                    { '@type': 'Offer', price: '0', priceCurrency: 'USD', name: 'Free' },
-                    { '@type': 'Offer', price: '9.99', priceCurrency: 'USD', name: 'Pro', billingIncrement: 'P1M' },
+                    { '@type': 'Offer', price: '0', priceCurrency: 'KRW', name: '무료' },
+                    { '@type': 'Offer', price: '4990', priceCurrency: 'KRW', name: '프리미엄', billingIncrement: 'P1M' },
                   ],
-                  // aggregateRating: Real user review data will be added post-launch
                 },
                 {
                   '@type': 'BreadcrumbList',
                   itemListElement: [
-                    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://scoremyprompt.com' },
-                    { '@type': 'ListItem', position: 2, name: 'Templates', item: 'https://scoremyprompt.com/templates' },
-                    { '@type': 'ListItem', position: 3, name: 'Guides', item: 'https://scoremyprompt.com/guides' },
-                    { '@type': 'ListItem', position: 4, name: 'Pricing', item: 'https://scoremyprompt.com/pricing' },
+                    { '@type': 'ListItem', position: 1, name: '홈', item: 'https://scoremyprompt.app' },
+                    { '@type': 'ListItem', position: 2, name: '템플릿', item: 'https://scoremyprompt.app/templates' },
+                    { '@type': 'ListItem', position: 3, name: '가이드', item: 'https://scoremyprompt.app/guides' },
+                    { '@type': 'ListItem', position: 4, name: '요금제', item: 'https://scoremyprompt.app/pricing' },
                   ],
                 },
                 {
@@ -120,26 +110,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   mainEntity: [
                     {
                       '@type': 'Question',
-                      name: 'What is ScoreMyPrompt?',
+                      name: 'ScoreMyPrompt가 무엇인가요?',
                       acceptedAnswer: {
                         '@type': 'Answer',
-                        text: 'ScoreMyPrompt is a free AI prompt grading tool that scores your prompts on 6 dimensions (Precision, Role, Output Format, Mission Context, Structure, Tailoring) and provides actionable improvement tips.',
+                        text: 'ScoreMyPrompt는 무료 AI 프롬프트 채점 도구입니다. 정확성, 역할, 출력 형식, 미션 컨텍스트, 구조, 맞춤화 등 6가지 차원으로 프롬프트를 분석하고 실행 가능한 개선 팁을 제공합니다.',
                       },
                     },
                     {
                       '@type': 'Question',
-                      name: 'How does the PROMPT scoring framework work?',
+                      name: 'PROMPT 채점 프레임워크는 어떻게 작동하나요?',
                       acceptedAnswer: {
                         '@type': 'Answer',
-                        text: 'Each letter of PROMPT measures a key aspect: P for Precision, R for Role, O for Output format, M for Mission context, S for Structure, and T for Tailoring.',
+                        text: 'PROMPT의 각 글자는 핵심 요소를 측정합니다. P는 정확성, R은 역할, O는 출력 형식, M은 미션 컨텍스트, P는 구조, T는 맞춤화를 의미합니다.',
                       },
                     },
                     {
                       '@type': 'Question',
-                      name: 'Is ScoreMyPrompt free?',
+                      name: 'ScoreMyPrompt는 무료인가요?',
                       acceptedAnswer: {
                         '@type': 'Answer',
-                        text: 'Yes. Free prompt scoring with no signup required. A Pro plan is available for bulk analysis and advanced insights.',
+                        text: '네, 가입 없이 무료로 프롬프트를 채점할 수 있습니다. 대량 분석과 고급 인사이트를 위한 프리미엄 플랜도 제공합니다.',
                       },
                     },
                   ],
@@ -154,7 +144,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg"
         >
-          Skip to content
+          본문으로 건너뛰기
         </a>
         <ClientProviders>{children}</ClientProviders>
       </body>

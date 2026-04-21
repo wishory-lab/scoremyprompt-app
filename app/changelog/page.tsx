@@ -2,16 +2,16 @@ import type { Metadata } from 'next';
 import { CHANGELOG } from './data';
 
 export const metadata: Metadata = {
-  title: 'Changelog — ScoreMyPrompt',
-  description: 'See what\'s new in ScoreMyPrompt. Latest features, improvements, and fixes.',
+  title: '변경 로그 — ScoreMyPrompt',
+  description: 'ScoreMyPrompt의 새로운 기능, 개선 사항, 버그 수정을 확인하세요.',
   robots: { index: true, follow: true },
 };
 
 const TYPE_STYLES = {
-  feature: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', label: 'Feature' },
-  improvement: { bg: 'bg-blue-500/10', text: 'text-blue-400', label: 'Improvement' },
-  fix: { bg: 'bg-amber-500/10', text: 'text-amber-400', label: 'Fix' },
-  infrastructure: { bg: 'bg-purple-500/10', text: 'text-purple-400', label: 'Infrastructure' },
+  feature: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', label: '새 기능' },
+  improvement: { bg: 'bg-blue-500/10', text: 'text-blue-400', label: '개선' },
+  fix: { bg: 'bg-amber-500/10', text: 'text-amber-400', label: '수정' },
+  infrastructure: { bg: 'bg-purple-500/10', text: 'text-purple-400', label: '인프라' },
 } as const;
 
 export default function ChangelogPage() {
@@ -20,10 +20,10 @@ export default function ChangelogPage() {
       <div className="max-w-3xl mx-auto px-4 py-16 sm:py-24">
         <header className="mb-12 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Changelog
+            변경 로그
           </h1>
           <p className="text-gray-400 text-lg">
-            Track every update to ScoreMyPrompt
+            ScoreMyPrompt의 모든 업데이트를 확인하세요
           </p>
         </header>
 
@@ -53,9 +53,9 @@ export default function ChangelogPage() {
                       {style.label}
                     </span>
                     <time dateTime={entry.date} className="text-xs text-gray-500">
-                      {new Date(entry.date).toLocaleDateString('en-US', {
+                      {new Date(entry.date).toLocaleDateString('ko-KR', {
                         year: 'numeric',
-                        month: 'short',
+                        month: 'long',
                         day: 'numeric',
                       })}
                     </time>

@@ -80,39 +80,39 @@ export default function OfflinePage() {
         {isOnline ? (
           <>
             <h1 className="text-2xl font-bold text-green-400 mb-3">
-              Back Online!
+              다시 연결되었습니다!
             </h1>
             <p className="text-gray-400 mb-8 text-sm leading-relaxed">
-              Connection restored. Redirecting you back&hellip;
+              연결이 복구되었습니다. 돌아가는 중&hellip;
             </p>
           </>
         ) : (
           <>
             <h1 className="text-2xl font-bold text-white mb-3">
-              You&apos;re Offline
+              오프라인 상태입니다
             </h1>
             <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-              ScoreMyPrompt needs an internet connection to analyze your prompts.
-              We&apos;ll automatically reconnect when you&apos;re back online.
+              ScoreMyPrompt는 프롬프트 분석을 위해 인터넷 연결이 필요합니다.
+              온라인으로 돌아오면 자동으로 다시 연결됩니다.
             </p>
 
             {/* Tips card */}
             <div className="bg-dark-card border border-border rounded-xl p-5 mb-8 text-left">
               <p className="text-xs font-semibold text-gray-300 uppercase tracking-wide mb-3">
-                While you wait
+                기다리는 동안
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex gap-2">
                   <span className="shrink-0 text-primary">•</span>
-                  Check your Wi-Fi or mobile data connection
+                  Wi-Fi 또는 모바일 데이터 연결을 확인하세요
                 </li>
                 <li className="flex gap-2">
                   <span className="shrink-0 text-primary">•</span>
-                  Try moving closer to your router
+                  라우터에 가까이 이동해 보세요
                 </li>
                 <li className="flex gap-2">
                   <span className="shrink-0 text-primary">•</span>
-                  Restart your network if the issue persists
+                  문제가 지속되면 네트워크를 재시작해 보세요
                 </li>
               </ul>
             </div>
@@ -125,10 +125,10 @@ export default function OfflinePage() {
               {checking ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Checking…
+                  확인 중…
                 </span>
               ) : (
-                'Try Again'
+                '다시 시도'
               )}
             </button>
           </>

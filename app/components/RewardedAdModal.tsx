@@ -89,10 +89,10 @@ export default function RewardedAdModal({
         onRewardGranted();
         onClose();
       } else {
-        setError(data.message || 'Failed to grant credit');
+        setError(data.message || '크레딧 지급에 실패했습니다');
       }
     } catch {
-      setError('Network error. Please try again.');
+      setError('네트워크 오류입니다. 다시 시도해 주세요.');
     } finally {
       setIsGranting(false);
     }

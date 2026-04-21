@@ -49,7 +49,7 @@ export default function NetworkStatusBanner() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M15.536 8.464a5 5 0 010 7.072M8.464 15.536a5 5 0 010-7.072" />
           </svg>
-          You're offline. Some features may not work.
+          오프라인 상태입니다. 일부 기능이 작동하지 않을 수 있습니다.
         </span>
       ) : (
         <span className="flex items-center justify-center gap-2">
@@ -57,7 +57,7 @@ export default function NetworkStatusBanner() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M5 13l4 4L19 7" />
           </svg>
-          Back online!
+          다시 연결되었습니다!
         </span>
       )}
     </div>
