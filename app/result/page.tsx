@@ -10,6 +10,7 @@ import { GRADE_CONFIG as GRADE_CONFIG_CENTRAL } from '../constants';
 import { trackResultViewed, trackGradeCompleted, trackSignupInitiated, trackReturnAnalysis } from '../lib/analytics';
 import { useTranslation } from '../i18n';
 import { useProfilePrompt } from '../components/ProfilePrompt';
+import { useToast } from '../components/Toast';
 
 // Sub-components (extracted from this monolith)
 import ScoreHero from './components/ScoreHero';
@@ -45,6 +46,7 @@ const GRADE_CONFIG: Record<Grade, ExtendedGradeConfig> = {
 export default function ResultPage() {
   const router = useRouter();
   const t = useTranslation();
+  const { showToast } = useToast();
   const { user, tier, supabase, setShowAuth, setAuthMessage } = useAuth();
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -127,6 +129,7 @@ export default function ResultPage() {
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
         console.error('Export failed:', err);
+        showToast('내보내기에 실패했습니다. 다시 시도해주세요.', 'error');
         return;
       }
 
@@ -140,8 +143,10 @@ export default function ResultPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      showToast(`${ext.toUpperCase()} 리포트 다운로드 완료`, 'success');
     } catch (err) {
       console.error('Export error:', err);
+      showToast('내보내기 중 오류가 발생했습니다.', 'error');
     } finally {
       setExporting(false);
     }

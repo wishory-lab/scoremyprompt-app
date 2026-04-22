@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '../../i18n';
+import { useToast } from '../../components/Toast';
 import type { AnalysisResult, Grade, GradeConfig } from '../../types';
 import { trackShare } from '../../lib/analytics';
 
@@ -35,6 +36,7 @@ function getShareText(platform: SharePlatform, score: number, grade: string, gra
 
 export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSectionProps) {
   const t = useTranslation();
+  const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
   const [challengeCopied, setChallengeCopied] = useState(false);
   const [showEmbed, setShowEmbed] = useState(false);
@@ -64,9 +66,9 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
 
   const handleCopyLink = async () => {
     trackShare({ method: 'copy', score: result.overallScore, grade: result.grade });
-    // Copy the actual permalink URL (not just text)
     await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
+    showToast('링크가 복사되었습니다', 'success');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -83,6 +85,7 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
     const challengeUrl = `${origin}/challenge?score=${result.overallScore}&grade=${result.grade}`;
     await navigator.clipboard.writeText(challengeUrl);
     setChallengeCopied(true);
+    showToast('챌린지 링크가 복사되었습니다', 'success');
     setTimeout(() => setChallengeCopied(false), 2000);
   };
 
@@ -186,6 +189,7 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
                     const code = `<iframe src="${shareUrl}/api/embed?score=${result.overallScore}&grade=${result.grade}&gradeLabel=${encodeURIComponent(gradeLabel)}" width="280" height="80" style="border:none;border-radius:8px" title="PROMPT Score Badge"></iframe>`;
                     await navigator.clipboard.writeText(code);
                     setEmbedCopied('html');
+                    showToast('HTML 코드가 복사되었습니다', 'success');
                     setTimeout(() => setEmbedCopied(null), 2000);
                   }}
                   className="text-xs text-primary hover:text-accent transition-colors min-h-[44px]"
@@ -205,6 +209,7 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
                     const code = `[![PROMPT Score: ${result.overallScore} (${result.grade})](${shareUrl}/api/badge?score=${result.overallScore}&grade=${result.grade})](${shareUrl})`;
                     await navigator.clipboard.writeText(code);
                     setEmbedCopied('md');
+                    showToast('마크다운 코드가 복사되었습니다', 'success');
                     setTimeout(() => setEmbedCopied(null), 2000);
                   }}
                   className="text-xs text-primary hover:text-accent transition-colors min-h-[44px]"

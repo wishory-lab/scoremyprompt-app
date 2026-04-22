@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '../../i18n';
+import { useToast } from '../../components/Toast';
 
 interface RewriteSuggestionProps {
   suggestion: string | undefined;
@@ -12,6 +13,7 @@ interface RewriteSuggestionProps {
 
 export default function RewriteSuggestion({ suggestion, isPro, gradeLabel }: RewriteSuggestionProps) {
   const t = useTranslation();
+  const { showToast } = useToast();
   const [showRewrite, setShowRewrite] = useState(false);
 
   if (!suggestion) return null;
@@ -46,6 +48,7 @@ export default function RewriteSuggestion({ suggestion, isPro, gradeLabel }: Rew
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(suggestion || '');
+                  showToast('개선된 프롬프트가 복사되었습니다', 'success');
                 }}
                 className="mt-3 text-xs text-primary hover:text-accent transition-colors min-h-[44px]"
               >

@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/i18n';
+import { useToast } from '@/app/components/Toast';
 import { FAQ_ITEMS } from './data';
 import Footer from '../components/Footer';
 
 export default function PricingPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const t = useTranslation();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -69,6 +71,7 @@ export default function PricingPage() {
       }
     } catch (err) {
       console.error('Checkout error:', err);
+      showToast('결제 시작에 실패했습니다. 다시 시도해주세요.', 'error');
     }
   };
 

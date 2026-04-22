@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useToast } from '../components/Toast';
 import { runAdvancedEvaluation, type AdvancedEvaluation } from '../lib/prompt-evaluator';
 import { PROMPT_TEMPLATES, TEMPLATE_CATEGORIES, searchTemplates, applyTemplate, type TemplateCategory, type PromptTemplate } from '../lib/prompt-templates';
 import { AVAILABLE_MODELS, generateCostComparison } from '../lib/model-battleground';
@@ -309,6 +310,7 @@ function BattlegroundTab() {
    TAB 3: Template Library (스킬 5)
    ════════════════════════════════════════ */
 function TemplateLibraryTab() {
+  const { showToast } = useToast();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<TemplateCategory | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
@@ -402,7 +404,7 @@ function TemplateLibraryTab() {
               <div className="flex justify-between items-center mb-2">
                 <h4 className="text-xs font-semibold text-gray-400">생성된 프롬프트</h4>
                 <button
-                  onClick={() => navigator.clipboard.writeText(filledPrompt)}
+                  onClick={() => { navigator.clipboard.writeText(filledPrompt); showToast('프롬프트가 복사되었습니다', 'success'); }}
                   className="text-xs text-yellow-400 hover:text-yellow-300"
                 >복사</button>
               </div>
