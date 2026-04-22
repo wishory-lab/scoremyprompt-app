@@ -509,7 +509,7 @@ const en = {
     usedSome: 'You\'ve used {used} of {limit} analyses today.',
     signUpBonus: 'Sign up free to get 10 bonus credits + earn more by watching ads!',
     watchAdGuest: 'Watch a short ad to get 1 more analysis, or upgrade for ad-free experience.',
-    upgradeHint: 'Upgrade to Premium for 33 daily analyses with zero ads.',
+    upgradeHint: '🎉 May Event: Upgrade to Premium for unlimited analyses with zero ads!',
     signUpFree: 'Sign Up Free (+10 Credits)',
     watchAd: 'Watch Ad (+1 Credit)',
     upgradePremium: 'Upgrade to Premium',

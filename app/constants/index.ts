@@ -28,17 +28,36 @@ export const JOB_ROLES: JobRole[] = ['Marketing', 'Design', 'Product', 'Finance'
 /**
  * SMP Credit System
  * ─────────────────────────────────────────────
- * Guest (비로그인):     2회/일 — 광고 없음, 회원가입 유도
- * Free  (무료 회원):    3회/일 기본 + 광고 시청으로 추가 획득 (무제한)
+ * 🎉 오픈 이벤트 (~2025.05.31)
+ * Guest (비로그인):     5회/일
+ * Free  (무료 회원):    50회/일 기본 + 광고 시청으로 추가 획득
  *                       회원가입 시 보너스 10크레딧 지급
- * Premium (월 구독):    33회/일 (기본3 + 프리미엄30) — 광고 없음
+ * Premium (월 구독):    무제한 — 광고 없음
  * ─────────────────────────────────────────────
+ * 이벤트 종료 후 원래 값: guest=2, free=3, premium=33
  */
-export const TIER_LIMITS: Record<string, number> = {
+
+/** 오픈 이벤트 마감일 (KST 2025-05-31 23:59:59) */
+export const EVENT_END_DATE = new Date('2025-06-01T00:00:00+09:00');
+
+/** 이벤트 기간인지 확인 */
+export function isEventActive(): boolean {
+  return new Date() < EVENT_END_DATE;
+}
+
+const EVENT_LIMITS: Record<string, number> = {
+  guest: 5,
+  free: 50,
+  premium: 999999, // 사실상 무제한
+};
+
+const NORMAL_LIMITS: Record<string, number> = {
   guest: 2,
   free: 3,
   premium: 33,
 };
+
+export const TIER_LIMITS: Record<string, number> = isEventActive() ? EVENT_LIMITS : NORMAL_LIMITS;
 
 /** Bonus credits given on sign-up */
 export const SIGNUP_BONUS_CREDITS = 10;

@@ -42,9 +42,10 @@ export async function getGuestUsageCount(supabase: SupabaseClient, ipHash: strin
 /**
  * SMP Credit System Gate Check
  *
- * Guest (비로그인):   2회/일 — 초과 시 회원가입 유도
- * Free  (무료 회원):  3회/일 기본 + 보너스크레딧 + 광고 시청으로 추가 획득
- * Premium (월 구독):  33회/일 — 광고 없음
+ * 🎉 오픈 이벤트 (~2025.05.31)
+ * Guest (비로그인):   5회/일 — 초과 시 회원가입 유도
+ * Free  (무료 회원):  50회/일 기본 + 보너스크레딧 + 광고 시청으로 추가 획득
+ * Premium (월 구독):  무제한 — 광고 없음
  */
 export async function checkGate(
   supabase: SupabaseClient | null,
@@ -171,7 +172,7 @@ export async function checkGate(
       limit: totalAvailable,
       message: canWatchAd
         ? 'Daily limit reached. Watch a short ad to get 1 more analysis!'
-        : 'Daily limit reached. Upgrade to Premium for 33 analyses per day!',
+        : 'Daily limit reached. Upgrade to Premium for unlimited analyses!',
       showAdPrompt: canWatchAd,
       adCreditsUsed: adCreditsToday,
     };

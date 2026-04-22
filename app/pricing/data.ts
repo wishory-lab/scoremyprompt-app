@@ -31,7 +31,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     priceDetail: '가입 불필요',
     description: '계정 없이 바로 사용해 보세요',
     features: [
-      { text: '하루 2회 분석', included: true },
+      { text: '🎉 하루 5회 분석 (5월 이벤트)', included: true },
       { text: 'PROMPT 점수 (6가지 차원)', included: true },
       { text: '기본 개선 팁', included: true },
       { text: '광고 없는 경험', included: true },
@@ -48,7 +48,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     priceDetail: '가입하면 더 많은 기능',
     description: '가입 시 보너스 크레딧 10개 + 광고 시청으로 추가 분석',
     features: [
-      { text: '하루 3회 분석 (기본)', included: true },
+      { text: '🎉 하루 50회 분석 (5월 이벤트)', included: true },
       { text: '가입 시 보너스 크레딧 10개', included: true },
       { text: '광고 시청으로 추가 분석', included: true },
       { text: 'PROMPT 점수 (6가지 차원)', included: true },
@@ -67,10 +67,10 @@ export const PRICING_PLANS: PricingPlan[] = [
     priceDetail: '/월',
     introPrice: '$2.99',
     introMonths: 3,
-    description: '파워 유저를 위한 — 광고 없음, 더 많은 분석',
+    description: '🎉 5월 이벤트: 무제한 분석! 광고 없음',
     highlighted: true,
     features: [
-      { text: '하루 33회 분석', included: true },
+      { text: '🎉 무제한 분석 (5월 이벤트)', included: true },
       { text: '광고 완전 제거', included: true },
       { text: '자동 리라이트 제안', included: true },
       { text: '전체 분석 히스토리', included: true },
@@ -86,11 +86,11 @@ export const PRICING_PLANS: PricingPlan[] = [
 export const FAQ_ITEMS: FaqItem[] = [
   {
     question: '무료 플랜은 어떻게 작동하나요?',
-    answer: '매일 3회 무료 분석이 제공됩니다. 다 쓰면 짧은 광고(15초)를 시청하여 추가 분석 1회를 획득할 수 있습니다. 영원히 무료입니다!',
+    answer: '🎉 5월 오픈 이벤트 기간 동안 매일 50회 무료 분석이 제공됩니다! 다 쓰면 짧은 광고(15초)를 시청하여 추가 분석을 획득할 수 있습니다. (이벤트 후 매일 3회)',
   },
   {
     question: '보너스 크레딧이 무엇인가요?',
-    answer: '가입 시 만료 없는 보너스 크레딧 10개를 받습니다. 매일 제공되는 3회 무료 분석이 소진된 후, 광고를 보기 전에 보너스 크레딧이 먼저 사용됩니다.',
+    answer: '가입 시 만료 없는 보너스 크레딧 10개를 받습니다. 매일 제공되는 무료 분석이 소진된 후, 광고를 보기 전에 보너스 크레딧이 먼저 사용됩니다.',
   },
   {
     question: '프리미엄을 해지할 수 있나요?',

@@ -496,7 +496,7 @@ const ko: PartialLocale = {
     usedSome: '오늘 {limit}회 중 {used}회를 사용하셨습니다.',
     signUpBonus: '무료 가입으로 10 보너스 크레딧 + 광고 시청으로 추가 획득!',
     watchAdGuest: '광고를 시청하여 1회 추가 분석을 받거나, 업그레이드하여 광고 없이 이용하세요.',
-    upgradeHint: '프리미엄으로 업그레이드하여 하루 33회 분석을 광고 없이 이용하세요.',
+    upgradeHint: '🎉 5월 이벤트: 프리미엄 업그레이드 시 무제한 분석! 광고 없이 이용하세요.',
     signUpFree: '무료 가입 (+10 크레딧)',
     watchAd: '광고 시청 (+1 크레딧)',
     upgradePremium: '프리미엄으로 업그레이드',
