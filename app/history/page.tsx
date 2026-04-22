@@ -511,7 +511,16 @@ export default function HistoryPage() {
                         </div>
                       </div>
 
-                      <button className="btn-secondary w-full text-sm font-medium">
+                      <button
+                        onClick={() => {
+                          // Store selected job role for pre-fill, then navigate to home
+                          try {
+                            sessionStorage.setItem('smp_reanalyze_role', analysis.jobRole);
+                          } catch { /* ignore */ }
+                          router.push('/');
+                        }}
+                        className="btn-secondary w-full text-sm font-medium"
+                      >
                         {t.history.reAnalyze}
                       </button>
                     </div>

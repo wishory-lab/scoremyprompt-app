@@ -24,6 +24,7 @@ const ko: PartialLocale = {
     freePlan: '무료 플랜',
     articles: '아티클',
     changelog: '변경 이력',
+    settings: '설정',
   },
 
   hero: {
@@ -523,6 +524,29 @@ const ko: PartialLocale = {
   // ─── Ad Banner ────────────────────────────────────
   ad: {
     removeAds: '광고 제거 → Pro 이용',
+  },
+
+  // ─── Settings ────────────────────────────────────
+  settings: {
+    title: '설정',
+    subtitle: '서비스 환경을 맞춤 설정하세요',
+    language: '언어',
+    languageDesc: '서비스 표시 언어를 선택합니다',
+    defaultJobRole: '기본 직무',
+    defaultJobRoleDesc: '분석 시 기본으로 선택되는 직무입니다',
+    account: '계정',
+    accountDesc: '로그인 상태 및 구독 정보',
+    email: '이메일',
+    plan: '플랜',
+    manageSubscription: '구독 관리',
+    deleteAccount: '계정 삭제',
+    deleteAccountWarning: '계정을 삭제하면 모든 분석 기록이 영구 삭제됩니다. 이 작업은 되돌릴 수 없습니다.',
+    deleteConfirm: '정말 삭제하시겠습니까?',
+    saved: '저장되었습니다',
+    signInRequired: '설정을 이용하려면 로그인이 필요합니다',
+    theme: '테마',
+    themeDesc: '다크 모드만 지원합니다 (곧 라이트 모드 추가 예정)',
+    dark: '다크',
   },
 } as const;
 

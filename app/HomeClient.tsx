@@ -67,6 +67,22 @@ export default function HomeClient() {
     return () => clearInterval(timer);
   }, [retryCountdown]);
 
+  // Pre-fill job role from re-analyze or saved default
+  useEffect(() => {
+    try {
+      const reanalyzeRole = sessionStorage.getItem('smp_reanalyze_role');
+      if (reanalyzeRole) {
+        setJobRole(reanalyzeRole as JobRole);
+        sessionStorage.removeItem('smp_reanalyze_role');
+        return;
+      }
+      const defaultRole = localStorage.getItem('smp_default_role');
+      if (defaultRole) {
+        setJobRole(defaultRole as JobRole);
+      }
+    } catch { /* storage unavailable */ }
+  }, []);
+
   // Pre-fill from template query param
   useEffect(() => {
     const templateId = searchParams.get('template');

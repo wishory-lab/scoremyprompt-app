@@ -24,6 +24,7 @@ const en = {
     freePlan: 'Free Plan',
     articles: 'Articles',
     changelog: 'Changelog',
+    settings: 'Settings',
   },
 
   // ─── Hero ────────────────────────────────────────
@@ -536,6 +537,29 @@ const en = {
   // ─── Ad Banner ────────────────────────────────────
   ad: {
     removeAds: 'Remove ads → Go Pro',
+  },
+
+  // ─── Settings ────────────────────────────────────
+  settings: {
+    title: 'Settings',
+    subtitle: 'Customize your experience',
+    language: 'Language',
+    languageDesc: 'Choose the display language',
+    defaultJobRole: 'Default Job Role',
+    defaultJobRoleDesc: 'Default role selected when analyzing prompts',
+    account: 'Account',
+    accountDesc: 'Login status and subscription info',
+    email: 'Email',
+    plan: 'Plan',
+    manageSubscription: 'Manage Subscription',
+    deleteAccount: 'Delete Account',
+    deleteAccountWarning: 'Deleting your account will permanently remove all analysis history. This cannot be undone.',
+    deleteConfirm: 'Are you sure?',
+    saved: 'Saved',
+    signInRequired: 'Sign in to access settings',
+    theme: 'Theme',
+    themeDesc: 'Only dark mode is supported (light mode coming soon)',
+    dark: 'Dark',
   },
 } as const;
 
