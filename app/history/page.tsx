@@ -96,6 +96,10 @@ export default function HistoryPage() {
   const [jobRoleFilter, setJobRoleFilter] = useState<string>('All');
   const [gradeFilter, setGradeFilter] = useState<string>('All');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchInput, setSearchInput] = useState<string>('');
+  const [dateFrom, setDateFrom] = useState<string>('');
+  const [dateTo, setDateTo] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState(false);
   const [total, setTotal] = useState(0);
@@ -118,6 +122,9 @@ export default function HistoryPage() {
         sort: sortBy,
         page: String(pageNum),
         limit: String(ITEMS_PER_PAGE),
+        ...(searchQuery && { search: searchQuery }),
+        ...(dateFrom && { dateFrom }),
+        ...(dateTo && { dateTo }),
       });
 
       const response = await fetch(`/api/history?${params}`, {
@@ -146,7 +153,7 @@ export default function HistoryPage() {
     } finally {
       setLoading(false);
     }
-  }, [supabase, jobRoleFilter, gradeFilter, sortBy, router, setShowAuth, setAuthMessage]);
+  }, [supabase, jobRoleFilter, gradeFilter, sortBy, searchQuery, dateFrom, dateTo, router, setShowAuth, setAuthMessage]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -162,7 +169,7 @@ export default function HistoryPage() {
       setPage(1);
       fetchAnalyses(1, false);
     }
-  }, [user, supabase, jobRoleFilter, gradeFilter, sortBy, fetchAnalyses]);
+  }, [user, supabase, jobRoleFilter, gradeFilter, sortBy, searchQuery, dateFrom, dateTo, fetchAnalyses]);
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
@@ -203,9 +210,64 @@ export default function HistoryPage() {
           )}
         </div>
 
+        {/* Search Bar */}
+        <div className="card mb-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSearchQuery(searchInput);
+            }}
+            className="flex gap-2"
+          >
+            <div className="relative flex-1">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder={t.history.searchPlaceholder}
+                className="w-full bg-dark border border-border rounded-lg pl-10 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-gray-500"
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn-primary px-4 py-2.5 text-sm font-medium whitespace-nowrap"
+            >
+              {t.history.search}
+            </button>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput('');
+                  setSearchQuery('');
+                }}
+                className="btn-secondary px-3 py-2.5 text-sm"
+                title={t.history.clearSearch}
+              >
+                ✕
+              </button>
+            )}
+          </form>
+        </div>
+
         {/* Filters */}
         <div className="card mb-8">
-          <div className="grid sm:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 {t.history.jobRole}
@@ -255,7 +317,82 @@ export default function HistoryPage() {
                 <option value="lowest">{t.history.lowestScore}</option>
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {t.history.dateFrom}
+              </label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-full bg-dark border border-border rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {t.history.dateTo}
+              </label>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-full bg-dark border border-border rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
           </div>
+
+          {/* Active Filters Summary */}
+          {(searchQuery || dateFrom || dateTo || jobRoleFilter !== 'All' || gradeFilter !== 'All') && (
+            <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+              <div className="flex flex-wrap gap-2">
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-primary/20 text-primary">
+                    &ldquo;{searchQuery}&rdquo;
+                    <button onClick={() => { setSearchInput(''); setSearchQuery(''); }} className="hover:text-white">✕</button>
+                  </span>
+                )}
+                {jobRoleFilter !== 'All' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-400">
+                    {jobRoleFilter}
+                    <button onClick={() => setJobRoleFilter('All')} className="hover:text-white">✕</button>
+                  </span>
+                )}
+                {gradeFilter !== 'All' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
+                    {t.history.gradeLabel.replace('{grade}', gradeFilter)}
+                    <button onClick={() => setGradeFilter('All')} className="hover:text-white">✕</button>
+                  </span>
+                )}
+                {dateFrom && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">
+                    {dateFrom} ~
+                    <button onClick={() => setDateFrom('')} className="hover:text-white">✕</button>
+                  </span>
+                )}
+                {dateTo && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">
+                    ~ {dateTo}
+                    <button onClick={() => setDateTo('')} className="hover:text-white">✕</button>
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  setSearchInput('');
+                  setSearchQuery('');
+                  setJobRoleFilter('All');
+                  setGradeFilter('All');
+                  setDateFrom('');
+                  setDateTo('');
+                }}
+                className="text-xs text-gray-400 hover:text-white transition-colors"
+              >
+                {t.history.clearAll}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Loading State — Skeleton */}

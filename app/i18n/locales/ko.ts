@@ -390,6 +390,12 @@ const ko: PartialLocale = {
     reAnalyze: '다시 분석',
     loadMore: '더 보기',
     all: '전체',
+    searchPlaceholder: '프롬프트 내용으로 검색...',
+    search: '검색',
+    clearSearch: '검색 초기화',
+    dateFrom: '시작일',
+    dateTo: '종료일',
+    clearAll: '필터 초기화',
   },
 
   // ─── Pricing Detail ───────────────────────────────

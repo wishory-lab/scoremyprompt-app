@@ -313,12 +313,17 @@ function TemplateLibraryTab() {
   const { showToast } = useToast();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<TemplateCategory | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
   const [variables, setVariables] = useState<Record<string, string>>({});
 
   const filteredTemplates = useMemo(() => {
-    return searchTemplates(search, selectedCategory || undefined);
-  }, [search, selectedCategory]);
+    let results = searchTemplates(search, selectedCategory || undefined);
+    if (selectedDifficulty) {
+      results = results.filter(t => t.difficulty === selectedDifficulty);
+    }
+    return results;
+  }, [search, selectedCategory, selectedDifficulty]);
 
   const filledPrompt = useMemo(() => {
     if (!selectedTemplate) return '';
@@ -357,6 +362,28 @@ function TemplateLibraryTab() {
               }`}
             >{cat.icon} {cat.label}</button>
           ))}
+        </div>
+
+        {/* Difficulty Filter */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500">난이도:</span>
+          {[
+            { key: null, label: '전체' },
+            { key: 'beginner', label: '초급', color: 'bg-green-900/50 text-green-300' },
+            { key: 'intermediate', label: '중급', color: 'bg-blue-900/50 text-blue-300' },
+            { key: 'advanced', label: '고급', color: 'bg-purple-900/50 text-purple-300' },
+          ].map(d => (
+            <button
+              key={d.key || 'all'}
+              onClick={() => setSelectedDifficulty(d.key)}
+              className={`px-2.5 py-1 text-xs rounded-full transition ${
+                selectedDifficulty === d.key
+                  ? (d.color || 'bg-yellow-400 text-gray-900 font-semibold')
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              } ${selectedDifficulty === d.key ? 'ring-1 ring-white/30' : ''}`}
+            >{d.label}</button>
+          ))}
+          <span className="ml-auto text-xs text-gray-500">{filteredTemplates.length}개 결과</span>
         </div>
       </div>
 

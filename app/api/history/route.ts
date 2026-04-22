@@ -11,6 +11,9 @@ const HistoryQuerySchema = z.object({
   sort: z.enum(['newest', 'oldest', 'highest', 'lowest']).default('newest'),
   page: z.coerce.number().int().min(1).max(1000).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(20),
+  search: z.string().max(200).default(''),
+  dateFrom: z.string().max(20).default(''),
+  dateTo: z.string().max(20).default(''),
 });
 
 interface HistoryDimensionScore {
@@ -106,8 +109,11 @@ export async function GET(request: Request) {
       sort: url.searchParams.get('sort') ?? undefined,
       page: url.searchParams.get('page') ?? undefined,
       limit: url.searchParams.get('limit') ?? undefined,
+      search: url.searchParams.get('search') ?? undefined,
+      dateFrom: url.searchParams.get('dateFrom') ?? undefined,
+      dateTo: url.searchParams.get('dateTo') ?? undefined,
     });
-    const { role, grade, sort, page, limit } = queryParams;
+    const { role, grade, sort, page, limit, search, dateFrom, dateTo } = queryParams;
 
     const offset = (page - 1) * limit;
     const { column, ascending } = getSortConfig(sort);
@@ -120,6 +126,9 @@ export async function GET(request: Request) {
 
     if (role !== 'All') countQuery = countQuery.eq('job_role', role);
     if (grade !== 'All') countQuery = countQuery.eq('grade', grade);
+    if (search) countQuery = countQuery.ilike('prompt_preview', `%${search}%`);
+    if (dateFrom) countQuery = countQuery.gte('created_at', `${dateFrom}T00:00:00`);
+    if (dateTo) countQuery = countQuery.lte('created_at', `${dateTo}T23:59:59`);
 
     const { count, error: countError } = await countQuery;
 
@@ -132,13 +141,16 @@ export async function GET(request: Request) {
     // ─── Data query ───
     let dataQuery = supabase
       .from('analyses')
-      .select('id, created_at, overall_score, grade, job_role, result_json')
+      .select('id, created_at, overall_score, grade, job_role, prompt_preview, result_json')
       .eq('user_id', userId)
       .order(column, { ascending })
       .range(offset, offset + limit - 1);
 
     if (role !== 'All') dataQuery = dataQuery.eq('job_role', role);
     if (grade !== 'All') dataQuery = dataQuery.eq('grade', grade);
+    if (search) dataQuery = dataQuery.ilike('prompt_preview', `%${search}%`);
+    if (dateFrom) dataQuery = dataQuery.gte('created_at', `${dateFrom}T00:00:00`);
+    if (dateTo) dataQuery = dataQuery.lte('created_at', `${dateTo}T23:59:59`);
 
     const { data, error: dataError } = await dataQuery;
 
@@ -150,7 +162,7 @@ export async function GET(request: Request) {
     const analyses: HistoryAnalysis[] = (data || []).map((row) => ({
       id: row.id,
       date: new Date(row.created_at).toISOString().split('T')[0],
-      promptPreview: `${row.job_role || 'General'} prompt — scored ${row.overall_score || 0}/100`,
+      promptPreview: row.prompt_preview || `${row.job_role || 'General'} prompt — scored ${row.overall_score || 0}/100`,
       score: row.overall_score || 0,
       grade: (row.grade as Grade) || 'D',
       jobRole: row.job_role || 'Other',

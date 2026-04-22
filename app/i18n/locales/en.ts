@@ -403,6 +403,12 @@ const en = {
     reAnalyze: 'Re-analyze',
     loadMore: 'Load More',
     all: 'All',
+    searchPlaceholder: 'Search by prompt content...',
+    search: 'Search',
+    clearSearch: 'Clear search',
+    dateFrom: 'From',
+    dateTo: 'To',
+    clearAll: 'Clear all',
   },
 
   // ─── Pricing Detail ───────────────────────────────
