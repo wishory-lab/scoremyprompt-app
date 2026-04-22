@@ -188,7 +188,7 @@ export async function POST(request: Request) {
         },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1024,
+          max_tokens: 2048,
           system: PROMPT_SCORE_SYSTEM + (locale !== 'en' ? `\n\nIMPORTANT: Write ALL feedback text, strengths, improvements, and rewriteSuggestion in ${locale === 'ko' ? 'Korean (한국어)' : locale}. Keep JSON keys and grade letters in English.` : ''),
           messages: [
             {
@@ -213,7 +213,7 @@ export async function POST(request: Request) {
       const errorBody = await apiResponse.text();
       logger.error('Claude API error', { status: errorStatus, body: errorBody.substring(0, 500) });
       if (errorStatus === 429) {
-        throw new AppError('Service is busy. Please try again in a moment.', 'API_RATE_LIMIT', 429);
+        throw new AppError('서비스가 바쁩니다. 잠시 후 다시 시도해주세요.', 'API_RATE_LIMIT', 429);
       }
       if (errorStatus === 401 || (errorStatus === 400 && errorBody.includes('credit balance'))) {
         logger.error('API key invalid or credits depleted — falling back to mock');
@@ -224,8 +224,14 @@ export async function POST(request: Request) {
 
     const message = await apiResponse.json();
 
+    // Check for truncated response
+    if (message.stop_reason === 'max_tokens') {
+      logger.warn('Claude response truncated (max_tokens reached), falling back to mock');
+      return Response.json(getMockResult(jobRole), { status: 200 });
+    }
+
     // Parse the JSON response
-    const responseText = message.content[0].text;
+    const responseText = message.content?.[0]?.text || '';
     let result: AnalysisResult;
 
     try {
@@ -235,8 +241,14 @@ export async function POST(request: Request) {
         .trim();
       result = JSON.parse(jsonStr);
     } catch {
-      logger.error('Failed to parse Claude response', { response: responseText.substring(0, 200) });
-      throw new AppError('Failed to parse analysis result. Please try again.', 'PARSE_ERROR', 500);
+      logger.error('Failed to parse Claude response', {
+        response: responseText.substring(0, 300),
+        stopReason: message.stop_reason,
+        usage: message.usage,
+      });
+      // Fallback to mock instead of hard error for better UX
+      logger.warn('Falling back to mock result after parse failure');
+      return Response.json(getMockResult(jobRole), { status: 200 });
     }
 
     // ─── Enrich with metadata ───
