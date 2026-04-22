@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-dark via-surface to-dark pt-14">
-      <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <section id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="mb-12">
           <h2 className="text-4xl font-bold text-white">{t.settings.title}</h2>
           <p className="text-gray-400 mt-2">{t.settings.subtitle}</p>

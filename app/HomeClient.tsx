@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from './components/AuthProvider';
 import dynamic from 'next/dynamic';
@@ -11,6 +11,7 @@ import { TEMPLATES } from './templates/data';
 import { trackJobRoleSelected, trackPromptSubmitted, trackGradeStarted, trackDemoClick } from './lib/analytics';
 import { VALIDATION, ERRORS, PLACEHOLDERS, HINTS } from './constants/messages';
 import { useTranslation, useLocale } from './i18n';
+import { useKeyboardShortcuts, createHomeShortcuts } from './hooks/useKeyboardShortcuts';
 
 const AdBanner = dynamic(() => import('./components/AdBanner'), { ssr: false });
 const DemoMode = dynamic(() => import('./components/DemoMode'), { ssr: false });
@@ -19,6 +20,7 @@ const OnboardingTour = dynamic(() => import('./components/OnboardingTour'), { ss
 const ExitIntentModal = dynamic(() => import('./components/ExitIntentModal'), { ssr: false });
 const Leaderboard = dynamic(() => import('./components/Leaderboard'), { ssr: false });
 const Waitlist = dynamic(() => import('./components/Waitlist'), { ssr: false });
+const KeyboardShortcutsHelp = dynamic(() => import('./components/KeyboardShortcutsHelp'), { ssr: false });
 
 interface ExamplePrompt {
   text: string;
@@ -54,6 +56,35 @@ export default function HomeClient() {
   const [error, setError] = useState('');
   const [rateLimitRemaining, setRateLimitRemaining] = useState<number | null>(null);
   const [retryCountdown, setRetryCountdown] = useState(0);
+  const [showShortcuts, setShowShortcuts] = useState(false);
+
+  // Keyboard shortcuts
+  const focusInput = useCallback(() => {
+    document.getElementById('analyze')?.focus();
+  }, []);
+
+  const toggleHelp = useCallback(() => {
+    setShowShortcuts(prev => !prev);
+  }, []);
+
+  const shortcuts = createHomeShortcuts({
+    focusInput,
+    toggleHelp,
+    analyze: () => {
+      const btn = document.querySelector('[data-tour="analyze-btn"]') as HTMLButtonElement;
+      if (btn && !btn.disabled) btn.click();
+    },
+    clearInput: () => {
+      if (showShortcuts) {
+        setShowShortcuts(false);
+      } else if (prompt) {
+        setPrompt('');
+        setError('');
+      }
+    },
+  });
+
+  useKeyboardShortcuts(shortcuts);
 
   // Retry countdown timer
   useEffect(() => {
@@ -358,7 +389,12 @@ export default function HomeClient() {
             ) : retryCountdown > 0 ? (
               t.form.waitMessage.replace('{seconds}', String(retryCountdown))
             ) : (
-              t.form.scoreFree
+              <span className="flex items-center justify-center gap-2">
+                {t.form.scoreFree}
+                <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/10 border border-white/20 rounded text-[10px] font-mono text-white/60">
+                  Ctrl+↵
+                </kbd>
+              </span>
             )}
           </button>
 
@@ -473,6 +509,26 @@ export default function HomeClient() {
 
       {/* Exit-Intent Modal for leaving guests */}
       <ExitIntentModal />
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <KeyboardShortcutsHelp
+        isOpen={showShortcuts}
+        onClose={() => setShowShortcuts(false)}
+        shortcuts={shortcuts}
+      />
+
+      {/* Keyboard shortcut hint (bottom-right) */}
+      <div className="fixed bottom-4 right-4 z-30 hidden md:block">
+        <button
+          onClick={toggleHelp}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-surface/80 backdrop-blur border border-white/10 rounded-lg text-xs text-gray-500 hover:text-gray-300 transition-colors"
+          aria-label="Show keyboard shortcuts"
+        >
+          <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-mono">Ctrl</kbd>
+          <span className="text-gray-600">+</span>
+          <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-mono">K</kbd>
+        </button>
+      </div>
     </main>
   );
 }
