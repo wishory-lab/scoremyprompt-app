@@ -64,8 +64,8 @@ export default function ShareSection({ result, gradeConfig, shareUrl }: ShareSec
 
   const handleCopyLink = async () => {
     trackShare({ method: 'copy', score: result.overallScore, grade: result.grade });
-    const text = getShareText('copy', result.overallScore, result.grade, gradeLabel, jobRole, percentile, shareUrl);
-    await navigator.clipboard.writeText(text);
+    // Copy the actual permalink URL (not just text)
+    await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

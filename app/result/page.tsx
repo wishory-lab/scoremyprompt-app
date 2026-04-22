@@ -90,8 +90,11 @@ export default function ResultPage() {
     }
   }, []);
 
-  // --- Handlers ---
-  const shareUrl = typeof window !== 'undefined' ? window.location.origin : 'https://scoremyprompt.com';
+  // --- Share URL (permalink) ---
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://scoremyprompt.com';
+  const shareUrl = result?.shareId
+    ? `${origin}/share/${result.shareId}`
+    : origin;
 
   const handleNewAnalysis = () => {
     sessionStorage.removeItem('promptResult');
