@@ -15,12 +15,12 @@ export const GRADE_CONFIG: Record<Grade, GradeConfig> = {
 };
 
 export const DIMENSION_META: Record<string, DimensionMeta> = {
-  precision:       { label: 'Precision',        letter: 'P', maxScore: 20 },
-  role:            { label: 'Role',             letter: 'R', maxScore: 15 },
-  outputFormat:    { label: 'Output Format',    letter: 'O', maxScore: 15 },
-  missionContext:  { label: 'Mission Context',  letter: 'M', maxScore: 20 },
-  promptStructure: { label: 'Prompt Structure', letter: 'P', maxScore: 15 },
-  tailoring:       { label: 'Tailoring',        letter: 'T', maxScore: 15 },
+  precision:       { label: 'Precision(정밀도)',         letter: 'P', maxScore: 20 },
+  role:            { label: 'Role(역할)',               letter: 'R', maxScore: 15 },
+  outputFormat:    { label: 'Output Format(출력 형식)', letter: 'O', maxScore: 15 },
+  missionContext:  { label: 'Mission Context(미션)',    letter: 'M', maxScore: 20 },
+  promptStructure: { label: 'Prompt Structure(구조)',   letter: 'P', maxScore: 15 },
+  tailoring:       { label: 'Tailoring(맞춤화)',        letter: 'T', maxScore: 15 },
 } as const;
 
 export const JOB_ROLES: JobRole[] = ['Marketing', 'Design', 'Product', 'Finance', 'Freelance', 'Engineering', 'Other'];
@@ -84,12 +84,12 @@ export const JOB_ROLE_LABELS: Record<string, string> = {
 };
 
 export const DIMENSION_FEEDBACK: Record<string, { low: string; high: string }> = {
-  precision:       { low: 'Be more specific about what you want.', high: 'Crystal clear instructions!' },
-  role:            { low: 'Try adding a specific role (e.g., "Act as a...").', high: 'Great role definition!' },
-  outputFormat:    { low: 'Specify the desired output format.', high: 'Output format is well defined!' },
-  missionContext:  { low: 'Add more context about your goal.', high: 'Excellent context provided!' },
-  promptStructure: { low: 'Structure your prompt with clear sections.', high: 'Well-structured prompt!' },
-  tailoring:       { low: 'Customize for your specific use case.', high: 'Perfectly tailored!' },
+  precision:       { low: '원하는 것을 더 구체적으로 명시하세요.', high: '매우 명확한 지시입니다!' },
+  role:            { low: '역할을 추가해보세요 (예: "당신은...").', high: '훌륭한 역할 정의!' },
+  outputFormat:    { low: '원하는 출력 형식을 지정하세요.', high: '출력 형식이 잘 정의되어 있습니다!' },
+  missionContext:  { low: '목표에 대한 컨텍스트를 추가하세요.', high: '훌륭한 컨텍스트 제공!' },
+  promptStructure: { low: '명확한 섹션으로 프롬프트를 구조화하세요.', high: '잘 구조화된 프롬프트!' },
+  tailoring:       { low: '특정 사용 목적에 맞게 맞춤화하세요.', high: '완벽하게 맞춤화되었습니다!' },
 };
 
 export const ROLE_BENCHMARKS: Record<string, { average: number; excellent: number }> = {

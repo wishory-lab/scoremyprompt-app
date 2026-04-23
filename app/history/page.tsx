@@ -43,12 +43,12 @@ const GRADE_CONFIG: Record<Grade, { color: string }> = {
 };
 
 const DIMENSION_META: Record<DimensionKey, DimensionMeta> = {
-  precision: { label: 'P — Precision', letter: 'P', maxScore: 20 },
-  role: { label: 'R — Role', letter: 'R', maxScore: 15 },
-  outputFormat: { label: 'O — Output Format', letter: 'O', maxScore: 15 },
-  missionContext: { label: 'M — Mission Context', letter: 'M', maxScore: 20 },
-  promptStructure: { label: 'P — Structure', letter: 'P', maxScore: 15 },
-  tailoring: { label: 'T — Tailoring', letter: 'T', maxScore: 15 },
+  precision: { label: 'P — Precision(정밀도)', letter: 'P', maxScore: 20 },
+  role: { label: 'R — Role(역할)', letter: 'R', maxScore: 15 },
+  outputFormat: { label: 'O — Output Format(출력 형식)', letter: 'O', maxScore: 15 },
+  missionContext: { label: 'M — Mission Context(미션)', letter: 'M', maxScore: 20 },
+  promptStructure: { label: 'P — Structure(구조)', letter: 'P', maxScore: 15 },
+  tailoring: { label: 'T — Tailoring(맞춤화)', letter: 'T', maxScore: 15 },
 };
 
 const DimensionBar = ({ dimKey, data }: DimensionBarProps) => {

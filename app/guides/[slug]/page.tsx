@@ -48,6 +48,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+const DIFFICULTY_LABELS: Record<string, string> = {
+  Beginner: '초급',
+  Intermediate: '중급',
+  Advanced: '고급',
+};
+
 const getDifficultyColor = (difficulty: string) => {
   switch (difficulty) {
     case 'Beginner':
@@ -79,10 +85,10 @@ export default async function GuideDetail({ params }: PageProps) {
           </div>
         </nav>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Guide Not Found</h1>
-          <p className="text-gray-400 mb-6">The guide you are looking for does not exist.</p>
+          <h1 className="text-4xl font-bold text-white mb-4">가이드를 찾을 수 없습니다</h1>
+          <p className="text-gray-400 mb-6">찾으시는 가이드가 존재하지 않습니다.</p>
           <Link href="/guides" className="btn-primary">
-            Back to Guides
+            가이드 목록으로 돌아가기
           </Link>
         </div>
       </main>
@@ -112,10 +118,10 @@ export default async function GuideDetail({ params }: PageProps) {
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/guides" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
-              All Guides
+              전체 가이드
             </Link>
             <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
-              Score a Prompt →
+              프롬프트 채점하기 →
             </Link>
           </div>
         </div>
@@ -125,11 +131,11 @@ export default async function GuideDetail({ params }: PageProps) {
       <nav aria-label="Breadcrumb" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <ol className="flex items-center gap-2 text-sm text-gray-400">
           <li>
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <Link href="/" className="hover:text-white transition-colors">홈</Link>
           </li>
           <li className="text-gray-600">/</li>
           <li>
-            <Link href="/guides" className="hover:text-white transition-colors">Guides</Link>
+            <Link href="/guides" className="hover:text-white transition-colors">가이드</Link>
           </li>
           <li className="text-gray-600">/</li>
           <li className="text-white font-medium truncate max-w-[200px] sm:max-w-none">{guide.title}</li>
@@ -142,7 +148,7 @@ export default async function GuideDetail({ params }: PageProps) {
           <div className="sticky top-24 space-y-6">
             {/* Table of Contents */}
             <div className="card">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Contents</h3>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">목차</h3>
               <nav className="space-y-2">
                 {guide.sections.map((section, idx) => (
                   <a
@@ -158,12 +164,12 @@ export default async function GuideDetail({ params }: PageProps) {
 
             {/* Score CTA Card */}
             <div className="card bg-gradient-to-b from-primary/20 to-accent/10 border border-primary/30">
-              <h3 className="text-lg font-bold text-white mb-3">Score Your Prompt</h3>
+              <h3 className="text-lg font-bold text-white mb-3">프롬프트 채점하기</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Apply what you've learned. Analyze your prompts and get instant feedback.
+                배운 내용을 적용하세요. 프롬프트를 분석하고 즉시 피드백을 받아보세요.
               </p>
               <Link href="/" className="btn-primary w-full text-center text-sm">
-                Start Scoring
+                채점 시작
               </Link>
             </div>
           </div>
@@ -176,9 +182,9 @@ export default async function GuideDetail({ params }: PageProps) {
             <div className="mb-8">
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <span className={`text-xs px-3 py-1 rounded-full font-medium ${getDifficultyColor(guide.difficulty)}`}>
-                  {guide.difficulty}
+                  {DIFFICULTY_LABELS[guide.difficulty] || guide.difficulty}
                 </span>
-                <span className="text-sm text-gray-400">{guide.readingTime} min read</span>
+                <span className="text-sm text-gray-400">{guide.readingTime}분 소요</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight">
@@ -213,39 +219,39 @@ export default async function GuideDetail({ params }: PageProps) {
             <div className="mt-16 pt-12 border-t border-border">
               <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/30 rounded-lg p-8">
                 <h2 className="text-2xl font-bold text-white mb-3">
-                  Test What You Learned
+                  배운 내용을 테스트해 보세요
                 </h2>
                 <p className="text-gray-400 mb-2">
-                  Apply what you've learned with our free PROMPT Score analyzer.
+                  무료 PROMPT 점수 분석기로 배운 내용을 적용해 보세요.
                 </p>
                 {guide.relevantDimensions && guide.relevantDimensions.length > 0 && (
                   <p className="text-sm text-gray-400 mb-6">
-                    This guide focuses on{' '}
+                    이 가이드는{' '}
                     <span className="text-primary font-medium">
                       {guide.relevantDimensions.join(', ')}
                     </span>{' '}
-                    — score your prompt and see how you do on these dimensions.
+                    에 초점을 맞추고 있습니다 — 프롬프트를 채점하고 이 차원에서 어떤 점수를 받는지 확인하세요.
                   </p>
                 )}
                 <Link href="/" className="btn-primary">
-                  Score your prompt now →
+                  지금 프롬프트 채점하기 →
                 </Link>
               </div>
             </div>
 
             {/* Newsletter CTA */}
             <div className="mt-8 bg-surface border border-border rounded-lg p-6 text-center">
-              <p className="text-sm font-semibold text-white mb-1">Get weekly prompt tips</p>
-              <p className="text-xs text-gray-400 mb-4">Join 5K+ professionals improving their AI skills.</p>
+              <p className="text-sm font-semibold text-white mb-1">매주 프롬프트 팁 받기</p>
+              <p className="text-xs text-gray-400 mb-4">5,000명 이상의 전문가와 함께 AI 활용 능력을 높이세요.</p>
               <Link href="/#waitlist" className="btn-secondary text-sm">
-                Subscribe for free →
+                무료 구독하기 →
               </Link>
             </div>
 
             {/* Related Guides */}
             <div className="mt-16 pt-12 border-t border-border">
-              <h2 className="text-2xl font-bold text-white mb-2">If you liked this, read next</h2>
-              <p className="text-sm text-gray-400 mb-6">Continue building your prompt engineering skills.</p>
+              <h2 className="text-2xl font-bold text-white mb-2">이 가이드가 도움이 되셨다면</h2>
+              <p className="text-sm text-gray-400 mb-6">프롬프트 엔지니어링 실력을 계속 키워보세요.</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {relatedGuides.map((relatedGuide) => (
                   <Link
@@ -264,7 +270,7 @@ export default async function GuideDetail({ params }: PageProps) {
                       </div>
                       <div className="flex items-center justify-between pt-4 border-t border-border mt-4">
                         <span className={`text-xs px-2 py-1 rounded-full font-medium ${getDifficultyColor(relatedGuide.difficulty)}`}>
-                          {relatedGuide.difficulty}
+                          {DIFFICULTY_LABELS[relatedGuide.difficulty] || relatedGuide.difficulty}
                         </span>
                         <span className="text-primary group-hover:translate-x-1 transition-transform">→</span>
                       </div>

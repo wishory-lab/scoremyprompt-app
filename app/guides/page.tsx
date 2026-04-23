@@ -24,6 +24,12 @@ export const metadata: Metadata = {
   },
 };
 
+const DIFFICULTY_LABELS: Record<string, string> = {
+  Beginner: '초급',
+  Intermediate: '중급',
+  Advanced: '고급',
+};
+
 const getDifficultyColor = (difficulty: string) => {
   switch (difficulty) {
     case 'Beginner':
@@ -51,10 +57,10 @@ export default function GuidesHub() {
           </a>
           <div className="flex items-center gap-4">
             <a href="/guides" className="text-sm text-white font-medium hover:text-gray-200 transition-colors hidden sm:block">
-              Guides
+              가이드
             </a>
             <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
-              Score a Prompt →
+              프롬프트 채점하기 →
             </a>
           </div>
         </div>
@@ -64,11 +70,11 @@ export default function GuidesHub() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div className="text-center mb-16 animate-fade-in">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
-            AI Prompt Engineering
-            <span className="block text-gradient">Guides</span>
+            AI 프롬프트 엔지니어링
+            <span className="block text-gradient">가이드</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
-            Master the art of prompt engineering with comprehensive guides for every skill level and use case.
+            모든 수준과 활용 사례에 맞는 종합 가이드로 프롬프트 엔지니어링을 마스터하세요.
           </p>
         </div>
 
@@ -94,9 +100,9 @@ export default function GuidesHub() {
 
                 <div className="flex items-center justify-between pt-4 border-t border-border">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-400">{guide.readingTime} min read</span>
+                    <span className="text-xs text-gray-400">{guide.readingTime}분 소요</span>
                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${getDifficultyColor(guide.difficulty)}`}>
-                      {guide.difficulty}
+                      {DIFFICULTY_LABELS[guide.difficulty] || guide.difficulty}
                     </span>
                   </div>
                   <span className="text-primary group-hover:translate-x-1 transition-transform">→</span>
@@ -109,27 +115,27 @@ export default function GuidesHub() {
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/30 rounded-lg p-8 sm:p-12 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Ready to Improve Your Prompts?
+            프롬프트를 개선할 준비가 되셨나요?
           </h2>
           <p className="text-gray-400 text-lg mb-6 max-w-2xl mx-auto">
-            Read our guides to understand best practices, then score your prompts to identify improvement areas.
+            가이드를 읽고 베스트 프랙티스를 이해한 후, 프롬프트를 채점하여 개선할 부분을 파악하세요.
           </p>
           <a
             href="/"
             className="btn-primary text-lg inline-block"
           >
-            Score your prompt now →
+            지금 프롬프트 채점하기 →
           </a>
         </div>
 
         {/* Guide Categories */}
         <div className="mt-16 pt-16 border-t border-border">
-          <h2 className="text-3xl font-bold text-white mb-8">Browse by Category</h2>
+          <h2 className="text-3xl font-bold text-white mb-8">카테고리별 보기</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="card">
-              <h3 className="text-lg font-bold text-white mb-3">Foundations</h3>
+              <h3 className="text-lg font-bold text-white mb-3">기초</h3>
               <p className="text-gray-400 text-sm mb-4">
-                Start here if you're new to prompt engineering. Learn fundamental concepts and best practices.
+                프롬프트 엔지니어링이 처음이라면 여기서 시작하세요. 기본 개념과 베스트 프랙티스를 배울 수 있습니다.
               </p>
               <ul className="space-y-2">
                 <li>
@@ -151,9 +157,9 @@ export default function GuidesHub() {
             </div>
 
             <div className="card">
-              <h3 className="text-lg font-bold text-white mb-3">Practical Applications</h3>
+              <h3 className="text-lg font-bold text-white mb-3">실전 활용</h3>
               <p className="text-gray-400 text-sm mb-4">
-                Learn how to apply prompt engineering to your specific field with templates and examples.
+                템플릿과 예시를 통해 프롬프트 엔지니어링을 자신의 분야에 적용하는 방법을 알아보세요.
               </p>
               <ul className="space-y-2">
                 <li>
@@ -170,9 +176,9 @@ export default function GuidesHub() {
             </div>
 
             <div className="card">
-              <h3 className="text-lg font-bold text-white mb-3">Advanced Techniques</h3>
+              <h3 className="text-lg font-bold text-white mb-3">고급 기법</h3>
               <p className="text-gray-400 text-sm mb-4">
-                Deepen your skills with advanced strategies and 15+ battle-tested ChatGPT techniques.
+                고급 전략과 15가지 이상의 검증된 ChatGPT 기법으로 실력을 한 단계 높여보세요.
               </p>
               <ul className="space-y-2">
                 <li>
@@ -184,9 +190,9 @@ export default function GuidesHub() {
             </div>
 
             <div className="card">
-              <h3 className="text-lg font-bold text-white mb-3">Deep Dives</h3>
+              <h3 className="text-lg font-bold text-white mb-3">심층 분석</h3>
               <p className="text-gray-400 text-sm mb-4">
-                Master the details. Comprehensive guides exploring specific topics in depth.
+                디테일을 마스터하세요. 특정 주제를 깊이 있게 다루는 종합 가이드입니다.
               </p>
               <ul className="space-y-2">
                 <li>
