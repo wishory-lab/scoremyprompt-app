@@ -29,6 +29,7 @@ const RewriteSuggestion = dynamic(() => import('./components/RewriteSuggestion')
 const ChallengerResult = dynamic(() => import('./components/ChallengerResult'), { ssr: false });
 const ShareSection = dynamic(() => import('./components/ShareSection'), { ssr: false });
 const CommunityCTA = dynamic(() => import('./components/CommunityCTA'), { ssr: false });
+const TrialBanner = dynamic(() => import('../components/TrialBanner'), { ssr: false });
 
 interface ExtendedGradeConfig extends GradeConfig {
   bg: string;
@@ -47,13 +48,13 @@ export default function ResultPage() {
   const router = useRouter();
   const t = useTranslation();
   const { showToast } = useToast();
-  const { user, tier, supabase, setShowAuth, setAuthMessage } = useAuth();
+  const { user, tier, supabase, setShowAuth, setAuthMessage, trial } = useAuth();
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [challenger, setChallenger] = useState<{ name: string; score: number; grade: string } | null>(null);
   const isGuest = !user;
-  const isPro = tier === 'premium' || tier === 'pro';
+  const isPro = tier === 'premium' || tier === 'pro' || trial.active;
   const { shouldShow: showProfile, dismiss: dismissProfile } = useProfilePrompt();
 
   // --- Data loading ---
@@ -229,6 +230,13 @@ export default function ResultPage() {
           gradeConfig={gradeConfig}
           shareUrl={shareUrl}
         />
+
+        {/* Pro Trial Banner (for non-Pro users) */}
+        {!isPro && (
+          <div className="mb-12">
+            <TrialBanner />
+          </div>
+        )}
 
         {/* CTA to Community */}
         <CommunityCTA />

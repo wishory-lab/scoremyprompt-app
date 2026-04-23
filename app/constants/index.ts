@@ -73,6 +73,10 @@ export const PREMIUM_PRICE_USD = 4.99;
 export const PREMIUM_INTRO_PRICE_USD = 2.99;
 export const PREMIUM_INTRO_MONTHS = 3;
 
+/** Pro Trial (맛보기) — 24 hours, one-time per user */
+export const TRIAL_DURATION_HOURS = 24;
+export const TRIAL_DURATION_MS = TRIAL_DURATION_HOURS * 60 * 60 * 1000;
+
 export const JOB_ROLE_LABELS: Record<string, string> = {
   Marketing: 'Marketing',
   Design: 'Design',

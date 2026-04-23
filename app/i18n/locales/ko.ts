@@ -548,6 +548,22 @@ const ko: PartialLocale = {
     themeDesc: '다크 모드만 지원합니다 (곧 라이트 모드 추가 예정)',
     dark: '다크',
   },
+  // ─── Pro Trial ────────────────────────────────
+  trial: {
+    title: 'Pro 맛보기 — 24시간 무료 체험',
+    subtitle: '무제한 분석, AI 리라이트 제안, 광고 없는 깔끔한 경험을 24시간 동안 무료로 체험하세요.',
+    activate: '지금 바로 Pro 체험하기',
+    activating: '활성화 중...',
+    active: 'Pro 맛보기 이용 중',
+    remaining: '남은 시간',
+    expired: 'Pro 맛보기가 종료되었습니다',
+    expiredDesc: '프리미엄으로 업그레이드하여 무제한 분석을 계속 이용하세요.',
+    upgrade: '프리미엄 업그레이드',
+    continueWithPremium: '프리미엄으로 계속 이용하기 →',
+    signUpFirst: '무료 가입하고 체험하기',
+    onceOnly: '1회 한정',
+    noCreditCard: '신용카드 불필요 · 자동 결제 없음 · 24시간 후 자동 종료',
+  },
 } as const;
 
 export default ko;

@@ -1,9 +1,21 @@
 import crypto from 'crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Tier, GateCheckResult } from '../types';
-import { TIER_LIMITS, MAX_AD_CREDITS_PER_DAY } from '../constants';
+import { TIER_LIMITS, MAX_AD_CREDITS_PER_DAY, TRIAL_DURATION_MS } from '../constants';
 
 export { TIER_LIMITS };
+
+/** Check if a user has an active Pro trial */
+export function isTrialActive(trialActivatedAt: string | null | undefined): boolean {
+  if (!trialActivatedAt) return false;
+  const activatedAt = new Date(trialActivatedAt).getTime();
+  return Date.now() < activatedAt + TRIAL_DURATION_MS;
+}
+
+/** Get trial expiry timestamp (ms) */
+export function getTrialExpiresAt(trialActivatedAt: string): number {
+  return new Date(trialActivatedAt).getTime() + TRIAL_DURATION_MS;
+}
 
 export function hashIP(ip: string): string {
   if (!ip) return '';

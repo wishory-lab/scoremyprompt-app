@@ -6,6 +6,7 @@ import { useTranslation } from '@/app/i18n';
 import { useToast } from '@/app/components/Toast';
 import { FAQ_ITEMS } from './data';
 import Footer from '../components/Footer';
+import TrialBanner from '../components/TrialBanner';
 
 export default function PricingPage() {
   const router = useRouter();
@@ -106,6 +107,11 @@ export default function PricingPage() {
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
             {t.pricingDetail.heroSubtitle}
           </p>
+        </div>
+
+        {/* Pro Trial Banner */}
+        <div className="mb-10">
+          <TrialBanner />
         </div>
 
         {/* Pricing Cards */}

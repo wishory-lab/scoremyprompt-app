@@ -7,7 +7,7 @@ import { AppError, errorResponse } from '@/app/lib/errors';
 import { logger } from '@/app/lib/logger';
 import { sanitizeInput, containsScriptPattern } from '@/app/lib/sanitize';
 import { rateLimit, LIMITS } from '@/app/lib/rate-limit';
-import { checkGate, consumeCredit, hashIP } from '@/app/lib/gate';
+import { checkGate, consumeCredit, hashIP, isTrialActive } from '@/app/lib/gate';
 import type { AnalysisResult, Grade, Tier } from '@/app/types';
 
 // ─── Request validation ───
@@ -139,12 +139,16 @@ export async function POST(request: Request) {
     if (userId && supabaseForGate) {
       const { data: profile } = await supabaseForGate
         .from('user_profiles')
-        .select('tier')
+        .select('tier, trial_activated_at')
         .eq('id', userId)
         .single();
       userTier = (profile?.tier as Tier) || 'free';
       // Handle legacy 'pro' tier
       if (userTier === ('pro' as Tier)) userTier = 'premium';
+      // Pro trial active → treat as premium
+      if (userTier === 'free' && isTrialActive(profile?.trial_activated_at)) {
+        userTier = 'premium';
+      }
     }
 
     const ipHash = hashIP(ip);

@@ -561,6 +561,23 @@ const en = {
     themeDesc: 'Only dark mode is supported (light mode coming soon)',
     dark: 'Dark',
   },
+
+  // ─── Pro Trial ────────────────────────────────
+  trial: {
+    title: 'Pro Trial — 24 Hours Free',
+    subtitle: 'Try unlimited analysis, AI rewrite suggestions, and ad-free experience for 24 hours.',
+    activate: 'Try Pro Now — Free',
+    activating: 'Activating...',
+    active: 'Pro Trial Active',
+    remaining: 'Time remaining',
+    expired: 'Your Pro trial has ended',
+    expiredDesc: 'Upgrade to Premium to continue unlimited analyses.',
+    upgrade: 'Upgrade to Premium',
+    continueWithPremium: 'Continue with Premium →',
+    signUpFirst: 'Sign up free to try',
+    onceOnly: 'One-time only',
+    noCreditCard: 'No credit card · No auto-charge · Auto-expires after 24h',
+  },
 } as const;
 
 // Full locale: all sections required (used by components via t.hero.title etc.)

@@ -52,6 +52,10 @@ export interface UserProfile {
   /** Credits earned from watching rewarded ads today */
   ad_credits_today: number;
   grace_period_end?: string | null;
+  /** When the 24h Pro trial was activated */
+  trial_activated_at?: string | null;
+  /** Whether the user has already used their one-time trial */
+  trial_used?: boolean;
 }
 
 export interface GateCheckResult {
