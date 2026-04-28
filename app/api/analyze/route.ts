@@ -319,8 +319,23 @@ export async function POST(request: Request) {
 
     const dbRecord = await saveToDatabase({ prompt: prompt.trim(), jobRole, result, ip, usage, userId });
 
+    // ─── Free AI Rewrite Preview (Sprint 4) ────────────────────────────
+    // Show rewriteSuggestion to free users for the first 10 analyses per day.
+    // Beta users (signed in + BETA_MODE on) and Pro users always see it.
+    const FREE_REWRITE_DAILY = 10;
+    const usesToday = rateLimit.limit - rateLimit.remaining; // current request counts toward this
+    const isFreeRewriteVisible = !!betaUserId || usesToday <= FREE_REWRITE_DAILY;
+    const rewriteSuggestion = isFreeRewriteVisible
+      ? result.rewriteSuggestion
+      : null;
+    const rewriteRemainingToday = !betaUserId
+      ? Math.max(0, FREE_REWRITE_DAILY - usesToday)
+      : null;
+
     const enrichedResult = {
       ...result,
+      rewriteSuggestion,
+      rewriteRemainingToday,
       jobRole,
       scoreLevel: getScoreLevel(result.grade),
       benchmarks: { average: benchmarks.average, excellent: benchmarks.excellent, percentile },
