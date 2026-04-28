@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>AI한테 매일 묻는데 결과가 늘 별로인 이유 — 같은 ChatGPT, 10배 다른 결과의 비밀</title>
+</head>
+<body style="font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; line-height: 1.8; color: #2c2c2c; max-width: 800px; margin: 0 auto; padding: 20px;">
+
+<!-- ============================================================ -->
+<!--  네이버 블로그 HTML 모드에 그대로 복붙하세요.                 -->
+<!--  (글쓰기 → 우측 상단 'HTML' 버튼 → 본 코드 붙여넣기)        -->
+<!-- ============================================================ -->
+
+<h2 style="font-size: 24px; font-weight: 700; color: #1a1a1a; line-height: 1.4; margin-bottom: 24px;">AI한테 매일 묻는데 결과가 늘 별로인 이유 — 같은 ChatGPT, 10배 다른 결과의 비밀</h2>
+
+<p style="font-size: 16px; margin-bottom: 16px;"><span style="color: #6c6c6c;">📅 2026.04.17 | ☕ 6분 읽기 | 🏷️ ChatGPT · 프롬프트 · AI 활용</span></p>
+
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<!-- ───── 도입부 ───── -->
+<p style="font-size: 17px; margin-bottom: 20px;"><strong style="color: #4a4ae8;">"챗GPT한테 시켰는데, 또 별로네."</strong></p>
+
+<p style="font-size: 16px; margin-bottom: 20px;">회사에서 AI를 도입한 지 1년. 혹시 이런 말을 입에 달고 사는 분 계신가요? 저도 그랬습니다. 같은 ChatGPT인데, 어떤 사람이 쓰면 30분 만에 보고서가 나오고, 어떤 사람이 쓰면 3시간 매달려도 어색한 결과만 나오죠.</p>
+
+<p style="font-size: 16px; margin-bottom: 20px;">그래서 한 번 작정하고 파봤습니다. <strong>왜 결과가 매번 다른가?</strong> 답은 의외로 간단했어요.</p>
+
+<blockquote style="border-left: 4px solid #4a4ae8; background: #f5f5ff; padding: 16px 20px; margin: 24px 0; font-size: 17px; color: #2c2c2c;">
+AI의 문제가 아니라, <strong style="color: #4a4ae8;">프롬프트의 문제</strong>였습니다.
+</blockquote>
+
+<p style="font-size: 16px; margin-bottom: 20px;">같은 질문도 어떻게 던지느냐에 따라 결과가 <strong>3배에서 10배까지</strong> 차이 난다는 게 LangChain·Anthropic 공식 리포트의 결론이에요. 즉, 우리는 AI를 못 쓰는 게 아니라 <strong>프롬프트 쓰는 법</strong>을 모르는 거였습니다.</p>
+
+<p style="font-size: 16px; margin-bottom: 32px;">오늘은 그 차이를 만들어내는 6가지 요소와, <strong style="color: #4a4ae8;">무료로 내 프롬프트가 몇 점인지 바로 채점받을 수 있는 도구</strong> 하나를 소개합니다.</p>
+
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<!-- ───── 본론 1: 비교 ───── -->
+<h3 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 32px 0 16px 0;">📊 같은 AI, 다른 결과 — 진짜 차이점</h3>
+
+<p style="font-size: 16px; margin-bottom: 20px;">예시를 보여드릴게요. 둘 다 마케팅 기획안 작성을 부탁한 프롬프트입니다.</p>
+
+<!-- 비교 테이블 -->
+<table style="width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px;">
+  <tr>
+    <td style="background: #ffe5e5; padding: 16px; border: 1px solid #ffb3b3; vertical-align: top; width: 50%;">
+      <p style="margin: 0 0 8px 0; font-weight: 700; color: #cc0000; font-size: 14px;">❌ 30점짜리 프롬프트</p>
+      <p style="margin: 0; color: #666666; font-size: 15px;">"마케팅 기획안 만들어줘"</p>
+    </td>
+    <td style="background: #e5f5e5; padding: 16px; border: 1px solid #b3d9b3; vertical-align: top; width: 50%;">
+      <p style="margin: 0 0 8px 0; font-weight: 700; color: #006600; font-size: 14px;">✅ 85점짜리 프롬프트</p>
+      <p style="margin: 0; color: #2c2c2c; font-size: 14px; line-height: 1.6;">"당신은 SaaS 마케팅 10년 경력의 전문가입니다. 30대 직장인 타겟의 새로운 노트앱 출시를 위한 90일 마케팅 기획안을 작성해주세요. 형식: 요약(3줄) → 핵심 메시지 → 채널별 전략(SEO/SNS/유튜브) → 월별 KPI. 한국어 비즈니스 톤으로, 표 포함."</p>
+    </td>
+  </tr>
+</table>
+
+<p style="font-size: 16px; margin-bottom: 32px;">A는 1줄, B는 6줄. 하지만 차이는 단순 길이가 아니에요. <strong>6가지 핵심 요소</strong>가 있느냐 없느냐의 차이입니다.</p>
+
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<!-- ───── 본론 2: PROMPT 6차원 ───── -->
+<h3 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 32px 0 16px 0;">🔑 PROMPT 6차원 — 좋은 프롬프트의 정체</h3>
+
+<p style="font-size: 16px; margin-bottom: 24px;">분석한 결과, 좋은 프롬프트엔 항상 이 6가지가 들어 있더군요.</p>
+
+<!-- 6차원 카드 형태 -->
+<div style="background: #fafafa; border-radius: 8px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #4a4ae8;">
+  <p style="margin: 0 0 8px 0;"><strong style="color: #4a4ae8; font-size: 18px;">P — Precision (정밀도)</strong></p>
+  <p style="margin: 0; font-size: 15px;"><span style="color: #cc0000;">"기획안"</span> ❌ → <span style="color: #006600;">"30대 직장인 타겟 SaaS 노트앱 90일 기획안"</span> ✅</p>
+  <p style="margin: 8px 0 0 0; font-size: 14px; color: #6c6c6c;">구체적일수록 결과가 정확해집니다.</p>
+</div>
+
+<div style="background: #fafafa; border-radius: 8px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #4a4ae8;">
+  <p style="margin: 0 0 8px 0;"><strong style="color: #4a4ae8; font-size: 18px;">R — Role (역할)</strong></p>
+  <p style="margin: 0; font-size: 15px;">AI에게 누구로서 답할지 알려주세요. <strong>"10년 경력 마케터", "현직 디자인 디렉터"</strong> 같은 역할 부여만으로 답변 품질이 확 올라갑니다.</p>
+</div>
+
+<div style="background: #fafafa; border-radius: 8px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #4a4ae8;">
+  <p style="margin: 0 0 8px 0;"><strong style="color: #4a4ae8; font-size: 18px;">O — Output Format (출력 형식)</strong></p>
+  <p style="margin: 0; font-size: 15px;"><strong>"표로", "5개 불릿으로", "마크다운으로"</strong> 등 형식을 명시하면 정리된 결과를 받을 수 있어요.</p>
+</div>
+
+<div style="background: #fafafa; border-radius: 8px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #4a4ae8;">
+  <p style="margin: 0 0 8px 0;"><strong style="color: #4a4ae8; font-size: 18px;">M — Mission Context (미션 맥락)</strong></p>
+  <p style="margin: 0; font-size: 15px;">"왜 필요한가"를 알려주세요. <strong>"투자자 IR용", "내부 보고용"</strong> 같은 컨텍스트가 결과의 톤을 결정합니다.</p>
+</div>
+
+<div style="background: #fafafa; border-radius: 8px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #4a4ae8;">
+  <p style="margin: 0 0 8px 0;"><strong style="color: #4a4ae8; font-size: 18px;">P — Patterning (구조)</strong></p>
+  <p style="margin: 0; font-size: 15px;"><strong>"먼저 X, 그다음 Y, 마지막에 Z"</strong>처럼 순서를 잡아주면 AI가 논리적으로 답변합니다.</p>
+</div>
+
+<div style="background: #fafafa; border-radius: 8px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #4a4ae8;">
+  <p style="margin: 0 0 8px 0;"><strong style="color: #4a4ae8; font-size: 18px;">T — Tailoring (맞춤화)</strong></p>
+  <p style="margin: 0; font-size: 15px;"><strong>"한국어 비즈니스 톤", "쉬운 단어로", "전문 용어 피하기"</strong> 등 누구를 위한 글인지 지정하세요.</p>
+</div>
+
+<p style="font-size: 16px; margin-bottom: 32px; padding: 16px; background: #fffae6; border-radius: 8px; border-left: 4px solid #ffc107;">
+💡 <strong>이 6가지 중 4개 이상 들어 있으면 보통 80점 이상</strong> 나옵니다.
+</p>
+
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<!-- ───── 도구 소개 ───── -->
+<h3 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 32px 0 16px 0;">🎁 내 프롬프트는 몇 점일까? 무료로 바로 확인하기</h3>
+
+<p style="font-size: 16px; margin-bottom: 20px;">여기까지 읽으셨다면, 자연스럽게 궁금하실 거예요.</p>
+
+<blockquote style="border-left: 4px solid #4a4ae8; background: #f5f5ff; padding: 16px 20px; margin: 24px 0; font-size: 17px;">
+"그래서, <strong style="color: #4a4ae8;">내가 쓰는 프롬프트는 몇 점인데?</strong>"
+</blockquote>
+
+<p style="font-size: 16px; margin-bottom: 20px;">직접 채점받아볼 수 있는 도구를 만들었습니다. <strong style="color: #4a4ae8;">ScoreMyPrompt</strong> — 회원가입 없이 바로 쓸 수 있고, 한국어 프롬프트도 한국어로 평가해줍니다.</p>
+
+<!-- CTA 박스 -->
+<div style="background: linear-gradient(135deg, #4a4ae8 0%, #7c3aed 100%); border-radius: 12px; padding: 28px; text-align: center; margin: 32px 0;">
+  <p style="margin: 0 0 12px 0; color: #ffffff; font-size: 14px; font-weight: 600; letter-spacing: 1px;">🚀 무료 베타 진행 중</p>
+  <p style="margin: 0 0 16px 0; color: #ffffff; font-size: 22px; font-weight: 700;">scoremyprompt.app</p>
+  <p style="margin: 0; color: #e0e0ff; font-size: 14px;">회원가입만 하면 Pro 기능 50회 무료 체험</p>
+</div>
+
+<p style="font-size: 16px; margin-bottom: 16px;"><strong>사용법은 정말 간단합니다.</strong></p>
+
+<ol style="font-size: 16px; margin-bottom: 24px; padding-left: 24px;">
+  <li style="margin-bottom: 8px;"><a href="https://scoremyprompt.app" style="color: #4a4ae8; text-decoration: underline;">scoremyprompt.app</a> 접속</li>
+  <li style="margin-bottom: 8px;">직무 선택 (마케팅·기획·디자인·PM·재무·프리랜서·엔지니어링)</li>
+  <li style="margin-bottom: 8px;">평소 쓰는 프롬프트 붙여넣기</li>
+  <li style="margin-bottom: 8px;">5초 안에 → <strong>0~100점 + 6차원별 분석 + 95점짜리 개선안</strong></li>
+</ol>
+
+<p style="font-size: 16px; margin-bottom: 32px; padding: 16px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+ℹ️ 정식 출시 시 월 4,900원 예정인 Pro 기능도 <strong>지금은 가입만 하면 무료로 50회까지</strong> 써볼 수 있습니다.
+</p>
+
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<!-- ───── 실전 후기 ───── -->
+<h3 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 32px 0 16px 0;">💼 실전 활용 후기</h3>
+
+<p style="font-size: 16px; margin-bottom: 20px;">저는 어제 회사 보고서용 프롬프트 하나로 테스트해봤어요.</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 16px;">
+  <tr>
+    <td style="background: #ffe5e5; padding: 20px; border: 1px solid #ffb3b3; text-align: center; width: 33%;">
+      <p style="margin: 0 0 4px 0; font-size: 14px; color: #6c6c6c;">개선 전</p>
+      <p style="margin: 0; font-size: 28px; font-weight: 700; color: #cc0000;">42점</p>
+      <p style="margin: 4px 0 0 0; font-size: 12px; color: #cc0000;">D 등급</p>
+    </td>
+    <td style="background: #fafafa; padding: 20px; border: 1px solid #e0e0e0; text-align: center; width: 33%;">
+      <p style="margin: 0; font-size: 30px;">→</p>
+    </td>
+    <td style="background: #e5f5e5; padding: 20px; border: 1px solid #b3d9b3; text-align: center; width: 33%;">
+      <p style="margin: 0 0 4px 0; font-size: 14px; color: #6c6c6c;">개선 후</p>
+      <p style="margin: 0; font-size: 28px; font-weight: 700; color: #006600;">87점</p>
+      <p style="margin: 4px 0 0 0; font-size: 12px; color: #006600;">A 등급</p>
+    </td>
+  </tr>
+</table>
+
+<p style="font-size: 16px; margin-bottom: 32px;">같은 회의 자료를 만드는 데 ChatGPT한테 다시 묻고 또 묻고 30분 걸리던 게, 한 번에 끝나더라고요. <strong style="color: #4a4ae8;">시간이 진짜 절반으로 줄었습니다.</strong></p>
+
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<!-- ───── 글로벌 비전 ───── -->
+<h3 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 32px 0 16px 0;">🌏 한국에서 시작해서 글로벌로 — 우리의 비전</h3>
+
+<p style="font-size: 16px; margin-bottom: 20px;">이 도구, 사실 <strong>부산에서 만들었습니다</strong>. 한국 직장인이 쓰기 좋은 한국어 평가 엔진을 먼저 완성한 뒤, 영어로 확장해서 지금은 <strong>10개 언어 글로벌 서비스</strong>로 운영하고 있어요.</p>
+
+<p style="font-size: 16px; margin-bottom: 20px;">중기부 <strong>모두의 창업 2026 신속심사</strong>에도 도전 중이고, <strong>창조경제혁신센터 부산</strong>과 함께 한국 SMB가 AI를 더 잘 쓰도록 돕는 것이 목표입니다.</p>
+
+<div style="background: #fff7e6; border-radius: 8px; padding: 20px; margin: 24px 0; border-left: 4px solid #ff9500;">
+  <p style="margin: 0; font-size: 15px;">🇰🇷 → 🌍 <strong>한국에서 시작한 도구가 글로벌로 가는 여정</strong>, 함께해주실 분들을 모집해요.</p>
+</div>
+
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<!-- ───── CTA ───── -->
+<h3 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 32px 0 16px 0;">📍 오늘부터 해볼 일</h3>
+
+<div style="background: #f9fafb; border-radius: 12px; padding: 24px; margin: 24px 0;">
+  <p style="font-size: 16px; margin: 0 0 12px 0;">✅ <a href="https://scoremyprompt.app" style="color: #4a4ae8; text-decoration: underline; font-weight: 600;">scoremyprompt.app</a> 접속해서 평소 프롬프트 점수 확인</p>
+  <p style="font-size: 16px; margin: 0 0 12px 0;">✅ 추천 개선안 1개라도 적용해서 다시 ChatGPT에 시도</p>
+  <p style="font-size: 16px; margin: 0;">✅ 점수 변화 → <strong>댓글로 공유</strong> ("저 30점 → 75점 됐어요!" 같은)</p>
+</div>
+
+<p style="font-size: 16px; margin-bottom: 20px;">다음 주에는 <strong>마케터·기획자가 매일 쓰는 ChatGPT 프롬프트 5개</strong>를 점수와 함께 비교해보겠습니다.</p>
+
+<p style="font-size: 16px; margin-bottom: 32px; text-align: center; padding: 20px; background: #fffae6; border-radius: 8px;">
+👉 <strong>구독·이웃추가</strong>해두시면 놓치지 않으세요!<br>
+질문이나 후기는 댓글로 남겨주세요. 직접 답변 드립니다 🙌
+</p>
+
+<!-- ───── 해시태그 ───── -->
+<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+
+<p style="font-size: 13px; color: #6c6c6c; line-height: 2; margin-top: 24px;">
+#ChatGPT #챗GPT #프롬프트 #AI프롬프트 #프롬프트엔지니어링 #프롬프트작성법 #AI활용 #직장인AI #ChatGPT활용 #AI도구 #무료AI #한국어AI #마케팅AI #기획자AI #업무자동화 #업무효율 #AI보고서 #스코어마이프롬프트 #ScoreMyPrompt #부산스타트업 #모두의창업 #1인창업 #AI스타트업 #프롬프트채점 #AI생산성
+</p>
+
+</body>
+</html>
