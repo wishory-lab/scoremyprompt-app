@@ -23,6 +23,16 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+// 옵션 위치를 셔플하고 correctIndex를 새 위치로 갱신.
+// 데이터 풀이 모두 correctIndex=0이라 "1번 치중" + "정답이 항상 길다" 패턴이 학습되는 걸 방지.
+function shuffleQuestionOptions(q: AQQuestion): AQQuestion {
+  if (!q.options || q.options.length === 0) return q;
+  const correctOption = q.options[q.correctIndex];
+  const shuffledOptions = shuffle(q.options);
+  const newCorrectIndex = shuffledOptions.indexOf(correctOption);
+  return { ...q, options: shuffledOptions, correctIndex: newCorrectIndex };
+}
+
 function pickBalanced(pool: AQQuestion[], count: number): AQQuestion[] {
   const byDiff: Record<1 | 2 | 3, AQQuestion[]> = { 1: [], 2: [], 3: [] };
   for (const q of pool) byDiff[q.difficulty].push(q);
@@ -42,8 +52,10 @@ function pickBalanced(pool: AQQuestion[], count: number): AQQuestion[] {
     const remaining = shuffle(pool.filter((q) => !picked.includes(q)));
     while (picked.length < count && remaining.length > 0) picked.push(remaining.pop()!);
   }
-  // 출제 순서: 난이도 오름차순 (쉬운 것부터)
-  return picked.sort((a, b) => a.difficulty - b.difficulty);
+  // 출제 순서: 난이도 오름차순 + 각 문항의 옵션 위치 셔플
+  return picked
+    .sort((a, b) => a.difficulty - b.difficulty)
+    .map(shuffleQuestionOptions);
 }
 
 // ─── AQ 일일 횟수 관리 ──────────────

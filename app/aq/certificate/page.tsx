@@ -48,124 +48,180 @@ export default function AQCertificatePage() {
     if (!ctx) return;
 
     const W = 1200;
-    const H = 800;
+    const H = 850;
     canvas.width = W;
     canvas.height = H;
 
     const gradeConfig = AQ_GRADE_CONFIG[result.grade];
 
-    // Background
-    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
-    bgGrad.addColorStop(0, '#0F0F23');
-    bgGrad.addColorStop(1, '#1A1A2E');
+    // ── Color palette: 클래식 인증서 (아이보리 + 골드 + 잉크) ──
+    const INK = '#1B2438';        // 짙은 네이비-잉크
+    const INK_SOFT = '#475569';   // 본문 회색
+    const GOLD = '#B8945A';       // 앤티크 골드
+    const GOLD_DEEP = '#8B6F3D';  // 어두운 골드
+    const PAPER_TOP = '#FBF7EE';  // 아이보리
+    const PAPER_BOT = '#F2E9D6';  // 크림
+    const SEPIA = '#7B4B26';
+
+    const SERIF = 'Georgia, "Playfair Display", "Times New Roman", "Noto Serif KR", serif';
+    const SANS = '"Inter", system-ui, sans-serif';
+
+    // ── 배경: 종이 그라디언트 + 미세 텍스처 ──
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+    bgGrad.addColorStop(0, PAPER_TOP);
+    bgGrad.addColorStop(1, PAPER_BOT);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    // Border
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(30, 30, W - 60, H - 60);
+    // 종이 텍스처 (미세 노이즈)
+    ctx.save();
+    ctx.globalAlpha = 0.04;
+    for (let i = 0; i < 1500; i++) {
+      ctx.fillStyle = Math.random() > 0.5 ? '#000' : '#8B6F3D';
+      ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
+    }
+    ctx.restore();
 
-    // Inner accent border
-    const accentGrad = ctx.createLinearGradient(0, 0, W, 0);
-    accentGrad.addColorStop(0, '#8B5CF6');
-    accentGrad.addColorStop(1, '#3B82F6');
-    ctx.strokeStyle = accentGrad;
+    // ── 외곽 더블 보더 (얇은 잉크 + 두꺼운 골드) ──
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(36, 36, W - 72, H - 72);
+
+    ctx.strokeStyle = GOLD;
     ctx.lineWidth = 3;
-    ctx.strokeRect(40, 40, W - 80, H - 80);
+    ctx.strokeRect(48, 48, W - 96, H - 96);
 
-    // AQ Logo
-    const logoGrad = ctx.createLinearGradient(560, 80, 640, 130);
-    logoGrad.addColorStop(0, '#8B5CF6');
-    logoGrad.addColorStop(1, '#3B82F6');
-    ctx.fillStyle = logoGrad;
-    roundRect(ctx, 565, 80, 70, 50, 12);
-    ctx.fill();
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 24px system-ui, sans-serif';
+    ctx.strokeStyle = GOLD;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(58, 58, W - 116, H - 116);
+
+    // ── 4모서리 플로럴 장식 ──
+    drawCornerOrnament(ctx, 58, 58, 'tl', GOLD);
+    drawCornerOrnament(ctx, W - 58, 58, 'tr', GOLD);
+    drawCornerOrnament(ctx, 58, H - 58, 'bl', GOLD);
+    drawCornerOrnament(ctx, W - 58, H - 58, 'br', GOLD);
+
+    // ── 상단 라틴 헤드라인 (small caps) ──
+    ctx.fillStyle = GOLD_DEEP;
+    ctx.font = `500 13px ${SERIF}`;
     ctx.textAlign = 'center';
-    ctx.fillText('AQ', 600, 113);
+    drawSpacedText(ctx, 'C E R T I F I C A T E   O F   A I   L I T E R A C Y', W / 2, 110, 2);
 
-    // Title
-    ctx.fillStyle = '#888';
-    ctx.font = '14px system-ui, sans-serif';
+    // 메인 타이틀 (한글 큰 serif)
+    ctx.fillStyle = INK;
+    ctx.font = `400 44px ${SERIF}`;
+    ctx.fillText('AI 역량 인증서', W / 2, 165);
+
+    // 헤어라인 (얇은 골드 라인 + 중앙 다이아몬드)
+    drawHairline(ctx, W / 2 - 180, 195, W / 2 + 180, 195, GOLD);
+
+    // ── 본문 격식체 ──
+    ctx.fillStyle = INK_SOFT;
+    ctx.font = `italic 16px ${SERIF}`;
+    ctx.fillText('This is to certify that the holder has demonstrated', W / 2, 232);
+    ctx.fillText('a verified level of artificial-intelligence literacy.', W / 2, 256);
+
+    // ── 큰 점수 (좌측) + 페탈 차트 (우측) — 2분할 레이아웃 ──
+    const midY = 380;
+    const leftCenterX = 360;
+    const rightCenterX = 840;
+
+    // 좌: 점수 카드
+    ctx.save();
+    ctx.fillStyle = GOLD_DEEP;
+    ctx.font = `400 13px ${SERIF}`;
+    drawSpacedText(ctx, 'O V E R A L L   S C O R E', leftCenterX, midY - 80, 2);
+
+    ctx.fillStyle = INK;
+    ctx.font = `400 130px ${SERIF}`;
     ctx.textAlign = 'center';
-    ctx.fillText('AI QUOTIENT CERTIFICATE', 600, 160);
+    ctx.fillText(`${result.totalScore}`, leftCenterX, midY + 30);
 
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 36px system-ui, sans-serif';
-    ctx.fillText('AI 역량 인증서', 600, 200);
+    // 점수 밑줄 (golden filigree)
+    drawHairline(ctx, leftCenterX - 80, midY + 50, leftCenterX + 80, midY + 50, GOLD);
 
-    // Score
-    ctx.fillStyle = gradeConfig.color;
-    ctx.font = 'bold 80px system-ui, sans-serif';
-    ctx.fillText(`${result.totalScore}`, 600, 310);
+    ctx.fillStyle = GOLD_DEEP;
+    ctx.font = `italic 18px ${SERIF}`;
+    ctx.fillText(`out of ${AQ_MAX_SCORE}`, leftCenterX, midY + 80);
 
-    ctx.fillStyle = '#666';
-    ctx.font = '20px system-ui, sans-serif';
-    ctx.fillText(`/ ${AQ_MAX_SCORE}`, 600, 345);
+    // 등급 라틴 small caps
+    ctx.fillStyle = INK;
+    ctx.font = `500 15px ${SERIF}`;
+    drawSpacedText(ctx, `G R A D E   ${gradeConfig.label}`, leftCenterX, midY + 120, 2);
+    ctx.font = `italic 16px ${SERIF}`;
+    ctx.fillStyle = SEPIA;
+    ctx.fillText(`— ${gradeConfig.title} —`, leftCenterX, midY + 150);
 
-    // Grade Badge
-    ctx.fillStyle = gradeConfig.color + '30';
-    roundRect(ctx, 510, 365, 180, 40, 20);
-    ctx.fill();
-    ctx.fillStyle = gradeConfig.color;
-    ctx.font = 'bold 18px system-ui, sans-serif';
-    ctx.fillText(`${gradeConfig.label}등급 — ${gradeConfig.title}`, 600, 392);
+    ctx.fillStyle = INK_SOFT;
+    ctx.font = `13px ${SERIF}`;
+    ctx.fillText(`상위 ${result.percentile}%`, leftCenterX, midY + 178);
+    ctx.restore();
 
-    // Percentile
-    ctx.fillStyle = '#999';
-    ctx.font = '14px system-ui, sans-serif';
-    ctx.fillText(`상위 ${result.percentile}%`, 600, 430);
+    // 중앙 수직 분리선
+    drawHairline(ctx, 600, midY - 100, 600, midY + 200, GOLD);
 
-    // Domain scores bar
+    // 우: 4도메인 페탈 차트 (꽃잎)
+    drawPetalChart(ctx, rightCenterX, midY + 30, 130, result.domains, INK, GOLD, SEPIA, SERIF);
+
+    // ── 도메인 4개 라벨 (페탈 아래) ──
     const domains: AQDomain[] = ['prompt', 'tool', 'ethics', 'concept'];
-    const barY = 470;
-    const barWidth = 200;
-    const barSpacing = 250;
-    const startX = (W - (barSpacing * 3 + barWidth)) / 2;
-
+    const labelY = midY + 200;
+    const labelStartX = 660;
+    const labelSpacing = 90;
     domains.forEach((domain, i) => {
       const meta = AQ_DOMAIN_META[domain];
-      const d = result.domains.find(d => d.domain === domain);
+      const d = result.domains.find((d) => d.domain === domain);
       const score = d?.rawScore ?? 0;
-      const x = startX + i * barSpacing;
-
-      ctx.fillStyle = '#666';
-      ctx.font = '12px system-ui, sans-serif';
+      const x = labelStartX + i * labelSpacing;
+      ctx.fillStyle = INK_SOFT;
+      ctx.font = `11px ${SERIF}`;
       ctx.textAlign = 'center';
-      ctx.fillText(`${meta.icon} ${meta.label}`, x + barWidth / 2, barY);
-
-      // Bar bg
-      ctx.fillStyle = '#222';
-      roundRect(ctx, x, barY + 10, barWidth, 8, 4);
-      ctx.fill();
-
-      // Bar fill
-      ctx.fillStyle = meta.color;
-      roundRect(ctx, x, barY + 10, barWidth * (score / 100), 8, 4);
-      ctx.fill();
-
-      // Score text
-      ctx.fillStyle = meta.color;
-      ctx.font = 'bold 14px system-ui, sans-serif';
-      ctx.fillText(`${score}`, x + barWidth / 2, barY + 40);
+      ctx.fillText(meta.label, x, labelY);
+      ctx.fillStyle = INK;
+      ctx.font = `500 14px ${SERIF}`;
+      ctx.fillText(`${score}`, x, labelY + 18);
     });
 
-    // Date & verification
+    // ── 하단 좌: 발급일 + 사인 ──
+    const sigBaseY = H - 180;
+    ctx.fillStyle = INK_SOFT;
+    ctx.font = `12px ${SERIF}`;
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#555';
-    ctx.font = '12px system-ui, sans-serif';
-    const dateStr = new Date(result.testedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-    ctx.fillText(`발급일: ${dateStr}`, 600, 570);
-    ctx.fillText(`인증코드: ${verificationCode}`, 600, 595);
+    const dateStr = new Date(result.testedAt).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
 
-    // Bottom branding
-    ctx.fillStyle = '#444';
-    ctx.font = '11px system-ui, sans-serif';
-    ctx.fillText('AQ.AI.KR · AI Quotient · Powered by ScoreMyPrompt 6-Dimension Engine', 600, 700);
-    ctx.fillText('IQ는 고정형, AQ는 성장형. 인증서는 측정 시점 기준입니다.', 600, 720);
+    // 좌측 사인 라인
+    drawHairline(ctx, 220, sigBaseY, 460, sigBaseY, INK);
+    ctx.fillStyle = SEPIA;
+    ctx.font = `italic 22px ${SERIF}`;
+    ctx.fillText('ScoreMyPrompt', 340, sigBaseY - 8);
+    ctx.fillStyle = INK_SOFT;
+    ctx.font = `10px ${SERIF}`;
+    drawSpacedText(ctx, 'D I R E C T O R ,   A I   L I T E R A C Y', 340, sigBaseY + 18, 1.5);
 
+    // 우측 발급일
+    drawHairline(ctx, 740, sigBaseY, 980, sigBaseY, INK);
+    ctx.fillStyle = INK;
+    ctx.font = `italic 18px ${SERIF}`;
+    ctx.fillText(dateStr, 860, sigBaseY - 8);
+    ctx.fillStyle = INK_SOFT;
+    ctx.font = `10px ${SERIF}`;
+    drawSpacedText(ctx, 'D A T E   O F   I S S U E', 860, sigBaseY + 18, 1.5);
+
+    // ── 하단 중앙 원형 도장 (Seal) ──
+    drawSeal(ctx, W / 2, sigBaseY + 5, 52, GOLD, GOLD_DEEP, INK, SERIF, verificationCode);
+
+    // ── 푸터 ──
+    ctx.fillStyle = INK_SOFT;
+    ctx.font = `11px ${SERIF}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('AQ.AI.KR  ·  Powered by ScoreMyPrompt 6-Dimension Engine', W / 2, H - 78);
+    ctx.fillStyle = GOLD_DEEP;
+    ctx.font = `italic 11px ${SERIF}`;
+    ctx.fillText('IQ는 고정형, AQ는 성장형. 측정 시점 기준 인증입니다.', W / 2, H - 60);
   }, [result, verificationCode]);
 
   useEffect(() => {
@@ -280,17 +336,332 @@ export default function AQCertificatePage() {
   );
 }
 
-// Canvas roundRect helper
-function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+// 자간을 둔 small-caps 스타일 텍스트 (인증서 격식체용)
+function drawSpacedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  cx: number,
+  y: number,
+  spacing: number,
+) {
+  ctx.save();
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  // 전체 폭 측정 후 중앙 정렬
+  let totalW = 0;
+  for (const ch of text) totalW += ctx.measureText(ch).width + spacing;
+  totalW -= spacing;
+  let x = cx - totalW / 2;
+  for (const ch of text) {
+    ctx.fillText(ch, x, y);
+    x += ctx.measureText(ch).width + spacing;
+  }
+  ctx.restore();
+}
+
+// 얇은 헤어라인 — 끝점에 작은 다이아몬드 액센트
+function drawHairline(
+  ctx: CanvasRenderingContext2D,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  color: string,
+) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  // 양 끝 + 중앙에 작은 다이아몬드
+  const drawDiamond = (cx: number, cy: number, s: number) => {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - s);
+    ctx.lineTo(cx + s, cy);
+    ctx.lineTo(cx, cy + s);
+    ctx.lineTo(cx - s, cy);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  };
+  drawDiamond(x1, y1, 2);
+  drawDiamond(x2, y2, 2);
+  if (x1 === x2 || y1 === y2) {
+    drawDiamond((x1 + x2) / 2, (y1 + y2) / 2, 3);
+  }
+  ctx.restore();
+}
+
+// 4모서리 플로럴 장식 (스크롤 곡선 + 작은 점들)
+function drawCornerOrnament(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  corner: 'tl' | 'tr' | 'bl' | 'br',
+  color: string,
+) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  // 회전: tl 0, tr 90, br 180, bl 270
+  const rot = corner === 'tl' ? 0 : corner === 'tr' ? Math.PI / 2 : corner === 'br' ? Math.PI : -Math.PI / 2;
+  ctx.rotate(rot);
+
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = 1.2;
+
+  // 메인 스크롤 (S자 곡선)
+  ctx.beginPath();
+  ctx.moveTo(0, 14);
+  ctx.bezierCurveTo(0, 30, 30, 30, 50, 14);
+  ctx.bezierCurveTo(60, 8, 70, 14, 72, 22);
+  ctx.stroke();
+
+  // 보조 곡선
+  ctx.beginPath();
+  ctx.moveTo(14, 0);
+  ctx.bezierCurveTo(30, 0, 30, 30, 14, 50);
+  ctx.bezierCurveTo(8, 60, 14, 70, 22, 72);
+  ctx.stroke();
+
+  // 작은 점·꽃잎
+  for (const [px, py, r] of [
+    [40, 22, 2.5],
+    [22, 40, 2.5],
+    [56, 12, 1.5],
+    [12, 56, 1.5],
+    [30, 30, 2],
+  ] as const) {
+    ctx.beginPath();
+    ctx.arc(px, py, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 꽃잎 (작은 타원 4개)
+  for (let i = 0; i < 4; i++) {
+    ctx.save();
+    ctx.translate(30, 30);
+    ctx.rotate((i * Math.PI) / 2 + Math.PI / 4);
+    ctx.beginPath();
+    ctx.ellipse(0, -7, 1.5, 4, 0, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+// 4도메인 페탈 차트 (꽃잎 4개 — 점수에 따라 길이)
+function drawPetalChart(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  maxR: number,
+  domains: { domain: string; rawScore: number }[],
+  ink: string,
+  gold: string,
+  sepia: string,
+  serif: string,
+) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  const order = ['prompt', 'tool', 'ethics', 'concept'];
+  const angles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI]; // 위·우·아래·좌
+
+  // 가이드 원 3개
+  ctx.strokeStyle = gold + '40';
+  ctx.lineWidth = 0.8;
+  for (const r of [maxR * 0.33, maxR * 0.66, maxR]) {
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // 십자 가이드
+  ctx.strokeStyle = gold + '30';
+  ctx.beginPath();
+  ctx.moveTo(-maxR, 0);
+  ctx.lineTo(maxR, 0);
+  ctx.moveTo(0, -maxR);
+  ctx.lineTo(0, maxR);
+  ctx.stroke();
+
+  // 페탈 4개
+  order.forEach((domain, i) => {
+    const d = domains.find((x) => x.domain === domain);
+    const score = d?.rawScore ?? 0;
+    const len = (score / 100) * maxR;
+    const angle = angles[i];
+
+    ctx.save();
+    ctx.rotate(angle);
+
+    // 페탈 (길쭉한 타원)
+    const grad = ctx.createLinearGradient(0, 0, len, 0);
+    grad.addColorStop(0, gold + '20');
+    grad.addColorStop(1, sepia + '80');
+    ctx.fillStyle = grad;
+    ctx.strokeStyle = sepia;
+    ctx.lineWidth = 1.2;
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(len * 0.3, -12, len * 0.7, -12, len, 0);
+    ctx.bezierCurveTo(len * 0.7, 12, len * 0.3, 12, 0, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 페탈 끝 점
+    ctx.beginPath();
+    ctx.arc(len, 0, 3, 0, Math.PI * 2);
+    ctx.fillStyle = ink;
+    ctx.fill();
+
+    ctx.restore();
+  });
+
+  // 중앙 작은 도트 + 라벨
+  ctx.beginPath();
+  ctx.arc(0, 0, 5, 0, Math.PI * 2);
+  ctx.fillStyle = ink;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(0, 0, 8, 0, Math.PI * 2);
+  ctx.strokeStyle = gold;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // 페탈 외곽에 도메인 머리글자
+  ctx.fillStyle = ink;
+  ctx.font = `italic 11px ${serif}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const labels = ['Prompt', 'Tool', 'Ethics', 'Concept'];
+  const labelR = maxR + 18;
+  angles.forEach((a, i) => {
+    ctx.fillText(labels[i], Math.cos(a) * labelR, Math.sin(a) * labelR);
+  });
+
+  ctx.restore();
+}
+
+// 원형 도장 (Seal) — 둘레 라틴 + 중앙 모노그램
+function drawSeal(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  gold: string,
+  goldDeep: string,
+  ink: string,
+  serif: string,
+  code: string,
+) {
+  ctx.save();
+
+  // 외곽 두 원
+  ctx.strokeStyle = goldDeep;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r - 5, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r - 14, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // 둘레 라틴 텍스트 (위쪽 호)
+  ctx.fillStyle = goldDeep;
+  ctx.font = `500 8px ${serif}`;
+  drawCircularText(ctx, '★ AI QUOTIENT · 2026 ★', cx, cy, r - 9, -Math.PI / 2, 0.5);
+
+  // 중앙 모노그램 "AQ"
+  ctx.fillStyle = ink;
+  ctx.font = `400 22px ${serif}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('AQ', cx, cy - 4);
+
+  // 인증코드 (작게)
+  ctx.fillStyle = goldDeep;
+  ctx.font = `8px "Courier New", monospace`;
+  ctx.fillText(code, cx, cy + 14);
+
+  // 작은 별 4개 (도장 외곽)
+  ctx.fillStyle = gold;
+  for (let i = 0; i < 4; i++) {
+    const a = (i * Math.PI) / 2 + Math.PI / 4;
+    const sx = cx + Math.cos(a) * (r + 8);
+    const sy = cy + Math.sin(a) * (r + 8);
+    drawStar(ctx, sx, sy, 3, gold);
+  }
+
+  ctx.restore();
+}
+
+// 원형 텍스트
+function drawCircularText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  cx: number,
+  cy: number,
+  r: number,
+  startAngle: number,
+  spacing: number,
+) {
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // 전체 각도 = 글자수 × (글자폭/r)
+  const widths: number[] = [];
+  let total = 0;
+  for (const ch of text) {
+    const w = ctx.measureText(ch).width + spacing;
+    widths.push(w);
+    total += w;
+  }
+  const totalAngle = total / r;
+  let angle = startAngle - totalAngle / 2;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    const w = widths[i];
+    const charAngle = w / r;
+    angle += charAngle / 2;
+    ctx.save();
+    ctx.translate(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r);
+    ctx.rotate(angle + Math.PI / 2);
+    ctx.fillText(ch, 0, 0);
+    ctx.restore();
+    angle += charAngle / 2;
+  }
+  ctx.restore();
+}
+
+// 작은 5각 별
+function drawStar(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+    const x = cx + Math.cos(a) * r;
+    const y = cy + Math.sin(a) * r;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+    const a2 = a + Math.PI / 5;
+    ctx.lineTo(cx + Math.cos(a2) * (r * 0.45), cy + Math.sin(a2) * (r * 0.45));
+  }
   ctx.closePath();
+  ctx.fill();
+  ctx.restore();
 }
