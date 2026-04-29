@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { AQ_GRADE_CONFIG, AQ_DOMAIN_META, AQ_MAX_SCORE, AQ_CERTIFICATE_MIN_SCORE } from '../constants';
 import type { AQResult, AQGrade, AQDomain } from '../types';
+import { trackAqCertificateGenerated, trackAqShareClicked } from '../../lib/analytics';
 
 const Footer = dynamic(() => import('../../components/Footer'), { ssr: false });
 
@@ -31,6 +32,7 @@ export default function AQCertificatePage() {
       const parsed = JSON.parse(data) as AQResult;
       if (parsed.totalScore >= AQ_CERTIFICATE_MIN_SCORE) {
         setResult(parsed);
+        trackAqCertificateGenerated(parsed.totalScore, parsed.grade);
       } else {
         router.push('/aq/result');
       }
@@ -177,9 +179,11 @@ export default function AQCertificatePage() {
     link.href = canvasRef.current.toDataURL('image/png');
     link.click();
     setDownloaded(true);
+    trackAqShareClicked('clipboard');
   };
 
   const handleShareLinkedIn = () => {
+    trackAqShareClicked('linkedin');
     const text = encodeURIComponent(`나의 AQ(AI Quotient)는 ${result?.totalScore}/${AQ_MAX_SCORE} (${result?.grade}등급)! 🧠 AI 역량을 공식 인증받았습니다.\n\n#AQ #AIQuotient #AI역량`);
     const url = encodeURIComponent('https://aq.ai.kr');
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`, '_blank');
@@ -250,6 +254,7 @@ export default function AQCertificatePage() {
             onClick={() => {
               const text = `나의 AQ(AI Quotient): ${result.totalScore}/${AQ_MAX_SCORE} (${gradeConfig.label}등급)\n인증코드: ${verificationCode}\nhttps://aq.ai.kr`;
               navigator.clipboard.writeText(text);
+              trackAqShareClicked('clipboard');
             }}
             className="btn-secondary py-3 font-semibold"
           >

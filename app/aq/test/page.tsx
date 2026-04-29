@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { TOOL_QUESTIONS, ETHICS_QUESTIONS, CONCEPT_QUESTIONS } from '../questions';
 import { AQ_DOMAIN_META, AQ_DOMAIN_WEIGHTS, calculateWeightedScore, calculateTotalAQ, getAQGrade, estimatePercentile } from '../constants';
 import type { AQDomain, AQTestPhase, AQResult, AQDomainScore, AQQuestion } from '../types';
+import { trackAqTestStarted, trackAqPhaseCompleted, trackAqTestCompleted } from '../../lib/analytics';
 
 // ─── 프롬프트 입력 + SMP 채점 단계 ──────────────
 function PromptPhase({ onComplete }: { onComplete: (score: number) => void }) {
@@ -258,75 +259,45 @@ export default function AQTestPage() {
     return maxTotal > 0 ? Math.round((actual / maxTotal) * 100) : 0;
   }, []);
 
-  const buildResult = useCallback((): AQResult => {
-    const domainRawScores: Record<AQDomain, number> = {
-      prompt: promptScore,
-      tool: computeDomainRawScore(toolScores, TOOL_QUESTIONS),
-      ethics: computeDomainRawScore(ethicsScores, ETHICS_QUESTIONS),
-      concept: computeDomainRawScore(conceptScores, CONCEPT_QUESTIONS),
-    };
-
-    const domains: AQDomainScore[] = (Object.keys(AQ_DOMAIN_WEIGHTS) as AQDomain[]).map(domain => ({
-      domain,
-      rawScore: domainRawScores[domain],
-      weightedScore: calculateWeightedScore(domain, domainRawScores[domain]),
-      grade: getAQGrade(calculateWeightedScore(domain, domainRawScores[domain]) * (200 / (AQ_DOMAIN_WEIGHTS[domain] * 2))),
-      feedback: '',
-      details: [],
-    }));
-
-    const totalScore = calculateTotalAQ(domainRawScores);
-    const grade = getAQGrade(totalScore);
-    const percentile = estimatePercentile(totalScore);
-    const durationSeconds = Math.round((Date.now() - startedAt) / 1000);
-
-    // 강점/개선점 자동 도출
-    const sorted = [...domains].sort((a, b) => b.rawScore - a.rawScore);
-    const strengths = sorted.slice(0, 2).map(d => `${AQ_DOMAIN_META[d.domain].label} (${d.rawScore}점)`);
-    const improvements = sorted.slice(-2).map(d => `${AQ_DOMAIN_META[d.domain].label} 역량 강화 추천`);
-
-    return {
-      totalScore,
-      grade,
-      percentile,
-      domains,
-      summary: '',
-      strengths,
-      improvements,
-      recommendations: [],
-      durationSeconds,
-      testedAt: new Date().toISOString(),
-    };
-  }, [promptScore, toolScores, ethicsScores, conceptScores, startedAt, computeDomainRawScore]);
-
   const handlePromptComplete = (score: number) => {
     setPromptScore(score);
+    trackAqPhaseCompleted('prompt', score);
     setPhase('tool');
   };
 
   const handleToolComplete = (scores: Record<string, number>) => {
     setToolScores(scores);
+    const rawScore = computeDomainRawScore(scores, TOOL_QUESTIONS);
+    trackAqPhaseCompleted('tool', rawScore);
     setPhase('ethics');
   };
 
   const handleEthicsComplete = (scores: Record<string, number>) => {
     setEthicsScores(scores);
+    const rawScore = computeDomainRawScore(scores, ETHICS_QUESTIONS);
+    trackAqPhaseCompleted('ethics', rawScore);
     setPhase('concept');
   };
 
+  // conceptScores를 받은 직후 최신 값으로 결과를 빌드하기 위한 ref
+  const latestConceptScores = useRef<Record<string, number>>({});
+
   const handleConceptComplete = (scores: Record<string, number>) => {
     setConceptScores(scores);
+    latestConceptScores.current = scores;
+    const rawScore = computeDomainRawScore(scores, CONCEPT_QUESTIONS);
+    trackAqPhaseCompleted('concept', rawScore);
     setPhase('analyzing');
 
     // 잠시 로딩 후 결과 저장 & 이동
     setTimeout(() => {
-      const updatedConceptScores = scores;
-      // buildResult 호출을 위해 직접 계산
+      // buildResult는 state 기반이므로 아직 conceptScores가 반영 안됐을 수 있음
+      // latestConceptScores로 직접 계산
       const domainRawScores: Record<AQDomain, number> = {
         prompt: promptScore,
         tool: computeDomainRawScore(toolScores, TOOL_QUESTIONS),
         ethics: computeDomainRawScore(ethicsScores, ETHICS_QUESTIONS),
-        concept: computeDomainRawScore(updatedConceptScores, CONCEPT_QUESTIONS),
+        concept: computeDomainRawScore(latestConceptScores.current, CONCEPT_QUESTIONS),
       };
 
       const domains: AQDomainScore[] = (Object.keys(AQ_DOMAIN_WEIGHTS) as AQDomain[]).map(domain => ({
@@ -353,6 +324,7 @@ export default function AQTestPage() {
         durationSeconds, testedAt: new Date().toISOString(),
       };
 
+      trackAqTestCompleted(totalScore, grade, percentile);
       sessionStorage.setItem('aqResult', JSON.stringify(result));
       router.push('/aq/result');
     }, 2500);
@@ -406,7 +378,7 @@ export default function AQTestPage() {
               ))}
             </div>
             <button
-              onClick={() => setPhase('prompt')}
+              onClick={() => { trackAqTestStarted(); setPhase('prompt'); }}
               className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white text-lg font-semibold px-10 py-4 rounded-xl transition-all shadow-lg shadow-purple-500/20"
             >
               시작하기

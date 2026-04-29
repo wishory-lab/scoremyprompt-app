@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { AQ_GRADE_CONFIG, AQ_DOMAIN_META, AQ_MAX_SCORE, AQ_CERTIFICATE_MIN_SCORE } from '../constants';
 import type { AQResult, AQDomain } from '../types';
+import { trackAqTestCompleted, trackAqShareClicked } from '../../lib/analytics';
 
 const Footer = dynamic(() => import('../../components/Footer'), { ssr: false });
 
@@ -73,7 +74,9 @@ export default function AQResultPage() {
   useEffect(() => {
     const data = sessionStorage.getItem('aqResult');
     if (data) {
-      setResult(JSON.parse(data));
+      const parsed: AQResult = JSON.parse(data);
+      setResult(parsed);
+      trackAqTestCompleted(parsed.totalScore, parsed.grade, parsed.percentile);
     } else {
       router.push('/aq');
     }
@@ -266,8 +269,10 @@ export default function AQResultPage() {
             onClick={() => {
               const text = `나의 AQ(AI Quotient)는 ${result.totalScore}/${AQ_MAX_SCORE} (${gradeConfig.label}등급)! 🧠\n당신의 AI 역량은? aq.ai.kr에서 무료 테스트하세요!`;
               if (navigator.share) {
+                trackAqShareClicked('native');
                 navigator.share({ title: 'AQ 결과', text, url: 'https://aq.ai.kr' });
               } else {
+                trackAqShareClicked('clipboard');
                 navigator.clipboard.writeText(text);
               }
             }}

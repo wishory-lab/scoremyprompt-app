@@ -406,6 +406,45 @@ export function trackLaunchVisited({ source }: LaunchVisitedEvent): void {
   if (!isProd) console.log('[Analytics] launch_visited', event);
 }
 
+// ─── AQ (AI Quotient) ────────────────────────────────────────
+
+export function trackAqTestStarted(): void {
+  if (typeof window === 'undefined') return;
+  const event = { timestamp: new Date().toISOString() };
+  window.posthog?.capture('aq_test_started', event);
+  if (!isProd) console.log('[Analytics] aq_test_started', event);
+}
+
+export function trackAqPhaseCompleted(phase: string, score?: number): void {
+  if (typeof window === 'undefined') return;
+  const event: Record<string, unknown> = { phase, timestamp: new Date().toISOString() };
+  if (score !== undefined) event.score = score;
+  window.posthog?.capture('aq_phase_completed', event);
+  if (!isProd) console.log('[Analytics] aq_phase_completed', event);
+}
+
+export function trackAqTestCompleted(totalScore: number, grade: string, percentile?: number): void {
+  if (typeof window === 'undefined') return;
+  const event: Record<string, unknown> = { total_score: totalScore, grade, timestamp: new Date().toISOString() };
+  if (percentile !== undefined) event.percentile = percentile;
+  window.posthog?.capture('aq_test_completed', event);
+  if (!isProd) console.log('[Analytics] aq_test_completed', event);
+}
+
+export function trackAqCertificateGenerated(score: number, grade: string): void {
+  if (typeof window === 'undefined') return;
+  const event = { score, grade, timestamp: new Date().toISOString() };
+  window.posthog?.capture('aq_certificate_generated', event);
+  if (!isProd) console.log('[Analytics] aq_certificate_generated', event);
+}
+
+export function trackAqShareClicked(method: 'clipboard' | 'native' | 'linkedin'): void {
+  if (typeof window === 'undefined') return;
+  const event = { method, timestamp: new Date().toISOString() };
+  window.posthog?.capture('aq_share_clicked', event);
+  if (!isProd) console.log('[Analytics] aq_share_clicked', event);
+}
+
 // ─── Sprint 4 (Beta) ────────────────────────────────────────
 interface BetaQuotaHitEvent {
   route: 'analyze' | 'harness' | 'builder';
