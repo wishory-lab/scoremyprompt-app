@@ -50,6 +50,8 @@ export const AQ_DOMAIN_META: Record<AQDomain, {
 };
 
 // ─── AQ 등급 기준 (총점 0~200) ──────────────────
+// 톤: "모든 등급은 성장 가능한 출발점" — IQ는 고정, AQ는 성장.
+// description은 모두 다음 액션을 자연스럽게 가리키도록 작성.
 export const AQ_GRADE_CONFIG: Record<AQGrade, AQGradeConfig> = {
   S: {
     min: 170,
@@ -57,7 +59,7 @@ export const AQ_GRADE_CONFIG: Record<AQGrade, AQGradeConfig> = {
     label: 'S',
     emoji: '🏆',
     title: 'AI 마스터',
-    description: 'AI 활용의 최상위 수준. 기업이 원하는 인재입니다.',
+    description: '4영역 모두 상위권. 워크플로우를 체계화하고 팀에 전수할 단계입니다.',
   },
   A: {
     min: 140,
@@ -65,15 +67,15 @@ export const AQ_GRADE_CONFIG: Record<AQGrade, AQGradeConfig> = {
     label: 'A',
     emoji: '⭐',
     title: 'AI 전문가',
-    description: '뛰어난 AI 활용 능력. 실무에서 바로 활약 가능합니다.',
+    description: '현장에서 바로 통하는 실력. 한 영역만 더 깊게 가면 마스터에 닿습니다.',
   },
   B: {
     min: 110,
     color: '#8B5CF6',
     label: 'B',
     emoji: '👍',
-    title: 'AI 활용자',
-    description: 'AI를 잘 활용하고 있습니다. 조금만 더 성장하면 전문가 수준!',
+    title: 'AI 실무자',
+    description: '기본기가 단단합니다. 약점 영역을 채우면 전문가 단계가 보입니다.',
   },
   C: {
     min: 70,
@@ -81,15 +83,15 @@ export const AQ_GRADE_CONFIG: Record<AQGrade, AQGradeConfig> = {
     label: 'C',
     emoji: '💡',
     title: 'AI 입문자',
-    description: 'AI 기초는 있습니다. 핵심 영역을 집중 학습하세요.',
+    description: '출발선을 넘었습니다. 약점 한두 영역만 보완하면 빠르게 올라갑니다.',
   },
   D: {
     min: 0,
     color: '#EF4444',
     label: 'D',
-    emoji: '📚',
-    title: 'AI 초보',
-    description: 'AI 여정을 시작하세요! 기초부터 차근차근 배워봅시다.',
+    emoji: '🧭',
+    title: 'AI 탐험가',
+    description: '지금이 가장 큰 성장 여지를 가진 시점. 흥미로운 영역부터 차근차근 시작해보세요.',
   },
 };
 

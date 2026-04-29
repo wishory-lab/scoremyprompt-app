@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { TOOL_QUESTIONS, ETHICS_QUESTIONS, CONCEPT_QUESTIONS } from '../questions';
 import { AQ_DOMAIN_META, AQ_DOMAIN_WEIGHTS, calculateWeightedScore, calculateTotalAQ, getAQGrade, estimatePercentile } from '../constants';
@@ -8,6 +8,43 @@ import type { AQDomain, AQTestPhase, AQResult, AQDomainScore, AQQuestion } from 
 import { trackAqTestStarted, trackAqPhaseCompleted, trackAqTestCompleted } from '../../lib/analytics';
 import { useAuth } from '@/app/components/AuthProvider';
 import { AQ_DAILY_LIMIT } from '@/app/constants';
+
+// ─── 출제 풀에서 랜덤 5문제 선정 (난이도 균형) ──────
+// Fisher-Yates shuffle, 그리고 난이도 1/2/3 적어도 1문제씩 보장하기 위해
+// 난이도별로 그룹 → 각 그룹에서 라운드로빈으로 뽑기.
+const PER_DOMAIN_QUESTIONS = 5;
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickBalanced(pool: AQQuestion[], count: number): AQQuestion[] {
+  const byDiff: Record<1 | 2 | 3, AQQuestion[]> = { 1: [], 2: [], 3: [] };
+  for (const q of pool) byDiff[q.difficulty].push(q);
+  for (const k of [1, 2, 3] as const) byDiff[k] = shuffle(byDiff[k]);
+  const picked: AQQuestion[] = [];
+  // 라운드로빈: difficulty 1, 2, 3 순환하며 1개씩 뽑다가 부족하면 남은 풀에서.
+  let safety = 0;
+  while (picked.length < count && safety++ < count * 4) {
+    for (const k of [1, 2, 3] as const) {
+      if (picked.length >= count) break;
+      const q = byDiff[k].pop();
+      if (q) picked.push(q);
+    }
+  }
+  // 그래도 부족하면 (풀이 작을 때) 남은 풀에서 채움
+  if (picked.length < count) {
+    const remaining = shuffle(pool.filter((q) => !picked.includes(q)));
+    while (picked.length < count && remaining.length > 0) picked.push(remaining.pop()!);
+  }
+  // 출제 순서: 난이도 오름차순 (쉬운 것부터)
+  return picked.sort((a, b) => a.difficulty - b.difficulty);
+}
 
 // ─── AQ 일일 횟수 관리 ──────────────
 function getAqDailyCount(): number {
@@ -36,10 +73,16 @@ function PromptPhase({ onComplete }: { onComplete: (score: number) => void }) {
   const [jobRole, setJobRole] = useState('Marketing');
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
 
   const handleSubmit = async () => {
-    if (prompt.trim().length < 10) {
+    const trimmed = prompt.trim();
+    if (trimmed.length < 10) {
       setError('프롬프트를 10자 이상 입력하세요.');
+      return;
+    }
+    if (trimmed.length > 5000) {
+      setError('프롬프트는 5,000자 이내로 작성해주세요.');
       return;
     }
     setAnalyzing(true);
@@ -48,17 +91,40 @@ function PromptPhase({ onComplete }: { onComplete: (score: number) => void }) {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: prompt.trim(), jobRole }),
+        body: JSON.stringify({ prompt: trimmed, jobRole }),
       });
-      if (!res.ok) throw new Error('분석 실패');
+      if (res.status === 429) {
+        setError('잠시만요. 너무 빠르게 제출하셨어요. 1분 후 다시 시도해주세요.');
+        return;
+      }
+      if (!res.ok) {
+        let msg = '채점 중 오류가 발생했습니다. 다시 시도해주세요.';
+        try {
+          const body = await res.json();
+          if (body?.error) msg = body.error;
+        } catch { /* ignore */ }
+        setError(msg);
+        return;
+      }
       const data = await res.json();
-      onComplete(data.overallScore ?? 50);
+      const score = typeof data?.overallScore === 'number' ? data.overallScore : null;
+      if (score === null) {
+        setError('채점 결과를 받지 못했습니다. 다시 시도해주세요.');
+        return;
+      }
+      onComplete(score);
     } catch {
-      // Fallback: 분석 실패 시 50점 기본값으로 진행
-      onComplete(50);
+      setError('네트워크 연결을 확인해주세요.');
     } finally {
       setAnalyzing(false);
+      setRetryCount((n) => n + 1);
     }
+  };
+
+  const handleSkip = () => {
+    // 채점 실패가 반복되어도 진행 가능하도록 — 평균값(50)으로 다음 영역 이동.
+    // 실제 운영에서는 실패율을 PostHog로 추적해야 함.
+    onComplete(50);
   };
 
   return (
@@ -68,9 +134,9 @@ function PromptPhase({ onComplete }: { onComplete: (score: number) => void }) {
           <span className="text-purple-400 text-sm font-medium">영역 1/4</span>
           <span className="text-gray-500 text-sm">프롬프트 엔지니어링</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">프롬프트를 작성하세요</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">당신만의 프롬프트를 작성하세요</h2>
         <p className="text-gray-400 text-sm">
-          아래 주제에 대해 최대한 효과적인 AI 프롬프트를 작성하세요. 기존 SMP 엔진으로 채점됩니다.
+          자유 주제. 평소 AI에게 시키던 가장 잘 쓰는 프롬프트를 한 가지만 적어주세요. ScoreMyPrompt 엔진이 6차원으로 채점합니다.
         </p>
       </div>
 
@@ -87,12 +153,12 @@ function PromptPhase({ onComplete }: { onComplete: (score: number) => void }) {
         </select>
 
         <label className="block text-sm font-medium text-gray-300 mb-2">
-          프롬프트 작성
+          프롬프트
         </label>
         <textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder="예: '우리 회사의 신제품 런칭을 위한 마케팅 이메일을 작성해줘' 같은 AI 프롬프트를 작성하세요. 자유 주제입니다."
+          placeholder="예시: 당신은 SaaS 마케팅 전문가입니다. 신제품 런칭 이메일을 작성하세요. 타겟은 SMB CTO, 본문 5문장 이내, 클릭 가능한 CTA 포함…"
           className="w-full bg-dark border border-border rounded-lg px-4 py-3 text-white text-sm min-h-[160px] resize-y focus:border-purple-500 outline-none"
         />
         <div className="flex justify-between items-center mt-2">
@@ -105,8 +171,18 @@ function PromptPhase({ onComplete }: { onComplete: (score: number) => void }) {
           disabled={analyzing || prompt.trim().length < 10}
           className="mt-4 w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-all"
         >
-          {analyzing ? '프롬프트 분석 중...' : '프롬프트 제출 →'}
+          {analyzing ? '6차원 채점 중…' : '제출하고 다음 영역으로 →'}
         </button>
+
+        {/* 채점이 두 번 이상 실패하면 건너뛰기 옵션 노출 — 진단 자체가 멈추지 않도록 */}
+        {error && retryCount >= 2 && (
+          <button
+            onClick={handleSkip}
+            className="mt-2 w-full text-gray-500 hover:text-white text-xs py-2 transition-colors"
+          >
+            계속 실패한다면 이 영역 건너뛰기 (평균 점수로 처리)
+          </button>
+        )}
       </div>
     </div>
   );
@@ -239,7 +315,7 @@ function QuizPhase({
         {showExplanation && (
           <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-4 mb-4">
             <p className="text-blue-400 text-xs font-medium mb-1">해설</p>
-            <p className="text-gray-300 text-sm">{q.explanation}</p>
+            <p className="text-gray-300 text-sm leading-relaxed">{q.explanation}</p>
           </div>
         )}
 
@@ -248,7 +324,7 @@ function QuizPhase({
           disabled={selected === null}
           className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-all"
         >
-          {!showExplanation ? '정답 확인' : isLast ? '다음 영역으로 →' : '다음 문제 →'}
+          {!showExplanation ? '제출하고 정답 보기' : isLast ? '다음 영역으로 →' : '다음 문제 →'}
         </button>
       </div>
     </div>
@@ -260,8 +336,8 @@ function AnalyzingPhase() {
   return (
     <div className="max-w-md mx-auto text-center py-20">
       <div className="w-24 h-24 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-8" />
-      <h2 className="text-2xl font-bold text-white mb-3">AQ 점수 산출 중...</h2>
-      <p className="text-gray-400 text-sm">4개 영역의 점수를 종합하여 AQ를 계산하고 있습니다.</p>
+      <h2 className="text-2xl font-bold text-white mb-3">AQ 계산 중…</h2>
+      <p className="text-gray-400 text-sm">4영역 점수에 가중치를 적용해 종합 AQ를 산출하고 있습니다.</p>
     </div>
   );
 }
@@ -278,6 +354,12 @@ export default function AQTestPage() {
   const [startedAt] = useState(Date.now());
   const [aqRemaining, setAqRemaining] = useState<number>(AQ_DAILY_LIMIT);
   const isPro = tier === 'pro';
+
+  // 한 회차당 도메인 별 5개 랜덤 선정 — 페이지 마운트 시 한 번만 결정.
+  // 사용자가 다시 시작하려면 페이지를 reload하면 새 5개가 뽑힘.
+  const toolQs = useMemo(() => pickBalanced(TOOL_QUESTIONS, PER_DOMAIN_QUESTIONS), []);
+  const ethicsQs = useMemo(() => pickBalanced(ETHICS_QUESTIONS, PER_DOMAIN_QUESTIONS), []);
+  const conceptQs = useMemo(() => pickBalanced(CONCEPT_QUESTIONS, PER_DOMAIN_QUESTIONS), []);
 
   useEffect(() => {
     if (!isPro) {
@@ -299,14 +381,14 @@ export default function AQTestPage() {
 
   const handleToolComplete = (scores: Record<string, number>) => {
     setToolScores(scores);
-    const rawScore = computeDomainRawScore(scores, TOOL_QUESTIONS);
+    const rawScore = computeDomainRawScore(scores, toolQs);
     trackAqPhaseCompleted('tool', rawScore);
     setPhase('ethics');
   };
 
   const handleEthicsComplete = (scores: Record<string, number>) => {
     setEthicsScores(scores);
-    const rawScore = computeDomainRawScore(scores, ETHICS_QUESTIONS);
+    const rawScore = computeDomainRawScore(scores, ethicsQs);
     trackAqPhaseCompleted('ethics', rawScore);
     setPhase('concept');
   };
@@ -317,7 +399,7 @@ export default function AQTestPage() {
   const handleConceptComplete = (scores: Record<string, number>) => {
     setConceptScores(scores);
     latestConceptScores.current = scores;
-    const rawScore = computeDomainRawScore(scores, CONCEPT_QUESTIONS);
+    const rawScore = computeDomainRawScore(scores, conceptQs);
     trackAqPhaseCompleted('concept', rawScore);
     setPhase('analyzing');
 
@@ -327,9 +409,9 @@ export default function AQTestPage() {
       // latestConceptScores로 직접 계산
       const domainRawScores: Record<AQDomain, number> = {
         prompt: promptScore,
-        tool: computeDomainRawScore(toolScores, TOOL_QUESTIONS),
-        ethics: computeDomainRawScore(ethicsScores, ETHICS_QUESTIONS),
-        concept: computeDomainRawScore(latestConceptScores.current, CONCEPT_QUESTIONS),
+        tool: computeDomainRawScore(toolScores, toolQs),
+        ethics: computeDomainRawScore(ethicsScores, ethicsQs),
+        concept: computeDomainRawScore(latestConceptScores.current, conceptQs),
       };
 
       const domains: AQDomainScore[] = (Object.keys(AQ_DOMAIN_WEIGHTS) as AQDomain[]).map(domain => ({
@@ -347,8 +429,8 @@ export default function AQTestPage() {
       const durationSeconds = Math.round((Date.now() - startedAt) / 1000);
 
       const sorted = [...domains].sort((a, b) => b.rawScore - a.rawScore);
-      const strengths = sorted.slice(0, 2).map(d => `${AQ_DOMAIN_META[d.domain].label} (${d.rawScore}점)`);
-      const improvements = sorted.slice(-2).map(d => `${AQ_DOMAIN_META[d.domain].label} 역량 강화 추천`);
+      const strengths = sorted.slice(0, 2).map(d => `${AQ_DOMAIN_META[d.domain].label} — ${d.rawScore}점, 안정적인 강점`);
+      const improvements = sorted.slice(-2).map(d => `${AQ_DOMAIN_META[d.domain].label} — ${d.rawScore}점, 가장 빠르게 끌어올릴 영역`);
 
       const result: AQResult = {
         totalScore, grade, percentile, domains,
@@ -396,9 +478,9 @@ export default function AQTestPage() {
             <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <span className="text-white font-bold text-2xl">AQ</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">AQ 테스트를 시작합니다</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">이제 AQ를 측정합니다</h2>
             <p className="text-gray-400 mb-8">
-              4가지 영역을 순서대로 진행합니다. 약 15~20분 소요됩니다.
+              4영역을 순서대로 진행합니다. 약 15~20분이면 끝.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
               {(Object.entries(AQ_DOMAIN_META) as [AQDomain, typeof AQ_DOMAIN_META[AQDomain]][]).map(([key, meta]) => (
@@ -411,12 +493,14 @@ export default function AQTestPage() {
             </div>
             {!isPro && aqRemaining <= 0 ? (
               <div className="space-y-4">
-                <p className="text-amber-400 text-sm">오늘의 AQ 테스트 횟수({AQ_DAILY_LIMIT}회)를 모두 사용했습니다.</p>
+                <p className="text-amber-400 text-sm">
+                  오늘 분 AQ 측정({AQ_DAILY_LIMIT}회)을 모두 사용했어요. 내일 다시 도전하거나, Pro로 무제한 측정해보세요.
+                </p>
                 <a
                   href="/pricing"
                   className="inline-block bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-8 py-3 rounded-xl"
                 >
-                  Pro로 업그레이드
+                  Pro 업그레이드
                 </a>
               </div>
             ) : (
@@ -428,7 +512,7 @@ export default function AQTestPage() {
                   시작하기
                 </button>
                 {!isPro && (
-                  <p className="text-gray-500 text-xs mt-3">오늘 남은 횟수: {aqRemaining}/{AQ_DAILY_LIMIT}</p>
+                  <p className="text-gray-500 text-xs mt-3">오늘 남은 횟수 {aqRemaining}/{AQ_DAILY_LIMIT}</p>
                 )}
               </>
             )}
@@ -440,17 +524,17 @@ export default function AQTestPage() {
 
         {/* Phase: Tool */}
         {phase === 'tool' && (
-          <QuizPhase domain="tool" questions={TOOL_QUESTIONS} phaseIndex={2} onComplete={handleToolComplete} />
+          <QuizPhase domain="tool" questions={toolQs} phaseIndex={2} onComplete={handleToolComplete} />
         )}
 
         {/* Phase: Ethics */}
         {phase === 'ethics' && (
-          <QuizPhase domain="ethics" questions={ETHICS_QUESTIONS} phaseIndex={3} onComplete={handleEthicsComplete} />
+          <QuizPhase domain="ethics" questions={ethicsQs} phaseIndex={3} onComplete={handleEthicsComplete} />
         )}
 
         {/* Phase: Concept */}
         {phase === 'concept' && (
-          <QuizPhase domain="concept" questions={CONCEPT_QUESTIONS} phaseIndex={4} onComplete={handleConceptComplete} />
+          <QuizPhase domain="concept" questions={conceptQs} phaseIndex={4} onComplete={handleConceptComplete} />
         )}
 
         {/* Analyzing */}

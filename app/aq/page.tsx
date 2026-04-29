@@ -10,24 +10,24 @@ const Footer = dynamic(() => import('../components/Footer'), { ssr: false });
 
 const FAQ_ITEMS = [
   {
-    q: 'AQ(AI Quotient)란 무엇인가요?',
-    a: 'AQ는 AI를 다루는 종합 역량을 수치화한 지표입니다. IQ가 지능을, EQ가 감성을 측정하듯, AQ는 AI 시대에 필요한 핵심 역량 — 프롬프트 작성, 도구 활용, 윤리 이해, 개념 파악 — 을 종합적으로 평가합니다.',
+    q: 'AQ(AI Quotient)가 정확히 뭔가요?',
+    a: 'IQ가 학습 능력을, EQ가 감성을 측정한다면, AQ는 AI를 다루는 능력을 측정합니다. 프롬프트 작성·도구 선택·윤리 판단·개념 이해 — 이 4영역의 가중 평균이 당신의 AQ입니다.',
   },
   {
-    q: '테스트는 얼마나 걸리나요?',
-    a: '약 15~20분 소요됩니다. 프롬프트 작성 1문항 + 객관식/시나리오 15문항으로 구성되어 있습니다. 중간에 나가도 진행 상황이 저장됩니다.',
+    q: '시간 얼마나 걸려요?',
+    a: '약 15~20분입니다. 프롬프트 작성 1문항 + 객관식/시나리오 15문항. 중간에 나가도 진행 상황이 저장되니 부담 없이 시작하세요.',
   },
   {
-    q: 'AQ 인증서는 어떻게 받나요?',
-    a: `AQ ${AQ_CERTIFICATE_MIN_SCORE}점(B등급) 이상이면 디지털 인증서가 자동 발급됩니다. LinkedIn 프로필에 공유하거나, 이력서에 첨부할 수 있는 고유 인증 링크가 제공됩니다.`,
+    q: '인증서는 어떻게 받나요?',
+    a: `AQ ${AQ_CERTIFICATE_MIN_SCORE}점(B등급) 이상이면 디지털 인증서가 자동 발급됩니다. 고유 검증 코드가 들어간 PNG 카드로, LinkedIn·이력서·포트폴리오에 그대로 첨부할 수 있습니다.`,
   },
   {
-    q: '재시험이 가능한가요?',
-    a: '네, 언제든 다시 테스트할 수 있습니다. 가장 높은 점수가 프로필에 표시되며, 성장 추이도 확인할 수 있습니다.',
+    q: '점수가 낮으면 어떡해요?',
+    a: 'AQ는 IQ와 다릅니다 — 모든 등급이 출발점입니다. 결과 페이지에서 어느 영역이 약한지가 바로 보이고, 그 영역만 보완하면 점수가 가장 빠르게 오릅니다. 재측정은 언제든 가능하고, 가장 높은 점수가 기록됩니다.',
   },
   {
-    q: '기업에서 AQ를 활용할 수 있나요?',
-    a: 'AQ 인증서 링크를 통해 지원자의 AI 역량을 객관적으로 확인할 수 있습니다. 기업용 대시보드는 추후 제공 예정입니다.',
+    q: '기업에서 활용할 수 있나요?',
+    a: '인증 코드로 지원자의 AI 역량을 객관적으로 검증할 수 있습니다. 팀·조직 단위 측정 대시보드는 별도 트랙으로 준비 중입니다.',
   },
 ];
 
@@ -66,20 +66,21 @@ export default function AQLandingPage() {
         </div>
 
         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-          당신의{' '}
+          당신의 AI는<br className="hidden sm:block" />
+          {' '}
           <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent">
-            AI 역량
+            몇 점입니까?
           </span>
-          을<br className="hidden sm:block" />
-          점수로 증명하세요
         </h2>
 
-        <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-4">
-          AQ(AI Quotient)는 프롬프트 작성, AI 도구 활용, 윤리 이해, 개념 파악까지
-          AI를 다루는 종합 역량을 측정합니다.
+        <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-3">
+          IQ는 고정형, <span className="text-white font-medium">AQ는 성장형</span>.
         </p>
-        <p className="text-sm text-gray-500 mb-10">
-          약 15분 · 무료 · 인증서 발급
+        <p className="text-base text-gray-500 max-w-2xl mx-auto mb-4 leading-relaxed">
+          자기보고 설문이 아닌 실측 진단으로, 프롬프트·도구·윤리·개념 4영역을 한 번에 측정합니다.
+        </p>
+        <p className="text-sm text-gray-600 mb-10">
+          약 15분 · 무료 · B등급 이상 인증서 발급
         </p>
 
         <button
@@ -110,13 +111,13 @@ export default function AQLandingPage() {
       {/* ═══ 4대 측정 영역 ═══ */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h3 className="text-3xl sm:text-4xl font-bold text-center mb-4">
-          AQ를 구성하는{' '}
+          측정하는{' '}
           <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-            4가지 역량
+            4가지 영역
           </span>
         </h3>
         <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-          각 영역의 점수가 가중치에 따라 합산되어 최종 AQ 점수(0~200)가 산출됩니다.
+          프롬프트 작성·도구 선택·윤리 판단·개념 이해. 4영역의 가중 평균이 0~200점의 AQ가 됩니다.
         </p>
 
         <div className="grid sm:grid-cols-2 gap-6">
@@ -174,7 +175,7 @@ export default function AQLandingPage() {
           </span>
         </h3>
         <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-          총점 {AQ_MAX_SCORE}점 만점으로, 5단계 등급이 부여됩니다.
+          0~{AQ_MAX_SCORE}점, 5단계. <span className="text-white font-medium">모든 등급은 성장 가능한 출발점입니다.</span>
         </p>
 
         <div className="grid sm:grid-cols-5 gap-3">
@@ -207,8 +208,7 @@ export default function AQLandingPage() {
           </span>
         </h3>
         <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-          B등급({AQ_CERTIFICATE_MIN_SCORE}점) 이상이면 디지털 인증서가 발급됩니다.
-          LinkedIn 프로필이나 이력서에 첨부하세요.
+          B등급({AQ_CERTIFICATE_MIN_SCORE}점) 이상이면 고유 검증 코드가 들어간 디지털 인증서가 자동 발급됩니다. LinkedIn·이력서·포트폴리오에 그대로 첨부하세요.
         </p>
 
         <div className="max-w-md mx-auto">
@@ -321,21 +321,21 @@ export default function AQLandingPage() {
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="text-center card bg-gradient-to-br from-purple-500/10 to-blue-500/10 border-purple-500/30 py-16">
           <h3 className="text-3xl sm:text-4xl font-bold mb-4">
-            AI 시대, 당신의 역량을{' '}
+            측정되지 않은 능력은,{' '}
             <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              증명하세요
+              존재하지 않습니다
             </span>
           </h3>
-          <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-            무료 AQ 테스트로 AI 역량을 측정하고, 인증서로 커리어를 한 단계 올리세요.
+          <p className="text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed">
+            막연했던 &lsquo;AI 잘 다룸&rsquo;에 5분 만에 답이 나옵니다.
           </p>
           <button
             onClick={() => router.push('/aq/test')}
             className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white text-lg font-semibold px-10 py-4 rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/20"
           >
-            무료 AQ 테스트 시작
+            지금 AQ 측정하기
           </button>
-          <p className="text-gray-500 text-xs mt-4">약 15분 · 완전 무료 · B등급 이상 인증서 발급</p>
+          <p className="text-gray-500 text-xs mt-4">약 15분 · 무료 · B등급 이상 인증서 발급</p>
         </div>
       </section>
 

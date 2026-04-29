@@ -128,7 +128,7 @@ export default function AQResultPage() {
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* ═══ Score Hero ═══ */}
         <div className="text-center mb-12">
-          <p className="text-gray-400 text-sm mb-4">당신의 AI Quotient</p>
+          <p className="text-gray-400 text-xs tracking-[0.2em] uppercase mb-4">Your AQ</p>
 
           <div className="relative inline-block mb-6">
             <div
@@ -153,15 +153,15 @@ export default function AQResultPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             {gradeConfig.emoji} {gradeConfig.title}
           </h2>
-          <p className="text-gray-400 mb-2">{gradeConfig.description}</p>
+          <p className="text-gray-400 mb-2 max-w-md mx-auto leading-relaxed">{gradeConfig.description}</p>
           <p className="text-sm text-gray-500">
-            상위 {result.percentile}% · 소요 시간 {minutes}분 {seconds}초
+            상위 {result.percentile}% · 소요 {minutes}분 {seconds}초
           </p>
         </div>
 
         {/* ═══ Radar Chart ═══ */}
         <div className="card mb-8">
-          <h3 className="text-lg font-bold text-white text-center mb-4">영역별 역량 분석</h3>
+          <h3 className="text-lg font-bold text-white text-center mb-4">4영역 분석</h3>
           <RadarChart domains={result.domains} />
         </div>
 
@@ -206,7 +206,7 @@ export default function AQResultPage() {
         {/* ═══ Strengths & Improvements ═══ */}
         <div className="grid sm:grid-cols-2 gap-4 mb-8">
           <div className="card">
-            <h3 className="text-lg font-bold text-white mb-3">💪 강점</h3>
+            <h3 className="text-lg font-bold text-white mb-3">💪 가장 강한 영역</h3>
             <ul className="space-y-2">
               {result.strengths.map((s, i) => (
                 <li key={i} className="flex items-start gap-2">
@@ -217,7 +217,7 @@ export default function AQResultPage() {
             </ul>
           </div>
           <div className="card">
-            <h3 className="text-lg font-bold text-white mb-3">📈 개선 영역</h3>
+            <h3 className="text-lg font-bold text-white mb-3">📈 가장 큰 성장 여지</h3>
             <ul className="space-y-2">
               {result.improvements.map((s, i) => (
                 <li key={i} className="flex items-start gap-2">
@@ -235,9 +235,9 @@ export default function AQResultPage() {
             <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-xl">AQ</span>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">🎉 AQ 인증서 발급 가능!</h3>
-            <p className="text-gray-400 mb-6">
-              {gradeConfig.label}등급 ({result.totalScore}점)을 달성하셨습니다. 인증서를 발급받고 LinkedIn에 공유하세요.
+            <h3 className="text-2xl font-bold text-white mb-2">인증서 발급 자격을 갖췄습니다</h3>
+            <p className="text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
+              {gradeConfig.label}등급 · {result.totalScore}점. 고유 검증 코드가 들어간 디지털 인증서를 PNG로 받아 LinkedIn·이력서·포트폴리오에 첨부하세요.
             </p>
             <button
               onClick={() => router.push(`/aq/certificate?score=${result.totalScore}&grade=${result.grade}`)}
@@ -252,7 +252,7 @@ export default function AQResultPage() {
               인증서는 B등급({AQ_CERTIFICATE_MIN_SCORE}점) 이상부터 발급됩니다.
             </p>
             <p className="text-gray-500 text-sm">
-              {AQ_CERTIFICATE_MIN_SCORE - result.totalScore}점만 더 올리면 인증서를 받을 수 있어요!
+              {AQ_CERTIFICATE_MIN_SCORE - result.totalScore}점 남았습니다 — 가장 약한 영역을 보완하면 가장 빠르게 닿습니다.
             </p>
           </div>
         )}
@@ -267,13 +267,15 @@ export default function AQResultPage() {
           </button>
           <button
             onClick={() => {
-              const text = `나의 AQ(AI Quotient)는 ${result.totalScore}/${AQ_MAX_SCORE} (${gradeConfig.label}등급)! 🧠\n당신의 AI 역량은? aq.ai.kr에서 무료 테스트하세요!`;
+              const origin = typeof window !== 'undefined' ? window.location.origin : 'https://aq.ai.kr';
+              const shareUrl = `${origin}/aq/share?score=${result.totalScore}&grade=${result.grade}`;
+              const text = `AQ ${result.totalScore}/${AQ_MAX_SCORE} · ${gradeConfig.label}등급 (${gradeConfig.title}). 당신의 AQ는?`;
               if (navigator.share) {
                 trackAqShareClicked('native');
-                navigator.share({ title: 'AQ 결과', text, url: 'https://aq.ai.kr' });
+                navigator.share({ title: 'AQ 결과', text, url: shareUrl });
               } else {
                 trackAqShareClicked('clipboard');
-                navigator.clipboard.writeText(text);
+                navigator.clipboard.writeText(`${text} ${shareUrl}`);
               }
             }}
             className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white text-center py-3 rounded-xl font-semibold transition-all"

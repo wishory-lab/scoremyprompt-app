@@ -163,8 +163,8 @@ export default function AQCertificatePage() {
     // Bottom branding
     ctx.fillStyle = '#444';
     ctx.font = '11px system-ui, sans-serif';
-    ctx.fillText('aq.ai.kr — AI Quotient by ScoreMyPrompt', 600, 700);
-    ctx.fillText('이 인증서는 AQ 테스트 결과를 기반으로 발급되었습니다.', 600, 720);
+    ctx.fillText('AQ.AI.KR · AI Quotient · Powered by ScoreMyPrompt 6-Dimension Engine', 600, 700);
+    ctx.fillText('IQ는 고정형, AQ는 성장형. 인증서는 측정 시점 기준입니다.', 600, 720);
 
   }, [result, verificationCode]);
 
@@ -184,7 +184,9 @@ export default function AQCertificatePage() {
 
   const handleShareLinkedIn = () => {
     trackAqShareClicked('linkedin');
-    const text = encodeURIComponent(`나의 AQ(AI Quotient)는 ${result?.totalScore}/${AQ_MAX_SCORE} (${result?.grade}등급)! 🧠 AI 역량을 공식 인증받았습니다.\n\n#AQ #AIQuotient #AI역량`);
+    const text = encodeURIComponent(
+      `AQ ${result?.totalScore}/${AQ_MAX_SCORE} · ${result?.grade}등급. AI 활용 역량을 측정하고 공식 인증받았습니다.\n\n#AQ #AIQuotient #AI역량 #ScoreMyPrompt`,
+    );
     const url = encodeURIComponent('https://aq.ai.kr');
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`, '_blank');
   };
@@ -214,7 +216,7 @@ export default function AQCertificatePage() {
 
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">🎉 AQ 인증서가 발급되었습니다!</h2>
+          <h2 className="text-3xl font-bold text-white mb-2">인증서가 발급되었습니다</h2>
           <p className="text-gray-400">
             {gradeConfig.label}등급 · {result.totalScore}/{AQ_MAX_SCORE} · 상위 {result.percentile}%
           </p>
@@ -233,7 +235,7 @@ export default function AQCertificatePage() {
         <div className="card text-center py-4 mb-8">
           <p className="text-gray-500 text-xs mb-1">인증 코드</p>
           <p className="text-white font-mono text-lg font-bold tracking-wider">{verificationCode}</p>
-          <p className="text-gray-500 text-xs mt-1">이 코드로 인증서의 진위를 확인할 수 있습니다.</p>
+          <p className="text-gray-500 text-xs mt-1">인증서 진위는 이 코드로 확인할 수 있습니다.</p>
         </div>
 
         {/* Actions */}
@@ -252,7 +254,7 @@ export default function AQCertificatePage() {
           </button>
           <button
             onClick={() => {
-              const text = `나의 AQ(AI Quotient): ${result.totalScore}/${AQ_MAX_SCORE} (${gradeConfig.label}등급)\n인증코드: ${verificationCode}\nhttps://aq.ai.kr`;
+              const text = `AQ ${result.totalScore}/${AQ_MAX_SCORE} · ${gradeConfig.label}등급 (${gradeConfig.title})\n인증 코드: ${verificationCode}\nhttps://aq.ai.kr`;
               navigator.clipboard.writeText(text);
               trackAqShareClicked('clipboard');
             }}
