@@ -1,6 +1,11 @@
--- Migration 004: Pro Trial (맛보기) system
--- Allows free users to activate a 24-hour Pro experience once
--- Run this in Supabase SQL Editor
+-- Migration 007: Pro Trial (맛보기) system
+-- Allows free users to activate a 24-hour Pro experience once.
+--
+-- How to apply:
+--   Option A — Supabase Dashboard → SQL Editor → paste this file → Run
+--   Option B — supabase db push (if you use Supabase CLI)
+--
+-- Idempotent: safe to re-run; uses IF NOT EXISTS guards.
 
 -- 1. Add trial columns to user_profiles
 ALTER TABLE user_profiles
