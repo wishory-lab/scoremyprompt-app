@@ -7,7 +7,7 @@ import EmptyState from '../components/EmptyState';
 import Skeleton from '../components/Skeleton';
 import type { Grade } from '@/app/types';
 import Footer from '../components/Footer';
-import TrialBanner from '../components/TrialBanner';
+
 import { ERRORS, LOADING, EMPTY, AUTH, CTA } from '../constants/messages';
 
 interface DashboardStats {
@@ -159,10 +159,6 @@ export default function DashboardPage() {
       <section id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <h2 className="text-4xl font-bold text-white mb-12">Your Dashboard</h2>
 
-        {/* Trial Banner */}
-        <div className="mb-8">
-          <TrialBanner />
-        </div>
 
         {error && (
           <div className="card mb-8 border-red-500/30 bg-red-500/5 text-center">

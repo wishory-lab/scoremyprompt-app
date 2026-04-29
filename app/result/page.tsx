@@ -28,7 +28,6 @@ const RewriteSuggestion = dynamic(() => import('./components/RewriteSuggestion')
 const ChallengerResult = dynamic(() => import('./components/ChallengerResult'), { ssr: false });
 const ShareSection = dynamic(() => import('./components/ShareSection'), { ssr: false });
 const CommunityCTA = dynamic(() => import('./components/CommunityCTA'), { ssr: false });
-const TrialBanner = dynamic(() => import('../components/TrialBanner'), { ssr: false });
 
 interface ExtendedGradeConfig extends GradeConfig {
   bg: string;
@@ -202,12 +201,6 @@ export default function ResultPage() {
           gradeLabel={result.scoreLevel || gradeConfig.label}
         />
 
-        {/* Trial Banner: Show to non-Pro users */}
-        {!isPro && (
-          <div className="mb-8">
-            <TrialBanner />
-          </div>
-        )}
 
         {/* Ad Slot: Below improvements, above share */}
         <div className="mb-12">

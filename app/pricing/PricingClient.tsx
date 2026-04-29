@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FAQ_ITEMS } from './data';
 import Footer from '../components/Footer';
-import TrialBanner from '../components/TrialBanner';
+
 import { useAuth } from '@/app/components/AuthProvider';
 import { trackPricingViewed } from '@/app/lib/analytics';
 import { isFeatureEnabled, FEATURES } from '@/app/lib/features';
@@ -15,10 +15,11 @@ const PRICING_PLANS = {
     name: 'Free',
     price: '$0',
     period: '/forever',
-    cta: 'Score My First Prompt',
+    cta: 'Get Started Free',
     features: [
-      { text: 'Score up to 10 prompts a day', included: true },
+      { text: 'Score up to 100 prompts a day', included: true },
       { text: 'See all 6 PROMPT dimensions', included: true },
+      { text: 'AQ test up to 5 times a day', included: true },
       { text: 'Compare with peers on the leaderboard', included: true },
       { text: 'Share your score on social media', included: true },
       { text: 'Ads shown between sections', included: false },
@@ -31,18 +32,18 @@ const PRICING_PLANS = {
     price: '$4.99',
     period: '/month',
     badge: 'Most Popular',
-    trial: '7-day free trial',
-    cta: 'Start Free Trial',
+    trial: '30-day free trial on signup',
+    cta: 'Start 30-Day Free Trial',
     highlight: true,
     features: [
       { text: 'Unlimited scoring — never hit a daily cap', included: true },
+      { text: 'Unlimited AQ tests', included: true },
       { text: 'Unlimited Harness Builder generations', included: true },
       { text: 'AI rewrites your prompt for a higher score', included: true },
       { text: 'Track progress and revisit past analyses', included: true },
       { text: 'Score 5 prompts at once with Bulk mode', included: true },
       { text: 'Clean, distraction-free experience (no ads)', included: true },
       { text: 'Export polished HTML reports for clients', included: true },
-      { text: 'Priority support when you need help', included: true },
     ],
   },
 };
@@ -136,13 +137,6 @@ export default function PricingClient() {
             Choose the perfect plan for your prompt engineering needs. No hidden fees, cancel anytime.
           </p>
         </div>
-
-        {/* Trial Banner */}
-        {tier !== 'pro' && (
-          <div className="mb-12">
-            <TrialBanner />
-          </div>
-        )}
 
         {/* Pricing Cards */}
         <div className="grid sm:grid-cols-2 gap-8 mb-16">

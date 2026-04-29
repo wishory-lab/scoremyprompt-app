@@ -27,7 +27,7 @@ export const JOB_ROLES: JobRole[] = ['Marketing', 'Design', 'Product', 'Finance'
 
 export const TIER_LIMITS: Record<string, number> = {
   guest: 3,
-  free: 10,
+  free: 100,
   pro: Infinity,
 };
 
@@ -50,7 +50,9 @@ export const DIMENSION_FEEDBACK: Record<string, { low: string; high: string }> =
   tailoring:       { low: 'Customize for your specific use case.', high: 'Perfectly tailored!' },
 };
 
-export const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+export const TRIAL_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+export const AQ_DAILY_LIMIT = 5; // AQ 테스트 1일 최대 횟수 (Free tier)
 
 export const ROLE_BENCHMARKS: Record<string, { average: number; excellent: number }> = {
   Marketing:   { average: 62, excellent: 85 },

@@ -6,7 +6,7 @@ import { TRIAL_DURATION_MS } from '@/app/constants';
 
 /**
  * POST /api/trial/activate
- * Activates a 24-hour Pro trial for authenticated free-tier users.
+ * Activates a 30-day Pro trial for authenticated free-tier users.
  * One-time only per account.
  */
 export async function POST(request: Request) {
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
       success: true,
       trial_activated_at: now,
       expires_at: expiresAt,
-      message: 'Pro 맛보기가 활성화되었습니다! 24시간 동안 모든 Pro 기능을 무료로 이용하세요.',
+      message: 'Pro 트라이얼이 활성화되었습니다! 30일간 모든 Pro 기능을 무료로 이용하세요.',
     });
   } catch (error) {
     if (error instanceof AppError) return errorResponse(error);

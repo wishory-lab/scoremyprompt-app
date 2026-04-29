@@ -19,7 +19,7 @@ const AnalyzeRequestSchema = z.object({
 const rateLimitMap = new Map<string, { windowStart: number; count: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000;
 const RATE_LIMIT_MAX = 5;
-const DAILY_LIMIT = 20; // Supabase-based daily limit per IP
+const DAILY_LIMIT = 100; // Supabase-based daily limit per IP
 
 interface RateLimitResult {
   allowed: boolean;

@@ -111,13 +111,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // Calculate effective tier (trial gives temporary pro access)
         const baseTier: Tier = data.tier || 'free';
-        const trialActivatedAt = data.trial_activated_at ? new Date(data.trial_activated_at).getTime() : null;
+        let trialActivatedAt = data.trial_activated_at ? new Date(data.trial_activated_at).getTime() : null;
+        let trialUsed = data.trial_used ?? false;
+
+        // Auto-activate 30-day trial for new signups (first login, trial not yet used)
+        if (!trialActivatedAt && !trialUsed && baseTier === 'free') {
+          try {
+            const now = new Date();
+            const { error: updateErr } = await supabase
+              .from('user_profiles')
+              .update({ trial_activated_at: now.toISOString(), trial_used: true })
+              .eq('id', userId);
+            if (!updateErr) {
+              trialActivatedAt = now.getTime();
+              trialUsed = true;
+            }
+          } catch { /* silently continue */ }
+        }
+
         const trialExpiresAt = trialActivatedAt ? trialActivatedAt + TRIAL_DURATION_MS : null;
         const trialActive = trialExpiresAt ? Date.now() < trialExpiresAt : false;
 
         setTrial({
           active: trialActive,
-          used: data.trial_used ?? false,
+          used: trialUsed,
           expiresAt: trialExpiresAt,
         });
 

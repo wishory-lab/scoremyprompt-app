@@ -1,11 +1,34 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { TOOL_QUESTIONS, ETHICS_QUESTIONS, CONCEPT_QUESTIONS } from '../questions';
 import { AQ_DOMAIN_META, AQ_DOMAIN_WEIGHTS, calculateWeightedScore, calculateTotalAQ, getAQGrade, estimatePercentile } from '../constants';
 import type { AQDomain, AQTestPhase, AQResult, AQDomainScore, AQQuestion } from '../types';
 import { trackAqTestStarted, trackAqPhaseCompleted, trackAqTestCompleted } from '../../lib/analytics';
+import { useAuth } from '@/app/components/AuthProvider';
+import { AQ_DAILY_LIMIT } from '@/app/constants';
+
+// ─── AQ 일일 횟수 관리 ──────────────
+function getAqDailyCount(): number {
+  try {
+    const key = 'smp_aq_daily';
+    const raw = localStorage.getItem(key);
+    if (!raw) return 0;
+    const { date, count } = JSON.parse(raw);
+    if (date !== new Date().toISOString().slice(0, 10)) return 0;
+    return count;
+  } catch { return 0; }
+}
+
+function incrementAqDaily(): void {
+  try {
+    const key = 'smp_aq_daily';
+    const today = new Date().toISOString().slice(0, 10);
+    const current = getAqDailyCount();
+    localStorage.setItem(key, JSON.stringify({ date: today, count: current + 1 }));
+  } catch { /* localStorage unavailable */ }
+}
 
 // ─── 프롬프트 입력 + SMP 채점 단계 ──────────────
 function PromptPhase({ onComplete }: { onComplete: (score: number) => void }) {
@@ -246,12 +269,21 @@ function AnalyzingPhase() {
 // ─── 메인 테스트 페이지 ──────────────────────────
 export default function AQTestPage() {
   const router = useRouter();
+  const { tier } = useAuth();
   const [phase, setPhase] = useState<AQTestPhase>('intro');
   const [promptScore, setPromptScore] = useState(0);
   const [toolScores, setToolScores] = useState<Record<string, number>>({});
   const [ethicsScores, setEthicsScores] = useState<Record<string, number>>({});
   const [conceptScores, setConceptScores] = useState<Record<string, number>>({});
   const [startedAt] = useState(Date.now());
+  const [aqRemaining, setAqRemaining] = useState<number>(AQ_DAILY_LIMIT);
+  const isPro = tier === 'pro';
+
+  useEffect(() => {
+    if (!isPro) {
+      setAqRemaining(AQ_DAILY_LIMIT - getAqDailyCount());
+    }
+  }, [isPro]);
 
   const computeDomainRawScore = useCallback((scores: Record<string, number>, questions: AQQuestion[]): number => {
     const maxTotal = questions.reduce((s, q) => s + q.points, 0);
@@ -377,12 +409,29 @@ export default function AQTestPage() {
                 </div>
               ))}
             </div>
-            <button
-              onClick={() => { trackAqTestStarted(); setPhase('prompt'); }}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white text-lg font-semibold px-10 py-4 rounded-xl transition-all shadow-lg shadow-purple-500/20"
-            >
-              시작하기
-            </button>
+            {!isPro && aqRemaining <= 0 ? (
+              <div className="space-y-4">
+                <p className="text-amber-400 text-sm">오늘의 AQ 테스트 횟수({AQ_DAILY_LIMIT}회)를 모두 사용했습니다.</p>
+                <a
+                  href="/pricing"
+                  className="inline-block bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-8 py-3 rounded-xl"
+                >
+                  Pro로 업그레이드
+                </a>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => { incrementAqDaily(); setAqRemaining(prev => prev - 1); trackAqTestStarted(); setPhase('prompt'); }}
+                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white text-lg font-semibold px-10 py-4 rounded-xl transition-all shadow-lg shadow-purple-500/20"
+                >
+                  시작하기
+                </button>
+                {!isPro && (
+                  <p className="text-gray-500 text-xs mt-3">오늘 남은 횟수: {aqRemaining}/{AQ_DAILY_LIMIT}</p>
+                )}
+              </>
+            )}
           </div>
         )}
 
