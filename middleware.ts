@@ -29,8 +29,30 @@ function isValidOrigin(request: NextRequest): boolean {
 const MAINTENANCE_MODE = process.env.MAINTENANCE_MODE === 'true';
 const MAINTENANCE_BYPASS_PATHS = ['/maintenance', '/api/health', '/api/og', '/favicon.svg'];
 
+// AQ host whitelist: aq.ai.kr + optional extras via env
+const AQ_HOSTS = new Set([
+  'aq.ai.kr',
+  ...(process.env.AQ_HOSTS?.split(',').map(h => h.trim()).filter(Boolean) ?? []),
+]);
+
+function isAqHost(host: string | null): boolean {
+  if (!host) return false;
+  // Strip port for localhost testing
+  const hostname = host.split(':')[0];
+  return AQ_HOSTS.has(hostname);
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const host = request.headers.get('host');
+
+  // ── AQ host rewrite: aq.ai.kr → /aq/... ──
+  if (isAqHost(host) && !pathname.startsWith('/api/') && !pathname.startsWith('/aq')) {
+    const aqPath = pathname === '/' ? '/aq' : `/aq${pathname}`;
+    const url = new URL(aqPath, request.url);
+    url.search = request.nextUrl.search;
+    return NextResponse.rewrite(url);
+  }
 
   // ── Path-based i18n: extract locale prefix and rewrite ──
   // /ko/pricing → rewrite to /pricing, set locale cookie + header
