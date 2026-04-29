@@ -1,10 +1,11 @@
 'use client';
 
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
 import { getSupabaseClient } from '@/app/lib/supabase';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 import type { Tier } from '@/app/types';
 import { trackSignupCompleted } from '@/app/lib/analytics';
+import { TRIAL_DURATION_MS } from '@/app/constants';
 
 interface TrialState {
   active: boolean;
@@ -45,6 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
+  const [trial, setTrial] = useState<TrialState>({ active: false, used: false, expiresAt: null });
   const hasTrackedSignup = useRef(false);
 
   useEffect(() => {
@@ -100,11 +102,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('user_profiles')
-        .select('tier')
+        .select('tier, trial_activated_at, trial_used')
         .eq('id', userId)
         .single();
 
-      setTier(error || !data ? 'guest' : data.tier || 'free');
+      if (error || !data) {
+        setTier('guest');
+      } else {
+        // Calculate effective tier (trial gives temporary pro access)
+        const baseTier: Tier = data.tier || 'free';
+        const trialActivatedAt = data.trial_activated_at ? new Date(data.trial_activated_at).getTime() : null;
+        const trialExpiresAt = trialActivatedAt ? trialActivatedAt + TRIAL_DURATION_MS : null;
+        const trialActive = trialExpiresAt ? Date.now() < trialExpiresAt : false;
+
+        setTrial({
+          active: trialActive,
+          used: data.trial_used ?? false,
+          expiresAt: trialExpiresAt,
+        });
+
+        // During active trial, treat user as 'pro' tier
+        if (trialActive && baseTier === 'free') {
+          setTier('pro');
+        } else {
+          setTier(baseTier);
+        }
+      }
     } catch (err) {
       console.error('Failed to fetch user tier:', err);
       setTier('guest');
@@ -117,7 +140,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     setUser(null);
     setTier('guest');
+    setTrial({ active: false, used: false, expiresAt: null });
   }
+
+  const activateTrial = useCallback(async (): Promise<boolean> => {
+    if (!supabase || !user) return false;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return false;
+
+      const res = await fetch('/api/trial/activate', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) return false;
+
+      const result = await res.json();
+      const expiresAt = new Date(result.expires_at).getTime();
+
+      setTrial({ active: true, used: true, expiresAt });
+      setTier('pro'); // Upgrade to pro during trial
+
+      return true;
+    } catch (err) {
+      console.error('Failed to activate trial:', err);
+      return false;
+    }
+  }, [supabase, user]);
 
   return (
     <AuthContext.Provider
@@ -131,6 +185,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         authMessage,
         setAuthMessage,
         signOut: handleSignOut,
+        trial,
+        activateTrial,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FAQ_ITEMS } from './data';
 import Footer from '../components/Footer';
+import TrialBanner from '../components/TrialBanner';
 import { useAuth } from '@/app/components/AuthProvider';
 import { trackPricingViewed } from '@/app/lib/analytics';
 import { isFeatureEnabled, FEATURES } from '@/app/lib/features';
@@ -135,6 +136,13 @@ export default function PricingClient() {
             Choose the perfect plan for your prompt engineering needs. No hidden fees, cancel anytime.
           </p>
         </div>
+
+        {/* Trial Banner */}
+        {tier !== 'pro' && (
+          <div className="mb-12">
+            <TrialBanner />
+          </div>
+        )}
 
         {/* Pricing Cards */}
         <div className="grid sm:grid-cols-2 gap-8 mb-16">
