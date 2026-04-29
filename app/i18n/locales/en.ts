@@ -88,6 +88,11 @@ const en = {
     wantToImprove: 'Want to Improve?',
     wantToImproveDesc: 'Based on your scores, these guides can help you strengthen your weakest dimensions.',
     readGuide: 'Read guide',
+    aiRewriteSuggestion: 'AI Rewrite Suggestion',
+    hideRewrite: 'Hide Rewrite',
+    showRewrite: 'Show Rewrite',
+    rewriteHint: 'Click "Show Rewrite" to see the AI-improved version of your prompt.',
+    unlockWithPro: 'Unlock with Pro',
   },
 
   // ─── Validation ──────────────────────────────────

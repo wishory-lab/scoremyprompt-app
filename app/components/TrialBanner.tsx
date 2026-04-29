@@ -22,7 +22,9 @@ function formatRemaining(ms: number): string {
  * 3. Post-trial upgrade CTA (after trial expired)
  */
 export default function TrialBanner() {
-  const { user, tier, trial, activateTrial, setShowAuth } = useAuth();
+  const { user, tier, trial: trialRaw, activateTrial: activateTrialRaw, setShowAuth } = useAuth();
+  const trial = trialRaw ?? { active: false, used: false, expiresAt: null };
+  const activateTrial = activateTrialRaw ?? (async () => false);
   const { showToast } = useToast();
   const [activating, setActivating] = useState(false);
   const [remaining, setRemaining] = useState('');

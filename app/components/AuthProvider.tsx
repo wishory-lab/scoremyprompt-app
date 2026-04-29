@@ -6,6 +6,12 @@ import type { SupabaseClient, User } from '@supabase/supabase-js';
 import type { Tier } from '@/app/types';
 import { trackSignupCompleted } from '@/app/lib/analytics';
 
+interface TrialState {
+  active: boolean;
+  used: boolean;
+  expiresAt: number | null;
+}
+
 interface AuthContextValue {
   user: User | null;
   tier: Tier;
@@ -16,6 +22,8 @@ interface AuthContextValue {
   authMessage: string;
   setAuthMessage: (msg: string) => void;
   signOut: () => Promise<void>;
+  trial?: TrialState;
+  activateTrial?: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextValue>({

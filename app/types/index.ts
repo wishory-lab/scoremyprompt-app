@@ -35,7 +35,7 @@ export interface AnalysisResult {
   shareId?: string;
 }
 
-export type Tier = 'guest' | 'free' | 'pro';
+export type Tier = 'guest' | 'free' | 'pro' | 'premium';
 
 export interface UserProfile {
   id: string;

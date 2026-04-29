@@ -50,6 +50,8 @@ export const DIMENSION_FEEDBACK: Record<string, { low: string; high: string }> =
   tailoring:       { low: 'Customize for your specific use case.', high: 'Perfectly tailored!' },
 };
 
+export const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 export const ROLE_BENCHMARKS: Record<string, { average: number; excellent: number }> = {
   Marketing:   { average: 62, excellent: 85 },
   Design:      { average: 58, excellent: 82 },

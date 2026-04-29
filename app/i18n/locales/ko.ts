@@ -82,6 +82,11 @@ const ko: PartialLocale = {
     wantToImprove: '개선하고 싶으신가요?',
     wantToImproveDesc: '점수 기반으로 가장 약한 차원을 강화할 수 있는 가이드입니다.',
     readGuide: '가이드 읽기',
+    aiRewriteSuggestion: 'AI 리라이트 제안',
+    hideRewrite: '리라이트 숨기기',
+    showRewrite: '리라이트 보기',
+    rewriteHint: '"리라이트 보기"를 클릭하면 AI가 개선한 프롬프트를 확인할 수 있습니다.',
+    unlockWithPro: 'Pro로 잠금 해제',
   },
 
   validation: {
